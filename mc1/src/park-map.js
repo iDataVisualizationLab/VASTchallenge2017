@@ -292,7 +292,7 @@ ParkMap.prototype.findSinglePathByName = function findSinglePath(fromName, toNam
     })
 };
 
-ParkMap.prototype.highLightPath = function highLightPath(myPath) {
+ParkMap.prototype.highLightPath = function highLightPath(myPath, color) {
     if (myPath.length < 1) {
         return;
     }
@@ -309,7 +309,7 @@ ParkMap.prototype.highLightPath = function highLightPath(myPath) {
 
             return false ;
         })
-        .attr('fill', '#ffd800')
+        .attr('fill', !!color ? color : '#990099')
     ;
 };
 
