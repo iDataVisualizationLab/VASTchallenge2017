@@ -10,9 +10,9 @@ var Util = function Util () {
  * @param callback callback function when image is loaded
  */
 Util.createMapByteData = function createMapByteData (width, height, referenceBitmapImagePath, callback) {
-    var canvas =  document.getElementById("myCanvas");
-    // canvas.width = width;
-    // canvas.height = height;
+    var canvas =  document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
 
     var ctx = canvas.getContext('2d');
     var myImg = new Image();
