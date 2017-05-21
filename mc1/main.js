@@ -4,8 +4,8 @@ var mapFile = 'data/Lekagul Roadways.bmp';
 
 var mapSvg = d3.select('body').select('#map')
     .append('svg')
-        .attr('width', MAP_WIDTH * 11)
-        .attr('height', MAP_HEIGHT * 11)
+        .attr('width', MAP_WIDTH * (ParkMap.CELL_WIDTH + 1))
+        .attr('height', MAP_HEIGHT * (ParkMap.CELL_HEIGHT + 1))
     ;
 
 

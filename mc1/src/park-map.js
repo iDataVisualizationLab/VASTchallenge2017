@@ -19,21 +19,20 @@ var MapPoint = function MapPoint(pos, r, g, b, alpha, label) {
     this.row = Math.floor(pos / 200);
     this.column = Math.ceil(pos % 200);
 
-    if (!!label) {
-        this.label = label;
-    }
-
-    if (r == 255 && g == 255 && b == 255) {
-        this.isRoad = true;
-    }
-
-    var componentToHex = function(c) {
+    let componentToHex = function(c) {
         var hex = c.toString(16);
         return hex.length == 1 ? "0" + hex : hex;
     };
 
 
     this.color =  "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    if (r == 255 && g == 255 && b == 255) {
+        this.isRoad = true;
+    }
+
+    if (!!label) {
+        this.label = label;
+    }
 };
 
 MapPoint.prototype.getR = function getR() {
@@ -72,6 +71,54 @@ MapPoint.prototype.getColumn = function getColumn() {
     return this.column;
 };
 
+MapPoint.prototype.isGate = function isGate() {
+    return this.color == '#ff0000';
+};
+
+MapPoint.prototype.isEntrance = function isEntrance() {
+    return this.color == '#4cff00';
+};
+
+MapPoint.prototype.isGeneralGate = function isGeneralGate() {
+    return this.color == '#00ffff';
+};
+
+MapPoint.prototype.isRangerStop = function isRangerStop() {
+    return this.color == '#ffd800';
+};
+
+MapPoint.prototype.isCamping= function isCamping() {
+    return this.color == '#ff6a00';
+};
+
+MapPoint.prototype.setLabel= function setLabel(entranceIdx, gateIdx, generalGateIdx, rangeStopIdx, campingIdx) {
+
+    let l = '';
+    if (this.isGate()) {
+        l = 'gate' + gateIdx;
+
+    }
+    else if (this.isEntrance()) {
+        l = 'entrance' + entranceIdx;
+    }
+    else if (this.isGeneralGate()) {
+        l = 'general-gate' + generalGateIdx;
+
+    }
+    else if (this.isRangerStop()) {
+        l = 'ranger-stop' + rangeStopIdx;
+    }
+    else if (this.isCamping()) {
+        l = 'camping' + campingIdx;
+    }
+
+    if (!this.label) {
+        this.label = l;
+    }
+    else {
+        console.error('label has been assigned manually');
+    }
+};
 
 var ParkMap = function ParkMap (byteData) {
     if (byteData.length % 4 != 0) {
@@ -85,8 +132,32 @@ var ParkMap = function ParkMap (byteData) {
     let tmpPoint;
     let pos = 0;
     let rowItems = [];
+    let entranceIdx = 0,
+        gateIdx = 0,
+        generalGateIdx = 0,
+        rangerStopIdx = 0,
+        campingIdx = 0
+        ;
+
     for(let i=0; i< byteData.length; i+=4) {
         tmpPoint = new MapPoint(pos, byteData[i], byteData[i+1], byteData[i+2], byteData[i+3]);
+        tmpPoint.setLabel(entranceIdx, gateIdx, generalGateIdx, rangerStopIdx, campingIdx);
+        if (tmpPoint.isEntrance()) {
+            entranceIdx ++;
+        }
+        else if (tmpPoint.isGate()) {
+            gateIdx ++;
+        }
+        else if (tmpPoint.isGeneralGate()) {
+            generalGateIdx ++;
+        }
+        else if (tmpPoint.isRangerStop()) {
+            rangerStopIdx ++;
+        }
+        else if (tmpPoint.isCamping()) {
+            campingIdx ++;
+        }
+
         pos ++;
         rowItems.push(tmpPoint);
 
@@ -111,8 +182,11 @@ var ParkMap = function ParkMap (byteData) {
 
     this.finder = new PF.AStarFinder();
 
-
+    this.labelMapping = {};
 };
+
+ParkMap.CELL_WIDTH = 5;
+ParkMap.CELL_HEIGHT = 5;
 
 ParkMap.prototype.getRawData = function () {
    return this.rawData;
@@ -137,6 +211,8 @@ ParkMap.prototype.findAllPaths = function findAllPaths(mapPoint1, mapPoint2) {
 };
 
 ParkMap.prototype.render = function render(svg) {
+
+    let self = this;
    svg.selectAll('.grid-row').data(this.mapPoints).enter()
         .append('g')
         .attr("class", "grid-row")
@@ -145,15 +221,20 @@ ParkMap.prototype.render = function render(svg) {
                     .append('rect')
                     .attr('class', 'grid-cell')
                     .attr("x", function (item, col) {
-                        return 10 + 10 * col;
+                        return ParkMap.CELL_WIDTH + ParkMap.CELL_WIDTH * col;
                     })
                     .attr("y", function (item, col) {
-                        return 10 + 10 * row_i;
+                        return ParkMap.CELL_HEIGHT + ParkMap.CELL_HEIGHT * row_i;
                     })
-                    .attr("width", 10)
-                    .attr("height", 10)
+                    .attr("width", ParkMap.CELL_WIDTH)
+                    .attr("height", ParkMap.CELL_HEIGHT)
                     .attr('fill', function (item) {
                         return item.getColor();
+                    })
+                    .on('click', function (cell) {
+
+                        self.labelMapping[cell.getPos()] = "";
+                        debugger;
                     })
                 ;
             })
