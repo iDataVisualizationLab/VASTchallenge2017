@@ -6,10 +6,10 @@
  * @param g
  * @param b
  * @param alpha
- * @param label
+ * @param name
  * @constructor
  */
-var MapPoint = function MapPoint(pos, r, g, b, alpha, label) {
+var MapPoint = function MapPoint(pos, r, g, b, alpha, name) {
     this.pos = pos;
     this.r = r;
     this.g = g;
@@ -30,8 +30,8 @@ var MapPoint = function MapPoint(pos, r, g, b, alpha, label) {
         this.isRoad = true;
     }
 
-    if (!!label) {
-        this.label = label;
+    if (!!name) {
+        this.name = name;
     }
 };
 
@@ -91,33 +91,81 @@ MapPoint.prototype.isCamping= function isCamping() {
     return this.color == '#ff6a00';
 };
 
-MapPoint.prototype.setLabel= function setLabel(entranceIdx, gateIdx, generalGateIdx, rangeStopIdx, campingIdx) {
+MapPoint.prototype.isRangerBase= function isRangerBase() {
+    return this.color == '#ff00dc';
+};
 
+MapPoint.prototype.setName = function setName(entranceIdx, gateIdx, generalGateIdx, rangeStopIdx, campingIdx) {
+
+    let n = '';
     let l = '';
     if (this.isGate()) {
-        l = 'gate' + gateIdx;
+        n = 'gate' + gateIdx;
+        l = 'Gate ' + gateIdx;
 
     }
     else if (this.isEntrance()) {
-        l = 'entrance' + entranceIdx;
+        n = 'entrance' + entranceIdx;
+        l = 'entrance ' + entranceIdx;
     }
     else if (this.isGeneralGate()) {
-        l = 'general-gate' + generalGateIdx;
+        n = 'general-gate' + generalGateIdx;
+        l = 'General-gate ' + generalGateIdx;
 
     }
     else if (this.isRangerStop()) {
-        l = 'ranger-stop' + rangeStopIdx;
+        n = 'ranger-stop' + rangeStopIdx;
+        l = 'Ranger-stop ' + rangeStopIdx;
     }
     else if (this.isCamping()) {
-        l = 'camping' + campingIdx;
+         let trueIndex;
+        switch (campingIdx) {
+            case 1:
+                trueIndex = 8;
+                break;
+            case 2:
+                trueIndex = 1;
+                break;
+            case 3:
+                trueIndex = 2;
+                break;
+            case 4:
+                trueIndex = 3;
+                break;
+            case 5:
+                trueIndex = 4;
+                break;
+            case 6:
+                trueIndex = 5;
+                break;
+            case 8:
+                trueIndex = 6;
+                break;
+            default:
+                trueIndex = campingIdx;
+        }
+
+
+
+        n = 'camping' + trueIndex;
+        l = 'Camping ' + trueIndex;
+    }
+    else if (this.isRangerBase()) {
+        n = 'ranger-base';
+        l = 'Ranger-base ';
     }
 
-    if (!this.label) {
-        this.label = l;
+    this.label = l;
+    if (!this.name) {
+        this.name = n;
     }
     else {
-        console.error('label has been assigned manually');
+        console.error('name has been assigned manually');
     }
+};
+
+MapPoint.prototype.getLabel = function getLabel() {
+    return this.label;
 };
 
 var ParkMap = function ParkMap (byteData) {
@@ -141,7 +189,7 @@ var ParkMap = function ParkMap (byteData) {
 
     for(let i=0; i< byteData.length; i+=4) {
         tmpPoint = new MapPoint(pos, byteData[i], byteData[i+1], byteData[i+2], byteData[i+3]);
-        tmpPoint.setLabel(entranceIdx, gateIdx, generalGateIdx, rangerStopIdx, campingIdx);
+        tmpPoint.setName(entranceIdx, gateIdx, generalGateIdx, rangerStopIdx, campingIdx);
         if (tmpPoint.isEntrance()) {
             entranceIdx ++;
         }
@@ -210,9 +258,8 @@ ParkMap.prototype.findAllPaths = function findAllPaths(mapPoint1, mapPoint2) {
 
 };
 
-ParkMap.prototype.render = function render(svg) {
+ParkMap.prototype.render = function render(svg, showLabel) {
 
-    let self = this;
    svg.selectAll('.grid-row').data(this.mapPoints).enter()
         .append('g')
         .attr("class", "grid-row")
@@ -231,13 +278,49 @@ ParkMap.prototype.render = function render(svg) {
                     .attr('fill', function (item) {
                         return item.getColor();
                     })
-                    .on('click', function (cell) {
-
-                        self.labelMapping[cell.getPos()] = "";
-                        debugger;
-                    })
                 ;
+
+                d3.select(this).selectAll('.grid-cell').data(rowItems).enter()
+                    .append('text')
+                    .text(function (cell) {
+                        return cell.getLabel();
+                    })
+                    .attr('x', function (cell) {
+
+                    })
             })
 
+    ;
+
+   if (!showLabel) {
+       return;
+   }
+
+    let mySensorPlaces = [];
+    this.mapPoints.forEach(function (rowItems) {
+        rowItems.forEach(function (item) {
+            if (item.isCamping() || item.isEntrance() || item.isRangerStop() || item.isGate() || item.isGeneralGate() || item.isRangerBase()) {
+                mySensorPlaces.push(item);
+            }
+        })
+
+    });
+
+    svg.selectAll('.grid-label').data(mySensorPlaces).enter()
+        .append('text')
+        .attr('class', 'grid-label')
+        .text(function (cell) {
+            return cell.getLabel();
+        })
+        .attr('x', function (cell) {
+            return ParkMap.CELL_WIDTH + ParkMap.CELL_WIDTH * cell.getColumn() - 15;
+
+        })
+        .attr("y", function (cell) {
+            return ParkMap.CELL_HEIGHT + ParkMap.CELL_HEIGHT * cell.getRow() - 3;
+        })
+        .attr('fill', function (cell) {
+            return cell.getColor();
+        })
     ;
 };

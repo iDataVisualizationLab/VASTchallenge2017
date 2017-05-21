@@ -11,7 +11,7 @@ var mapSvg = d3.select('body').select('#map')
 
 Util.createMapByteData(MAP_WIDTH, MAP_HEIGHT, mapFile, function (mapByteData) {
     var parkMap = new ParkMap(mapByteData);
-    parkMap.render(mapSvg);
+    parkMap.render(mapSvg, true);
 
 
 });
