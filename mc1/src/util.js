@@ -27,3 +27,5 @@ Util.createMapByteData = function createMapByteData (width, height, referenceBit
     };
 };
 
+
+

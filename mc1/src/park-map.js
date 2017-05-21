@@ -27,9 +27,13 @@ var MapPoint = function MapPoint(pos, r, g, b, alpha, label) {
         this.isRoad = true;
     }
 
-    // if (r!=0 || g != 0 || b != 0) {
-    //     debugger;
-    // }
+    var componentToHex = function(c) {
+        var hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    };
+
+
+    this.color =  "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 };
 
 MapPoint.prototype.getR = function getR() {
@@ -42,6 +46,10 @@ MapPoint.prototype.getG = function getG() {
 
 MapPoint.prototype.getB = function getB() {
     return this.b;
+};
+
+MapPoint.prototype.getColor = function getColor() {
+    return this.color;
 };
 
 MapPoint.prototype.getLabel = function getLabel() {
@@ -145,10 +153,7 @@ ParkMap.prototype.render = function render(svg) {
                     .attr("width", 10)
                     .attr("height", 10)
                     .attr('fill', function (item) {
-                        if (item.getR() != 0 || item.getG() != 0 || item.getB() != 0) {
-                            debugger;
-                        }
-                        return item.getIsRoad() ? '#FFFFFF' : '#000000';
+                        return item.getColor();
                     })
                 ;
             })
