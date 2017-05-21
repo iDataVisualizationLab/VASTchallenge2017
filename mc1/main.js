@@ -16,9 +16,11 @@ Util.createMapByteData(MAP_WIDTH, MAP_HEIGHT, mapFile, function (mapByteData) {
     let path = parkMap.findSinglePathByName("entrance4", "entrance2");
 
     parkMap.highLightPath(path);
-    debugger;
 
 });
 
 
+d3.json("data/all-car-path.json", function(error, paths) {
 
+    debugger;
+});
