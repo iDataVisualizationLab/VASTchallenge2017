@@ -283,13 +283,7 @@ ParkMap.prototype.findSinglePathByName = function findSinglePath(fromName, toNam
 
     let paths = this.finder.findPath(fromPoint.getRow(), fromPoint.getColumn(), toPoint.getRow(), toPoint.getColumn(), myGrid);
 
-    let self = this;
-    return paths.map(function (coords) {
-        if (coords.length != 2) {
-            throw new Error('Invalid point coordinate. Require row amd col vaue');
-        }
-        return self.getMapPoint(coords[0], coords[1]);
-    })
+    return this.convertPathToMapPoint(paths);
 };
 
 ParkMap.prototype.highLightPath = function highLightPath(myPath, color) {
@@ -325,6 +319,17 @@ ParkMap.prototype.getMapPoint = function getMapPoint(row, col) {
     }
 
     return rowItems[col];
+};
+
+ParkMap.prototype.convertPathToMapPoint = function getMapPoint(path) {
+
+    let self = this;
+    return path.map(function (coords) {
+        if (coords.length != 2) {
+            throw new Error('Invalid point coordinate. Require row amd col vaue');
+        }
+        return self.getMapPoint(coords[0], coords[1]);
+    })
 };
 
 ParkMap.prototype.render = function render(showLabel) {
