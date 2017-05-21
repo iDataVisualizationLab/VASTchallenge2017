@@ -10,9 +10,13 @@ var mapSvg = d3.select('body').select('#map')
 
 
 Util.createMapByteData(MAP_WIDTH, MAP_HEIGHT, mapFile, function (mapByteData) {
-    var parkMap = new ParkMap(mapByteData);
-    parkMap.render(mapSvg, true);
+    var parkMap = new ParkMap(mapByteData, mapSvg);
+    parkMap.render(true);
 
+    let path = parkMap.findSinglePathByName("entrance4", "entrance2");
+
+    parkMap.highLightPath(path);
+    debugger;
 
 });
 

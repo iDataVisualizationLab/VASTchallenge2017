@@ -55,6 +55,10 @@ MapPoint.prototype.getLabel = function getLabel() {
     return this.label;
 };
 
+MapPoint.prototype.getName = function getName() {
+    return this.name;
+};
+
 MapPoint.prototype.getPos = function getPos() {
     return this.pos;
 };
@@ -168,7 +172,7 @@ MapPoint.prototype.getLabel = function getLabel() {
     return this.label;
 };
 
-var ParkMap = function ParkMap (byteData) {
+var ParkMap = function ParkMap (byteData, svg) {
     if (byteData.length % 4 != 0) {
         console.error("Invalid input data. Expect number of bytes divisible to 4");
         throw new Error('Invalid map byte data input');
@@ -176,6 +180,7 @@ var ParkMap = function ParkMap (byteData) {
 
     this.mapPoints = []; // two dimensional array after the setup complete
     this.rawData = byteData;
+    this.pointNameMapping = {};
 
     let tmpPoint;
     let pos = 0;
@@ -190,6 +195,11 @@ var ParkMap = function ParkMap (byteData) {
     for(let i=0; i< byteData.length; i+=4) {
         tmpPoint = new MapPoint(pos, byteData[i], byteData[i+1], byteData[i+2], byteData[i+3]);
         tmpPoint.setName(entranceIdx, gateIdx, generalGateIdx, rangerStopIdx, campingIdx);
+
+        if (!!tmpPoint.getName()) {
+            this.pointNameMapping[tmpPoint.getName()] = tmpPoint;
+        }
+
         if (tmpPoint.isEntrance()) {
             entranceIdx ++;
         }
@@ -230,7 +240,7 @@ var ParkMap = function ParkMap (byteData) {
 
     this.finder = new PF.AStarFinder();
 
-    this.labelMapping = {};
+    this.svg = svg;
 };
 
 ParkMap.CELL_WIDTH = 5;
@@ -258,15 +268,80 @@ ParkMap.prototype.findAllPaths = function findAllPaths(mapPoint1, mapPoint2) {
 
 };
 
-ParkMap.prototype.render = function render(svg, showLabel) {
+ParkMap.prototype.findSinglePathByName = function findSinglePath(fromName, toName) {
+    let myGrid = this.grid.clone();
 
-   svg.selectAll('.grid-row').data(this.mapPoints).enter()
+    let fromPoint = this.pointNameMapping[fromName];
+    let toPoint = this.pointNameMapping[toName];
+
+    if (!fromPoint || !toPoint) {
+        throw new Error('Invalid name');
+    }
+
+    myGrid.setWalkableAt(fromPoint.getRow(), fromPoint.getColumn(), true);
+    myGrid.setWalkableAt(toPoint.getRow(), toPoint.getColumn(), true);
+
+    let paths = this.finder.findPath(fromPoint.getRow(), fromPoint.getColumn(), toPoint.getRow(), toPoint.getColumn(), myGrid);
+
+    let self = this;
+    return paths.map(function (coords) {
+        if (coords.length != 2) {
+            throw new Error('Invalid point coordinate. Require row amd col vaue');
+        }
+        return self.getMapPoint(coords[0], coords[1]);
+    })
+};
+
+ParkMap.prototype.highLightPath = function highLightPath(myPath) {
+    if (myPath.length < 1) {
+        return;
+    }
+
+    this.svg.selectAll('.road-cell')
+        .filter(function(cell) {
+            let item;
+            for(let i=1; i < myPath.length-1; i++) {
+                item = myPath[i];
+                if (cell.getPos() == item.getPos()) {
+                    return true;
+                }
+            }
+
+            return false ;
+        })
+        .attr('fill', '#ffd800')
+    ;
+};
+
+ParkMap.prototype.getMapPoint = function getMapPoint(row, col) {
+
+    if (row < 0 || row >= this.mapPoints.length) {
+        throw new Error('Invalid row index');
+    }
+
+    let rowItems = this.mapPoints[row];
+    if (col < 0 || col >= rowItems.length) {
+        throw new Error('Invalid col index');
+    }
+
+    return rowItems[col];
+};
+
+ParkMap.prototype.render = function render(showLabel) {
+
+   this.svg.selectAll('.grid-row').data(this.mapPoints).enter()
         .append('g')
         .attr("class", "grid-row")
             .each(function (rowItems, row_i) {
                 d3.select(this).selectAll('.grid-cell').data(rowItems).enter()
                     .append('rect')
-                    .attr('class', 'grid-cell')
+                    .attr('class', function (cell) {
+                        let cls = 'grid-cell';
+                        if (cell.getIsRoad()) {
+                            cls += ' road-cell';
+                        }
+                        return cls;
+                    })
                     .attr("x", function (item, col) {
                         return ParkMap.CELL_WIDTH + ParkMap.CELL_WIDTH * col;
                     })
@@ -306,7 +381,7 @@ ParkMap.prototype.render = function render(svg, showLabel) {
 
     });
 
-    svg.selectAll('.grid-label').data(mySensorPlaces).enter()
+    this.svg.selectAll('.grid-label').data(mySensorPlaces).enter()
         .append('text')
         .attr('class', 'grid-label')
         .text(function (cell) {
