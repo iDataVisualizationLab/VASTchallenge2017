@@ -26,6 +26,10 @@ var MapPoint = function MapPoint(pos, r, g, b, alpha, label) {
     if (r == 255 && g == 255 && b == 255) {
         this.isRoad = true;
     }
+
+    // if (r!=0 || g != 0 || b != 0) {
+    //     debugger;
+    // }
 };
 
 MapPoint.prototype.getR = function getR() {
@@ -49,7 +53,7 @@ MapPoint.prototype.getPos = function getPos() {
 };
 
 MapPoint.prototype.getIsRoad = function getIsRoad() {
-    return this.isRoad;
+    return this.isRoad == true;
 };
 
 MapPoint.prototype.getRow = function getRow() {
@@ -83,22 +87,71 @@ var ParkMap = function ParkMap (byteData) {
             rowItems = [];
         }
     }
+
+    if (this.mapPoints.length != 200) {
+        console.error("Invalid input map data. Expect 200x200 grid pixel in the map");
+        throw new Error("Invalid input map data. Expect 200x200 grid pixel in the map");
+    }
+
+    this.grid = new PF.Grid(200, 200);
+    let self = this;
+    this.mapPoints.forEach(function (cols, row) {
+       cols.forEach(function (mp, col) {
+           self.grid.setWalkableAt(row, col, mp.getIsRoad());
+       })
+    });
+
+    this.finder = new PF.AStarFinder();
+
+
 };
 
-MapPoint.prototype.getRawData = function () {
+ParkMap.prototype.getRawData = function () {
    return this.rawData;
 };
 
 /**
  * Find path from mapPoint1 to mapPoint2. It is considered no path found if there are more than one path exists in the solution.
- *
- * @param mapPoint1
- * @param mapPoint2
+ * @param row1
+ * @param col1
+ * @param row2
+ * @param col2
+ * @return {Array.<Array.<number>>}
  */
-MapPoint.prototype.findSinglePath = function findSinglePath(mapPoint1, mapPoint2) {
+ParkMap.prototype.findSinglePath = function findSinglePath(row1, col1, row2, col2) {
+    let myGrid = this.grid.clone();
+
+    return this.finder.findPath(row1, col1, row2, col2, myGrid);
+};
+
+ParkMap.prototype.findAllPaths = function findAllPaths(mapPoint1, mapPoint2) {
 
 };
 
-MapPoint.prototype.findAllPaths = function findAllPaths(mapPoint1, mapPoint2) {
+ParkMap.prototype.render = function render(svg) {
+   svg.selectAll('.grid-row').data(this.mapPoints).enter()
+        .append('g')
+        .attr("class", "grid-row")
+            .each(function (rowItems, row_i) {
+                d3.select(this).selectAll('.grid-cell').data(rowItems).enter()
+                    .append('rect')
+                    .attr('class', 'grid-cell')
+                    .attr("x", function (item, col) {
+                        return 10 + 10 * col;
+                    })
+                    .attr("y", function (item, col) {
+                        return 10 + 10 * row_i;
+                    })
+                    .attr("width", 10)
+                    .attr("height", 10)
+                    .attr('fill', function (item) {
+                        if (item.getR() != 0 || item.getG() != 0 || item.getB() != 0) {
+                            debugger;
+                        }
+                        return item.getIsRoad() ? '#FFFFFF' : '#000000';
+                    })
+                ;
+            })
 
+    ;
 };
