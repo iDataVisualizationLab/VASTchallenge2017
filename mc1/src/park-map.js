@@ -313,7 +313,7 @@ ParkMap.prototype.render = function render(svg, showLabel) {
             return cell.getLabel();
         })
         .attr('x', function (cell) {
-            return ParkMap.CELL_WIDTH + ParkMap.CELL_WIDTH * cell.getColumn() - 15;
+            return ParkMap.CELL_WIDTH + ParkMap.CELL_WIDTH * cell.getColumn() - 25;
 
         })
         .attr("y", function (cell) {
