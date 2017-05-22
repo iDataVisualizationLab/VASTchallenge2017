@@ -60,6 +60,6 @@ d3.json("data/all-car-path.json", function(error, lines) {
     });
 
     visitDuration.renderChart();
-    visitDuration.renderAxis('Time', 'Visit Duration');
+    visitDuration.renderAxis('Time', 'Visit');
 
 });
