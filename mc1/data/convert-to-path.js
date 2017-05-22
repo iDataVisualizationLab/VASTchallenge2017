@@ -88,8 +88,11 @@ var readExistingSensorData = function() {
             carId = csvrow[1];
             tmpGateName = csvrow[3];
             // gate timestamp record
-            tmpGateTime = {};
-            tmpGateTime[tmpGateName] = time;
+            tmpGateTime = {
+                time: time,
+                gate: tmpGateName
+            };
+            // tmpGateTime[tmpGateName] = time;
 
             if (!myCar.hasOwnProperty(carId)) {
                 tmpCar = new Object();
