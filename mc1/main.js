@@ -42,7 +42,7 @@ d3.json("data/all-car-path.json", function(error, lines) {
     let maxDate = parseTime('2016-05-31 23:56:06');
 
     visitDuration.setXDomain(minDate, maxDate);
-    visitDuration.setYDomain(0, lines.length + 100);
+    visitDuration.setYDomain(0, 20000);
     var colorFunction = d3.scaleOrdinal(d3.schemeCategory10);
 
     lines.forEach(function(line, index) {
@@ -59,6 +59,6 @@ d3.json("data/all-car-path.json", function(error, lines) {
     });
 
     visitDuration.renderChart();
-    visitDuration.renderAxis('Time', 'Car');
+    visitDuration.renderAxis('Time', 'Visit Duration');
 
 });
