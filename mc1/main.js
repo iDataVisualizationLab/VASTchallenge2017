@@ -42,18 +42,19 @@ d3.json("data/all-car-path.json", function(error, lines) {
     let maxDate = parseTime('2016-05-31 23:56:06');
 
     visitDuration.setXDomain(minDate, maxDate);
-    visitDuration.setYDomain(0, 1800);
+    visitDuration.setYDomain(0, lines.length + 100);
+    var colorFunction = d3.scaleOrdinal(d3.schemeCategory10);
 
     lines.forEach(function(line, index) {
 
-        debugger;
+        let colorIdx = line.carType == '2P' ? 7 :  line.carType;
         line.path.forEach(function (timeGate) {
             // debugger;
             timeGate.time = parseTime(timeGate.time);
             timeGate.y = 50 + index;
         });
 
-        visitDuration.addData(line.path, 'time', 'y');
+        visitDuration.addData(line.path, 'time', 'y', colorFunction(colorIdx));
 
     });
 
