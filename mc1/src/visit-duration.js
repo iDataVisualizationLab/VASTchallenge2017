@@ -18,7 +18,7 @@ var VisitDuration = function VisitDuration(visitChart, parkMap) {
 
 VisitDuration.prototype.init = function init() {
     this.events = [
-        {name: 'mouseover', callback: this.onLineMouseOver}
+        {name: 'mouseover', callback: this.onLineMouseOver, params: this}
     ];
 
 };
@@ -46,7 +46,22 @@ VisitDuration.prototype.render = function render(lines) {
     this.visitChart.renderAxis('Time', 'Visit');
 };
 
-VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(line) {
-    debugger;
+VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(param, line) {
     console.log('event mouse over');
+
+    let path = line.data;
+    let startPoint;
+    let endPoint;
+    let steps;
+
+    let self = param;
+
+    for(let i=0; i< path.length-1; i++) {
+        startPoint = path[i];
+        endPoint = path[i+1];
+
+        steps = self.parkMap.findSinglePathByName(startPoint.gate, endPoint.gate);
+        self.parkMap.highLightPath(steps);
+    }
+
 };

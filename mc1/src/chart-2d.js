@@ -129,7 +129,9 @@ Chart2D.prototype.renderChart = function renderChart(events) {
 
     if (!!events && events.length > 0) {
         events.forEach(function (e) {
-            myLine.on(e.name, e.callback);
+            myLine.on(e.name, function (l, index) {
+                e.callback(e.params, l, index)
+            });
         })
     }
 };
