@@ -307,6 +307,15 @@ ParkMap.prototype.highLightPath = function highLightPath(myPath, color) {
     ;
 };
 
+/**
+ * Clear a highlighted path to a road
+ *
+ * @param myPath
+ */
+ParkMap.prototype.clearPath = function highLightPath(myPath) {
+    this.highLightPath(myPath, '#FFFFFF');
+};
+
 ParkMap.prototype.getMapPoint = function getMapPoint(row, col) {
 
     if (row < 0 || row >= this.mapPoints.length) {
