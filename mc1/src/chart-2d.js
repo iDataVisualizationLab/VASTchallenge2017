@@ -105,7 +105,7 @@ Chart2D.prototype.renderAxis = function renderAxis(bottomLabel, leftLabel) {
     }
 };
 
-Chart2D.prototype.renderChart = function renderChart() {
+Chart2D.prototype.renderChart = function renderChart(events) {
 
     var myLine = this.svg.selectAll('.line-graph').data(this.lineData).enter()
         .append('g')
@@ -125,4 +125,10 @@ Chart2D.prototype.renderChart = function renderChart() {
         .style('fill', 'none')
 
     ;
+
+    if (events.length > 0) {
+        events.forEach(function (e) {
+            myLine.on(e.name, e.callback);
+        })
+    }
 };

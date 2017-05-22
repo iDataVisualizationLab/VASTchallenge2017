@@ -8,18 +8,23 @@ var VisitDuration = function VisitDuration(visitChart) {
 
     this.visitChart.setXDomain(minDate, maxDate);
     this.visitChart.setYDomain(0, 20000);
-};
 
-
-VisitDuration.prototype.init = function init(data) {
-
+    this.init();
 
 };
+
+
+VisitDuration.prototype.init = function init() {
+    this.events = [
+        {name: 'mouseover', callback: this.onLineMouseOver}
+    ];
+
+};
+
 VisitDuration.prototype.render = function render(lines) {
 
     let colorFunction = d3.scaleOrdinal(d3.schemeCategory10);
     // parse the date / time
-    let parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
     let self = this;
     lines.forEach(function(line, index) {
 
@@ -35,6 +40,10 @@ VisitDuration.prototype.render = function render(lines) {
 
     });
 
-    this.visitChart.renderChart();
+    this.visitChart.renderChart(this.events);
     this.visitChart.renderAxis('Time', 'Visit');
+};
+
+VisitDuration.prototype.onLineMouseOver = function onLineMouseOver() {
+    console.log('event mouse over');
 };
