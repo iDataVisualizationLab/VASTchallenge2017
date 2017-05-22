@@ -38,7 +38,7 @@ VisitDuration.prototype.render = function render(lines) {
             timeGate.y = 50 + index;
         });
 
-        self.visitChart.addData({carId: line.carId, carType: line.carType}, line.path, 'time', 'y', color);
+        self.visitChart.addData({carId: line.carId, carType: line.carType, color: color}, line.path, 'time', 'y');
 
     });
 
@@ -61,7 +61,7 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(param, line) 
         endPoint = path[i+1];
 
         steps = self.parkMap.findSinglePathByName(startPoint.gate, endPoint.gate);
-        self.parkMap.highLightPath(steps);
+        self.parkMap.highLightPath(steps, line.context.color);
     }
 
 };

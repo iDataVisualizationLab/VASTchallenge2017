@@ -22,9 +22,8 @@ var Chart2D = function Chart2D(svg, width, height, options) {
  * @param dataArray data array, containing [ [{x: xValue1, y: yValue1}, {x: xValue2, y: yValue2}], [{}]]
  * @param xKey: key to get data for x axis. Default is x
  * @param yKey: key to get data for y axis. Default is y
- * @param color: color of the line
  */
-Chart2D.prototype.addData = function addData(context, dataArray, xKey, yKey, color) {
+Chart2D.prototype.addData = function addData(context, dataArray, xKey, yKey) {
 
     if (!this.lineData) {
         this.lineData = [];
@@ -38,8 +37,13 @@ Chart2D.prototype.addData = function addData(context, dataArray, xKey, yKey, col
         yKey = 'y';
     }
 
-    if (!color) {
-        color = '#000000';
+    if (!context) {
+        context = {};
+    }
+
+
+    if (!context.color) {
+        context.color = '#000000';
     }
 
     let self = this;
@@ -51,7 +55,7 @@ Chart2D.prototype.addData = function addData(context, dataArray, xKey, yKey, col
         .y(function(d) { return self.y(d[yKey]); })
     ;
 
-    this.lineData.push( {valueLine: valueLine, data: dataArray, color: color, context: context});
+    this.lineData.push( {valueLine: valueLine, data: dataArray, context: context});
 };
 
 Chart2D.prototype.setXDomain = function setXDomain(min, max) {
@@ -121,7 +125,7 @@ Chart2D.prototype.renderChart = function renderChart(events) {
         })
         .style('stroke-width', 1)
         .style('stroke', function (line) {
-            return line.color;
+            return line.context.color;
         })
         .style('fill', 'none')
 
