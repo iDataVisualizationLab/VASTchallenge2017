@@ -47,14 +47,15 @@ d3.json("data/all-car-path.json", function(error, lines) {
 
     lines.forEach(function(line, index) {
 
-        let colorIdx = line.carType == '2P' ? 7 :  line.carType;
+        let colorIdx = line.carType;
+        let color = line.carType == '2P' ? '#000000' : colorFunction(colorIdx);
         line.path.forEach(function (timeGate) {
             // debugger;
             timeGate.time = parseTime(timeGate.time);
             timeGate.y = 50 + index;
         });
 
-        visitDuration.addData(line.path, 'time', 'y', colorFunction(colorIdx));
+        visitDuration.addData(line.path, 'time', 'y', color);
 
     });
 
