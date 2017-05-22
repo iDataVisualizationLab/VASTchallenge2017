@@ -1,6 +1,8 @@
-var VisitDuration = function VisitDuration(visitChart) {
+var VisitDuration = function VisitDuration(visitChart, parkMap) {
 
     this.visitChart = visitChart;
+    this.parkMap = parkMap;
+
     this.parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
 
     let minDate = this.parseTime('2015-05-01 00:43:28');
@@ -36,7 +38,7 @@ VisitDuration.prototype.render = function render(lines) {
             timeGate.y = 50 + index;
         });
 
-        self.visitChart.addData(line.path, 'time', 'y', color);
+        self.visitChart.addData({carId: line.carId, carType: line.carType}, line.path, 'time', 'y', color);
 
     });
 
@@ -44,6 +46,7 @@ VisitDuration.prototype.render = function render(lines) {
     this.visitChart.renderAxis('Time', 'Visit');
 };
 
-VisitDuration.prototype.onLineMouseOver = function onLineMouseOver() {
+VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(line) {
+    debugger;
     console.log('event mouse over');
 };

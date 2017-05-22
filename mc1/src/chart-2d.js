@@ -18,12 +18,13 @@ var Chart2D = function Chart2D(svg, width, height, options) {
  *
  * Set data before rendering the chart
  *
+ * @param context: context information
  * @param dataArray data array, containing [ [{x: xValue1, y: yValue1}, {x: xValue2, y: yValue2}], [{}]]
  * @param xKey: key to get data for x axis. Default is x
  * @param yKey: key to get data for y axis. Default is y
  * @param color: color of the line
  */
-Chart2D.prototype.addData = function addData(dataArray, xKey, yKey, color) {
+Chart2D.prototype.addData = function addData(context, dataArray, xKey, yKey, color) {
 
     if (!this.lineData) {
         this.lineData = [];
@@ -50,7 +51,7 @@ Chart2D.prototype.addData = function addData(dataArray, xKey, yKey, color) {
         .y(function(d) { return self.y(d[yKey]); })
     ;
 
-    this.lineData.push( {valueLine: valueLine, data: dataArray, color: color});
+    this.lineData.push( {valueLine: valueLine, data: dataArray, color: color, context: context});
 };
 
 Chart2D.prototype.setXDomain = function setXDomain(min, max) {

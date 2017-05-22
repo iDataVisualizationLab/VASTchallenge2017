@@ -1,6 +1,7 @@
 var MAP_WIDTH = 200;
 var MAP_HEIGHT = 200;
 var mapFile = 'data/Lekagul Roadways.bmp';
+var parkMap;
 
 var mapSvg = d3.select('body').select('#map')
     .append('svg')
@@ -10,7 +11,7 @@ var mapSvg = d3.select('body').select('#map')
 
 
 Util.createMapByteData(MAP_WIDTH, MAP_HEIGHT, mapFile, function (mapByteData) {
-    var parkMap = new ParkMap(mapByteData, mapSvg);
+    parkMap = new ParkMap(mapByteData, mapSvg);
     parkMap.render(true);
 
     let path = parkMap.findSinglePathByName("entrance4", "entrance2");
@@ -33,7 +34,7 @@ var visitDurationSvg = d3.select('body').select('#visitDuration').append('svg')
 d3.json("data/all-car-path.json", function(error, lines) {
     let visitChart = new Chart2D(visitDurationSvg, width, height, {margin: margin, timeChart: true});
 
-    let visitDuration = new VisitDuration(visitChart);
+    let visitDuration = new VisitDuration(visitChart, parkMap);
     visitDuration.render(lines);
 
 });
