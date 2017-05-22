@@ -21,8 +21,9 @@ var Chart2D = function Chart2D(svg, width, height, options) {
  * @param dataArray data array, containing [ [{x: xValue1, y: yValue1}, {x: xValue2, y: yValue2}], [{}]]
  * @param xKey: key to get data for x axis. Default is x
  * @param yKey: key to get data for y axis. Default is y
+ * @param color: color of the line
  */
-Chart2D.prototype.addData = function addData(dataArray, xKey, yKey) {
+Chart2D.prototype.addData = function addData(dataArray, xKey, yKey, color) {
 
     if (!this.lineData) {
         this.lineData = [];
@@ -36,6 +37,10 @@ Chart2D.prototype.addData = function addData(dataArray, xKey, yKey) {
         yKey = 'y';
     }
 
+    if (!color) {
+        color = '#000000';
+    }
+
     let self = this;
 
     let valueLine = d3.line()
@@ -45,7 +50,7 @@ Chart2D.prototype.addData = function addData(dataArray, xKey, yKey) {
         .y(function(d) { return self.y(d[yKey]); })
     ;
 
-    this.lineData.push( {valueLine: valueLine, data: dataArray});
+    this.lineData.push( {valueLine: valueLine, data: dataArray, color: color});
 };
 
 Chart2D.prototype.setXDomain = function setXDomain(min, max) {
@@ -113,5 +118,11 @@ Chart2D.prototype.renderChart = function renderChart() {
         .attr("d", function (line) {
             return line.valueLine(line.data);
         })
+        .style('stroke-width', 1)
+        .style('stroke', function (line) {
+            return line.color;
+        })
+        .style('fill', 'none')
+
     ;
 };
