@@ -28,12 +28,19 @@ var MapPoint = function MapPoint(pos, r, g, b, alpha, name) {
     this.color =  "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
     if (r == 255 && g == 255 && b == 255) {
         this.isRoad = true;
+        this.color = MapPoint.ROAD_COLOR;
+    }
+    else if (!this.isRangerBase() && !this.isGate() && !this.isRangerStop() && !this.isCamping() && !this.isGeneralGate() && !this.getIsRoad() && !this.isEntrance()) {
+        this.color = MapPoint.BACKGROUND;
     }
 
     if (!!name) {
         this.name = name;
     }
 };
+
+MapPoint.ROAD_COLOR = '#000000';
+MapPoint.BACKGROUND = '#FFFFFF';
 
 MapPoint.prototype.getR = function getR() {
     return this.r;
@@ -48,6 +55,7 @@ MapPoint.prototype.getB = function getB() {
 };
 
 MapPoint.prototype.getColor = function getColor() {
+
     return this.color;
 };
 
@@ -364,7 +372,7 @@ ParkMap.prototype.clearOneCell = function clearOneCell(mapPoint) {
     }
 
     this.svg.select('.road-cell-' + mapPoint.getPos())
-        .attr('fill', '#FFFFFF')
+        .attr('fill', ParkMap.ROAD_COLOR)
     ;
 };
 
@@ -374,7 +382,7 @@ ParkMap.prototype.clearOneCell = function clearOneCell(mapPoint) {
  * @param myPath
  */
 ParkMap.prototype.clearPath = function highLightPath(myPath) {
-    this.highLightPath(myPath, '#FFFFFF');
+    this.highLightPath(myPath, ParkMap.ROAD_COLOR);
 };
 
 
