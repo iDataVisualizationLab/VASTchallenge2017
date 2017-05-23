@@ -14,6 +14,10 @@ var Chart2D = function Chart2D(svg, width, height, options) {
     this.y = d3.scaleLinear().range([height, 0]);
 };
 
+Chart2D.prototype.getSvg = function getSvg() {
+    return this.svg;
+};
+
 /**
  *
  * Set data before rendering the chart

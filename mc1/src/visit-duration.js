@@ -10,7 +10,6 @@ var VisitDuration = function VisitDuration(visitChart, parkMap) {
 
     this.visitChart.setXDomain(minDate, maxDate);
     this.visitChart.setYDomain(0, 20000);
-    this.simulationInProgress = false;
 
     this.init();
 
@@ -34,11 +33,15 @@ VisitDuration.prototype.render = function render(lines) {
 
         let colorIdx = line.carType;
         let color = line.carType == '2P' ? '#000000' : colorFunction(colorIdx);
-        line.path.forEach(function (timeGate) {
-            // debugger;
-            timeGate.time = self.parseTime(timeGate.time);
-            timeGate.y = 50 + index;
-            timeGate.mapPoint = self.parkMap.getMapPointByName(timeGate.gate);
+
+        line.path = line.path.map(function (timeGate) {
+            let carPoint;
+            let mapPoint = self.parkMap.getMapPointByName(timeGate.gate);
+
+            carPoint = new CarPoint(mapPoint, self.parseTime(timeGate.time));
+            carPoint.y = 50 + index;
+
+            return carPoint;
         });
 
         self.visitChart.addData({carId: line.carId, carType: line.carType, color: color}, line.path, 'time', 'y');
@@ -54,12 +57,14 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(param, line) 
 
     let self = param;
 
-    // let mapPointPaths = line.data.map(function (gateData) {
-    //     return self.parkMap.getMapPointByName(gateData.gate);
-    // });
-    // self.parkMap.findThenHighLightPath(mapPointPaths, line.context.color);
+    let mapPointPaths = line.data.map(function (carPoint) {
+        return carPoint.getMapPoint();
+    });
+    self.parkMap.findThenHighLightPath(mapPointPaths, line.context.color);
 
-    self.simulateGateMovement(line.context, line.data);
+    self.renderCarTrace(line.data[0], 620, 15);
+
+    // self.simulateGateMovement(line.context, line.data);
 
 };
 
@@ -95,8 +100,8 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
 
     console.log('Simulating for car: ' + context.carId + "; type: " + context.carType);
     let timeDurationInMiliSecond;
-    let fromGate;
-    let toGate;
+    let fromCarPoint;
+    let toCarPoint;
     let distance;
 
     self.simulationPath = [];
@@ -105,12 +110,12 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
     let velocity;
 
     for(let i=0; i< gateSensorDataArray.length - 1; i++) {
-        fromGate = gateSensorDataArray[i];
-        toGate =  gateSensorDataArray[i+1];
-        timeDurationInMiliSecond = toGate.time.getTime() - fromGate.time.getTime();
+        fromCarPoint = gateSensorDataArray[i];
+        toCarPoint =  gateSensorDataArray[i+1];
+        timeDurationInMiliSecond = toCarPoint.getTimeInMiliseconds() - fromCarPoint.getTimeInMiliseconds();
 
-        if (fromGate.gate != toGate.gate) {
-            distance = this.parkMap.findSinglePathByName(fromGate.gate, toGate.gate);
+        if (fromCarPoint.getGate() != toCarPoint.getGate()) {
+            distance = this.parkMap.findSinglePathByName(fromCarPoint.getGate(), toCarPoint.getGate());
             distance.shift(); // avoid counting current position
             velocity = distance.length * ParkMap.CELL_WIDTH_IN_MILE * 3600000 / timeDurationInMiliSecond; // mile per hour
         }
@@ -118,7 +123,7 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
             velocity = 0; // not movement, stay in side for gaming, camping
         }
 
-        self.simulationPath.push({from: fromGate, to: toGate, velocity: velocity, path: distance, id: self.simulationPath.length})
+        self.simulationPath.push({from: fromCarPoint, to: toCarPoint, velocity: velocity, path: distance, id: self.simulationPath.length})
     }
 
     var nextSimplePath = self.simulationPath.shift();
@@ -126,8 +131,10 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
 
     var doSimulation = function (simplePath) {
 
-        if (simplePath.from.gate == simplePath.to.gate) {
-            console.log('enter and quite the same place: ' + simplePath.from.gate + "; duration: " + ((simplePath.to.time.getTime() - simplePath.from.time.getTime())/1000*60) + "(min)");
+        self.renderCarTrace(simplePath.from, 700, 15);
+
+        if (simplePath.from.getGate() == simplePath.to.getGate()) {
+            console.log('enter and quite the same place: ' + simplePath.from.getGate() + "; duration: " + ((simplePath.to.getTimeInMiliseconds() - simplePath.from.getTimeInMiliseconds())/1000*60) + "(min)");
             nextSimplePath = self.simulationPath.shift();
             if (!!nextSimplePath) {
 
@@ -138,7 +145,7 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
 
         }
 
-        console.log('Simulate Path: from: ' + simplePath.from.gate + "; t: " + simplePath.to.gate);
+        console.log('Simulate Path: from: ' + simplePath.from.getGate() + "; t: " + simplePath.to.getGate());
         // highlight cell
         let nextCell = simplePath.path.shift();
 
@@ -179,4 +186,24 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
     };
 
     doSimulation(nextSimplePath);
+};
+
+VisitDuration.prototype.renderCarTrace = function renderCarTrace(carPoint, x, y) {
+    // debugger;
+    let svg = this.parkMap.getSvg();
+
+    svg.append('rect')
+        .attr('class', 'car-at-gate')
+        .attr('width', 5)
+        .attr('height', 5)
+        .attr('fill', carPoint.getColor())
+        .attr('x', x)
+        .attr('y', y - 7)
+    ;
+
+    svg.append('text')
+        .text(carPoint.getGate() + ': ' + carPoint.getFormattedTime())
+        .attr('x', x + 13)
+        .attr('y', y)
+    ;
 };
