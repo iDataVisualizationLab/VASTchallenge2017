@@ -107,6 +107,14 @@ MapPoint.prototype.isRangerBase= function isRangerBase() {
     return this.color == '#ff00dc';
 };
 
+MapPoint.prototype.hasSensorLocated = function hasSensorLocated() {
+    return this.isCamping() || this.isEntrance() || this.isRangerStop() || this.isGate() || this.isGeneralGate() || this.isRangerBase();
+};
+
+MapPoint.prototype.isVisiblePoint = function isVisiblePoint() {
+    return this.hasSensorLocated() || this.getIsRoad();
+};
+
 MapPoint.prototype.setName = function setName(entranceIdx, gateIdx, generalGateIdx, rangeStopIdx, campingIdx) {
 
     let n = '';
@@ -418,10 +426,45 @@ ParkMap.prototype.convertPathToMapPoint = function getMapPoint(path) {
 
 ParkMap.prototype.render = function render(showLabel) {
 
+    if (showLabel) {
+        let mySensorPlaces = [];
+        this.mapPoints.forEach(function (rowItems) {
+            rowItems.forEach(function (item) {
+                if (item.hasSensorLocated()) {
+                    mySensorPlaces.push(item);
+                }
+            })
+
+        });
+
+        this.svg.selectAll('.grid-label').data(mySensorPlaces).enter()
+            .append('text')
+            .attr('class', 'grid-label')
+            .text(function (cell) {
+                return cell.getLabel();
+            })
+            .attr('x', function (cell) {
+                return ParkMap.CELL_WIDTH + ParkMap.CELL_WIDTH * cell.getColumn() - 25;
+
+            })
+            .attr("y", function (cell) {
+                return ParkMap.CELL_HEIGHT + ParkMap.CELL_HEIGHT * cell.getRow() - 3;
+            })
+            .attr('fill', function (cell) {
+                return cell.getColor();
+            })
+            .style("font-size", "9px")
+        ;
+    }
+
    this.svg.selectAll('.grid-row').data(this.mapPoints).enter()
         .append('g')
         .attr("class", "grid-row")
             .each(function (rowItems, row_i) {
+
+                rowItems = rowItems.filter(function (cell) {
+                    return cell.isVisiblePoint();
+                });
                 d3.select(this).selectAll('.grid-cell').data(rowItems).enter()
                     .append('rect')
                     .attr('class', function (cell) {
@@ -431,10 +474,10 @@ ParkMap.prototype.render = function render(showLabel) {
                         }
                         return cls;
                     })
-                    .attr("x", function (item, col) {
-                        return ParkMap.CELL_WIDTH + ParkMap.CELL_WIDTH * col;
+                    .attr("x", function (item) {
+                        return ParkMap.CELL_WIDTH + ParkMap.CELL_WIDTH * item.getColumn();
                     })
-                    .attr("y", function (item, col) {
+                    .attr("y", function (item) {
                         return ParkMap.CELL_HEIGHT + ParkMap.CELL_HEIGHT * row_i;
                     })
                     .attr("width", ParkMap.CELL_WIDTH)
@@ -443,48 +486,7 @@ ParkMap.prototype.render = function render(showLabel) {
                         return item.getColor();
                     })
                 ;
-
-                d3.select(this).selectAll('.grid-cell').data(rowItems).enter()
-                    .append('text')
-                    .text(function (cell) {
-                        return cell.getLabel();
-                    })
-                    .attr('x', function (cell) {
-
-                    })
             })
 
-    ;
-
-   if (!showLabel) {
-       return;
-   }
-
-    let mySensorPlaces = [];
-    this.mapPoints.forEach(function (rowItems) {
-        rowItems.forEach(function (item) {
-            if (item.isCamping() || item.isEntrance() || item.isRangerStop() || item.isGate() || item.isGeneralGate() || item.isRangerBase()) {
-                mySensorPlaces.push(item);
-            }
-        })
-
-    });
-
-    this.svg.selectAll('.grid-label').data(mySensorPlaces).enter()
-        .append('text')
-        .attr('class', 'grid-label')
-        .text(function (cell) {
-            return cell.getLabel();
-        })
-        .attr('x', function (cell) {
-            return ParkMap.CELL_WIDTH + ParkMap.CELL_WIDTH * cell.getColumn() - 25;
-
-        })
-        .attr("y", function (cell) {
-            return ParkMap.CELL_HEIGHT + ParkMap.CELL_HEIGHT * cell.getRow() - 3;
-        })
-        .attr('fill', function (cell) {
-            return cell.getColor();
-        })
     ;
 };
