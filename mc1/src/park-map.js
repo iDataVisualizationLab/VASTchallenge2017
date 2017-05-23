@@ -243,8 +243,8 @@ var ParkMap = function ParkMap (byteData, svg) {
     this.svg = svg;
 };
 
-ParkMap.CELL_WIDTH = 5;
-ParkMap.CELL_HEIGHT = 5;
+ParkMap.CELL_WIDTH = 3;
+ParkMap.CELL_HEIGHT = 3;
 
 ParkMap.prototype.getRawData = function () {
    return this.rawData;
