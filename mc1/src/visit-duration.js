@@ -153,7 +153,7 @@ VisitDuration.prototype.simulateCarMovement = function (context, gateSensorDataA
                 doSimulation(nextSimplePath, ++index);
             }
             else {
-                self.renderCarTrace(simplePath.to, 0, carTraceYPos + 15); // last gate
+                self.renderCarTrace(simplePath.to, 0, carTraceYPos + 15, true); // last gate
             }
 
             return;
@@ -188,7 +188,7 @@ VisitDuration.prototype.simulateCarMovement = function (context, gateSensorDataA
                             doSimulation(nextSimplePath, ++index);
                         }else {
 
-                            self.renderCarTrace(simplePath.to, 0, carTraceYPos + 15); // last gate
+                            self.renderCarTrace(simplePath.to, 0, carTraceYPos + 15, true); // last gate
 
                         }
                     }
@@ -205,7 +205,7 @@ VisitDuration.prototype.simulateCarMovement = function (context, gateSensorDataA
     doSimulation(nextSimplePath, 0);
 };
 
-VisitDuration.prototype.renderCarTrace = function renderCarTrace(carPoint, x, y) {
+VisitDuration.prototype.renderCarTrace = function renderCarTrace(carPoint, x, y, end) {
 
     let carTrace = this.parkMap.getCarTraceContainer();
     x = !!x ? x : 0;
@@ -229,9 +229,19 @@ VisitDuration.prototype.renderCarTrace = function renderCarTrace(carPoint, x, y)
 
     carTrace.append('text')
         .text(carPoint.getFormattedTime())
-        .attr('x', 110)
+        .attr('x', 80)
         .attr('y', y)
         .style("font-size", "10px")
 
     ;
+
+    if (!!end) {
+        carTrace.append('text')
+            .text('Complete')
+            .attr('x', x + 13)
+            .attr('y', y + 15)
+            .style("font-size", "10px")
+
+        ;
+    }
 };
