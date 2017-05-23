@@ -50,20 +50,14 @@ VisitDuration.prototype.render = function render(lines) {
 VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(param, line) {
     console.log('event mouse over');
 
-    let path = line.data;
-    let startPoint;
-    let endPoint;
-    let steps;
-
     let self = param;
 
-    for(let i=0; i< path.length-1; i++) {
-        startPoint = path[i];
-        endPoint = path[i+1];
+    let mapPointPaths = line.data.map(function (gateData) {
+        return self.parkMap.getMapPointByName(gateData.gate);
+    });
 
-        steps = self.parkMap.findSinglePathByName(startPoint.gate, endPoint.gate);
-        self.parkMap.highLightPath(steps, line.context.color);
-    }
+    self.parkMap.findThenHighLightPath(mapPointPaths, line.context.color);
+
 
 };
 

@@ -245,6 +245,8 @@ var ParkMap = function ParkMap (byteData, svg) {
 
 ParkMap.CELL_WIDTH = 3;
 ParkMap.CELL_HEIGHT = 3;
+ParkMap.SPEED_LIMIT = 25;
+ParkMap.CELL_WIDTH_IN_MILE = 0.06; // mile
 
 ParkMap.prototype.getRawData = function () {
    return this.rawData;
@@ -286,6 +288,26 @@ ParkMap.prototype.findSinglePathByName = function findSinglePath(fromName, toNam
     return this.convertPathToMapPoint(paths);
 };
 
+/**
+ *
+ * @param myPath array of MapPoint
+ * @param color
+ */
+ParkMap.prototype.findThenHighLightPath = function findThenHighLightPath(myPath, color) {
+
+    let startPoint;
+    let endPoint;
+    let steps;
+
+    for(let i=0; i< myPath.length-1; i++) {
+        startPoint = myPath[i];
+        endPoint = myPath[i+1];
+
+        steps = self.parkMap.findSinglePathByName(startPoint.getName(), endPoint.getName());
+        this.highLightPath(steps, color);
+    }
+};
+
 ParkMap.prototype.highLightPath = function highLightPath(myPath, color) {
     if (myPath.length < 1) {
         return;
@@ -316,6 +338,11 @@ ParkMap.prototype.clearPath = function highLightPath(myPath) {
     this.highLightPath(myPath, '#FFFFFF');
 };
 
+ParkMap.prototype.simulateMovement = function highLightPath(myPath, color) {
+    let totalTime = 0;
+
+};
+
 ParkMap.prototype.getMapPoint = function getMapPoint(row, col) {
 
     if (row < 0 || row >= this.mapPoints.length) {
@@ -329,6 +356,11 @@ ParkMap.prototype.getMapPoint = function getMapPoint(row, col) {
 
     return rowItems[col];
 };
+
+ParkMap.prototype.getMapPointByName = function getMapPointByName(name) {
+    return this.pointNameMapping[name];
+};
+
 
 ParkMap.prototype.convertPathToMapPoint = function getMapPoint(path) {
 
@@ -352,7 +384,7 @@ ParkMap.prototype.render = function render(showLabel) {
                     .attr('class', function (cell) {
                         let cls = 'grid-cell';
                         if (cell.getIsRoad()) {
-                            cls += ' road-cell';
+                            cls += ' road-cell road-cell-' + cell.getPos();
                         }
                         return cls;
                     })
