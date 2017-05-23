@@ -56,7 +56,7 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(param, line) 
         return self.parkMap.getMapPointByName(gateData.gate);
     });
 
-    self.parkMap.findThenHighLightPath(mapPointPaths, line.context);
+    // self.parkMap.findThenHighLightPath(mapPointPaths, line.context.color);
     self.simulateGateMovement(line.context, line.data);
 
 };
@@ -95,7 +95,7 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
         timeDurationInMiliSecond = toGate.time.getTime() - fromGate.time.getTime();
 
         if (fromGate.gate != toGate.gate) {
-            distance = this.parkMap.findSinglePathByName(toGate.gate, fromGate.gate);
+            distance = this.parkMap.findSinglePathByName(fromGate.gate, toGate.gate);
             distance.shift(); // avoid counting current position
             velocity = distance.length * ParkMap.CELL_WIDTH_IN_MILE * 3600000 / timeDurationInMiliSecond; // mile per hour
         }
@@ -107,6 +107,8 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
     }
 
     var nextSimplePath = completePath.shift();
+
+    let self = this;
 
     var doSimulation = function (simplePath) {
 
@@ -130,11 +132,13 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
 
             console.log('jump to cell: ' + cell.getPos());
 
+            self.parkMap.highLightOneCell(cell, context.color);
+
             let myTimer = d3.timer(function (e) {
                     // clear cell
                     // console.log('out of cell : ' + cell.getPos());
-
                     myTimer.stop();
+                    // self.parkMap.clearOneCell(cell);
 
                     nextCell = simplePath.path.shift();
                     if (!!nextCell) {
@@ -155,9 +159,6 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
         };
 
         doJumping(nextCell);
-
-
-
     };
 
     doSimulation(nextSimplePath);

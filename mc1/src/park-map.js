@@ -329,6 +329,26 @@ ParkMap.prototype.highLightPath = function highLightPath(myPath, color) {
     ;
 };
 
+ParkMap.prototype.highLightOneCell = function highLightOneCell(mapPoint, color) {
+    if (!mapPoint.getIsRoad()) {
+        return;
+    }
+
+    this.svg.select('.road-cell-' + mapPoint.getPos())
+        .attr('fill', color)
+    ;
+};
+
+ParkMap.prototype.clearOneCell = function clearOneCell(mapPoint) {
+    if (!mapPoint.getIsRoad()) {
+        return;
+    }
+
+    this.svg.select('.road-cell-' + mapPoint.getPos())
+        .attr('fill', '#FFFFFF')
+    ;
+};
+
 /**
  * Clear a highlighted path to a road
  *
@@ -338,10 +358,6 @@ ParkMap.prototype.clearPath = function highLightPath(myPath) {
     this.highLightPath(myPath, '#FFFFFF');
 };
 
-ParkMap.prototype.simulateMovement = function highLightPath(myPath, color) {
-    let totalTime = 0;
-
-};
 
 ParkMap.prototype.getMapPoint = function getMapPoint(row, col) {
 
