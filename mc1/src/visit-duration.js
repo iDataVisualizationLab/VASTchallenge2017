@@ -87,9 +87,9 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
     if (!!self.simulationTimer) {
         self.simulationTimer.stop();
 
-        debugger;
         if (!!self.simulatedMapPoints && self.simulatedMapPoints.length > 0) {
             self.parkMap.clearPath(self.simulatedMapPoints);
+            self.simulatedMapPoints = [];
         }
     }
 
