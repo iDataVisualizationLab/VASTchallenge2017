@@ -58,6 +58,7 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(param, line) 
     //     return self.parkMap.getMapPointByName(gateData.gate);
     // });
     // self.parkMap.findThenHighLightPath(mapPointPaths, line.context.color);
+
     self.simulateGateMovement(line.context, line.data);
 
 };
@@ -81,11 +82,16 @@ VisitDuration.prototype.onLineMouseOut = function onLineMouseOver(param, line) {
 
 VisitDuration.prototype.simulateGateMovement = function (context, gateSensorDataArray) {
 
-    if (this.simulationInProgress) {
-        return;
-    }
+    let self = this;
 
-    this.simulationInProgress = true;
+    if (!!self.simulationTimer) {
+        self.simulationTimer.stop();
+
+        debugger;
+        if (!!self.simulatedMapPoints && self.simulatedMapPoints.length > 0) {
+            self.parkMap.clearPath(self.simulatedMapPoints);
+        }
+    }
 
     console.log('Simulating for car: ' + context.carId + "; type: " + context.carType);
     let timeDurationInMiliSecond;
@@ -93,7 +99,9 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
     let toGate;
     let distance;
 
-    let completePath = [];
+    self.simulationPath = [];
+    self.simulatedMapPoints = [];
+
     let velocity;
 
     for(let i=0; i< gateSensorDataArray.length - 1; i++) {
@@ -110,18 +118,17 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
             velocity = 0; // not movement, stay in side for gaming, camping
         }
 
-        completePath.push({from: fromGate, to: toGate, velocity: velocity, path: distance, id: completePath.length})
+        self.simulationPath.push({from: fromGate, to: toGate, velocity: velocity, path: distance, id: self.simulationPath.length})
     }
 
-    var nextSimplePath = completePath.shift();
+    var nextSimplePath = self.simulationPath.shift();
 
-    let self = this;
 
     var doSimulation = function (simplePath) {
 
         if (simplePath.from.gate == simplePath.to.gate) {
             console.log('enter and quite the same place: ' + simplePath.from.gate + "; duration: " + ((simplePath.to.time.getTime() - simplePath.from.time.getTime())/1000*60) + "(min)");
-            nextSimplePath = completePath.shift();
+            nextSimplePath = self.simulationPath.shift();
             if (!!nextSimplePath) {
 
                 doSimulation(nextSimplePath);
@@ -138,13 +145,14 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
         var doJumping = function (cell) {
 
             console.log('jump to cell: ' + cell.getPos());
+            self.simulatedMapPoints.push(cell);
 
             self.parkMap.highLightOneCell(cell, context.color);
 
-            let myTimer = d3.timer(function (e) {
+            self.simulationTimer = d3.timer(function (e) {
                     // clear cell
                     // console.log('out of cell : ' + cell.getPos());
-                    myTimer.stop();
+                    self.simulationTimer.stop();
                     // self.parkMap.clearOneCell(cell);
 
                     nextCell = simplePath.path.shift();
@@ -152,7 +160,7 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
                         doJumping(nextCell);
                     }
                     else {
-                        nextSimplePath = completePath.shift();
+                        nextSimplePath = self.simulationPath.shift();
                         if (!!nextSimplePath) {
 
                             doSimulation(nextSimplePath);

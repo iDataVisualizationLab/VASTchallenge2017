@@ -318,7 +318,7 @@ ParkMap.prototype.highLightPath = function highLightPath(myPath, color) {
             let item;
             for(let i=1; i < myPath.length-1; i++) {
                 item = myPath[i];
-                if (cell.getPos() == item.getPos()) {
+                if (cell.getPos() == item.getPos() && cell.getIsRoad()) {
                     return true;
                 }
             }
