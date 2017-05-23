@@ -38,6 +38,7 @@ VisitDuration.prototype.render = function render(lines) {
             // debugger;
             timeGate.time = self.parseTime(timeGate.time);
             timeGate.y = 50 + index;
+            timeGate.mapPoint = self.parkMap.getMapPointByName(timeGate.gate);
         });
 
         self.visitChart.addData({carId: line.carId, carType: line.carType, color: color}, line.path, 'time', 'y');

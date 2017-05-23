@@ -112,6 +112,7 @@ Chart2D.prototype.renderAxis = function renderAxis(bottomLabel, leftLabel) {
 
 Chart2D.prototype.renderChart = function renderChart(events) {
 
+    let self = this;
     var myLine = this.svg.selectAll('.line-graph').data(this.lineData).enter()
         .append('g')
         .attr('class', 'line-graph')
@@ -138,4 +139,23 @@ Chart2D.prototype.renderChart = function renderChart(events) {
             });
         })
     }
+
+    // myLine.each(function (line) {
+    //     let myEndPoints = [line.data[0], line.data[line.data.length -1]];
+    //     debugger;
+    //     d3.select(this).selectAll('.passing-gate').data(myEndPoints).enter()
+    //         .append('circle')
+    //         .attr('class', 'passing-gate')
+    //         .attr('r', 2)
+    //         .attr('cx', function (d) {
+    //             return self.x(d.time);
+    //         })
+    //         .attr('cy', function (d) {
+    //             return self.y(d.y);
+    //         })
+    //         .style('fill', function (d) {
+    //             return d.mapPoint.getColor();
+    //         })
+    //     ;
+    // });
 };
