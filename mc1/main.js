@@ -5,8 +5,8 @@ var parkMap;
 
 var mapSvg = d3.select('body').select('#map')
     .append('svg')
-        .attr('width', MAP_WIDTH * (ParkMap.CELL_WIDTH + 1))
-        .attr('height', MAP_HEIGHT * (ParkMap.CELL_HEIGHT + 1))
+        .attr('width', (MAP_WIDTH + 1) * ParkMap.CELL_WIDTH + 300)
+        .attr('height', (MAP_HEIGHT + 1) * ParkMap.CELL_HEIGHT)
     ;
 
 

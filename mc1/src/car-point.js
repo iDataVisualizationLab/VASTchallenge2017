@@ -24,7 +24,7 @@ CarPoint.prototype.getTimeInMiliseconds = function getTimeInMiliseconds() {
 };
 
 CarPoint.prototype.getFormattedTime = function getFormattedTime(formatTemplate) {
-    var format = d3.timeFormat(!!formatTemplate ? formatTemplate : "%Y-%m-%d");
+    var format = d3.timeFormat(!!formatTemplate ? formatTemplate : "%Y-%m-%d %H:%M:%S");
 
     return format(this.time);
 };

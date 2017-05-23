@@ -241,6 +241,10 @@ var ParkMap = function ParkMap (byteData, svg) {
     this.finder = new PF.AStarFinder();
 
     this.svg = svg;
+    this.carTrace = this.svg.append('g')
+        .attr('class', 'car-trace-group')
+        .attr('transform', 'translate(620, 15)')
+    ;
 };
 
 ParkMap.CELL_WIDTH = 3;
@@ -249,9 +253,19 @@ ParkMap.SPEED_LIMIT = 25;
 ParkMap.CELL_WIDTH_IN_MILE = 0.06; // mile
 
 
-ParkMap.prototype.getSvg = function () {
+ParkMap.prototype.getSvg = function getSvg() {
     return this.svg;
 };
+
+ParkMap.prototype.getCarTraceContainer = function getCarTraceContainer() {
+    return this.carTrace;
+};
+
+
+ParkMap.prototype.clearCarTrace = function clearCarTrace() {
+    this.carTrace.selectAll('*').remove();
+};
+
 
 ParkMap.prototype.getRawData = function () {
    return this.rawData;

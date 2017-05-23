@@ -57,14 +57,14 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(param, line) 
 
     let self = param;
 
-    let mapPointPaths = line.data.map(function (carPoint) {
-        return carPoint.getMapPoint();
-    });
-    self.parkMap.findThenHighLightPath(mapPointPaths, line.context.color);
+    // let mapPointPaths = line.data.map(function (carPoint) {
+    //     return carPoint.getMapPoint();
+    // });
+    // self.parkMap.findThenHighLightPath(mapPointPaths, line.context.color);
 
-    self.renderCarTrace(line.data[0], 620, 15);
+    // self.renderCarTrace(line.data[0], 0, 0);
 
-    // self.simulateGateMovement(line.context, line.data);
+    self.simulateCarMovement(line.context, line.data);
 
 };
 
@@ -85,12 +85,13 @@ VisitDuration.prototype.onLineMouseOut = function onLineMouseOver(param, line) {
     }
 };
 
-VisitDuration.prototype.simulateGateMovement = function (context, gateSensorDataArray) {
+VisitDuration.prototype.simulateCarMovement = function (context, gateSensorDataArray) {
 
     let self = this;
 
     if (!!self.simulationTimer) {
         self.simulationTimer.stop();
+        self.parkMap.clearCarTrace();
 
         if (!!self.simulatedMapPoints && self.simulatedMapPoints.length > 0) {
             self.parkMap.clearPath(self.simulatedMapPoints);
@@ -129,16 +130,21 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
     var nextSimplePath = self.simulationPath.shift();
 
 
-    var doSimulation = function (simplePath) {
 
-        self.renderCarTrace(simplePath.from, 700, 15);
+    var doSimulation = function (simplePath, index) {
+
+        let carTraceYPos = 15 + index*15;
+        self.renderCarTrace(simplePath.from, 0, carTraceYPos);
 
         if (simplePath.from.getGate() == simplePath.to.getGate()) {
             console.log('enter and quite the same place: ' + simplePath.from.getGate() + "; duration: " + ((simplePath.to.getTimeInMiliseconds() - simplePath.from.getTimeInMiliseconds())/1000*60) + "(min)");
             nextSimplePath = self.simulationPath.shift();
             if (!!nextSimplePath) {
 
-                doSimulation(nextSimplePath);
+                doSimulation(nextSimplePath, ++index);
+            }
+            else {
+                self.renderCarTrace(simplePath.to, 0, carTraceYPos + 15); // last gate
             }
 
             return;
@@ -170,9 +176,11 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
                         nextSimplePath = self.simulationPath.shift();
                         if (!!nextSimplePath) {
 
-                            doSimulation(nextSimplePath);
+                            doSimulation(nextSimplePath, ++index);
                         }else {
-                            self.simulationInProgress = false;
+
+                            self.renderCarTrace(simplePath.to, 0, carTraceYPos + 15); // last gate
+
                         }
                     }
 
@@ -185,14 +193,16 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
         doJumping(nextCell);
     };
 
-    doSimulation(nextSimplePath);
+    doSimulation(nextSimplePath, 0);
 };
 
 VisitDuration.prototype.renderCarTrace = function renderCarTrace(carPoint, x, y) {
-    // debugger;
-    let svg = this.parkMap.getSvg();
 
-    svg.append('rect')
+    let carTrace = this.parkMap.getCarTraceContainer();
+    x = !!x ? x : 0;
+    y = !!y ? y : 0;
+
+    carTrace.append('rect')
         .attr('class', 'car-at-gate')
         .attr('width', 5)
         .attr('height', 5)
@@ -201,7 +211,7 @@ VisitDuration.prototype.renderCarTrace = function renderCarTrace(carPoint, x, y)
         .attr('y', y - 7)
     ;
 
-    svg.append('text')
+    carTrace.append('text')
         .text(carPoint.getGate() + ': ' + carPoint.getFormattedTime())
         .attr('x', x + 13)
         .attr('y', y)
