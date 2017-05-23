@@ -129,6 +129,15 @@ VisitDuration.prototype.simulateCarMovement = function (context, gateSensorDataA
 
     var nextSimplePath = self.simulationPath.shift();
 
+    // show car tace
+    let carTrace = self.parkMap.getCarTraceContainer();
+    carTrace.append('text')
+        .text('Car: ' + context.carId)
+        .attr('x', 13)
+        .attr('y', 1)
+        .style("font-size", "10px")
+
+    ;
 
 
     var doSimulation = function (simplePath, index) {
@@ -212,8 +221,17 @@ VisitDuration.prototype.renderCarTrace = function renderCarTrace(carPoint, x, y)
     ;
 
     carTrace.append('text')
-        .text(carPoint.getGate() + ': ' + carPoint.getFormattedTime())
+        .text(carPoint.getGate())
         .attr('x', x + 13)
         .attr('y', y)
+        .style("font-size", "10px")
+    ;
+
+    carTrace.append('text')
+        .text(carPoint.getFormattedTime())
+        .attr('x', 110)
+        .attr('y', y)
+        .style("font-size", "10px")
+
     ;
 };
