@@ -10,6 +10,7 @@ var VisitDuration = function VisitDuration(visitChart, parkMap) {
 
     this.visitChart.setXDomain(minDate, maxDate);
     this.visitChart.setYDomain(0, 20000);
+    this.simulationInProgress = false;
 
     this.init();
 
@@ -52,10 +53,9 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(param, line) 
 
     let self = param;
 
-    let mapPointPaths = line.data.map(function (gateData) {
-        return self.parkMap.getMapPointByName(gateData.gate);
-    });
-
+    // let mapPointPaths = line.data.map(function (gateData) {
+    //     return self.parkMap.getMapPointByName(gateData.gate);
+    // });
     // self.parkMap.findThenHighLightPath(mapPointPaths, line.context.color);
     self.simulateGateMovement(line.context, line.data);
 
@@ -79,6 +79,12 @@ VisitDuration.prototype.onLineMouseOut = function onLineMouseOver(param, line) {
 };
 
 VisitDuration.prototype.simulateGateMovement = function (context, gateSensorDataArray) {
+
+    if (this.simulationInProgress) {
+        return;
+    }
+
+    this.simulationInProgress = true;
 
     console.log('Simulating for car: ' + context.carId + "; type: " + context.carType);
     let timeDurationInMiliSecond;
@@ -149,6 +155,8 @@ VisitDuration.prototype.simulateGateMovement = function (context, gateSensorData
                         if (!!nextSimplePath) {
 
                             doSimulation(nextSimplePath);
+                        }else {
+                            self.simulationInProgress = false;
                         }
                     }
 
