@@ -177,17 +177,17 @@ Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits(carCatego
     }
 
     this.myLine.selectAll('.line')
-        .style('opacity', function (line) {
-            if (carCategory == 'car-all') {
-                return line.context.entranceCount > 2 ? 1 : 0;
-            }
-            else if (carCategory == 'car-internal') {
-                return (line.context.entranceCount > 2 && line.context.carType == '2P') ? 1 : 0;
-            }
-
-            return (line.context.entranceCount > 2 && line.context.carType != '2P') ? 1 : 0;
-
-        })
+        // .style('opacity', function (line) {
+        //     if (carCategory == 'car-all') {
+        //         return line.context.entranceCount > 2 ? 1 : 0;
+        //     }
+        //     else if (carCategory == 'car-internal') {
+        //         return (line.context.entranceCount > 2 && line.context.carType == '2P') ? 1 : 0;
+        //     }
+        //
+        //     return (line.context.entranceCount > 2 && line.context.carType != '2P') ? 1 : 0;
+        //
+        // })
         .style('visibility', function (line) {
             if (carCategory == 'car-all') {
                 return line.context.entranceCount > 2 ? 'visible' : 'hidden';
@@ -198,8 +198,11 @@ Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits(carCatego
             else if (carCategory == 'car-camping') {
                 return (line.context.entranceCount > 2 && line.context.camping == true) ? 'visible' : 'hidden';
             }
+            else if (carCategory == 'car-visiting') {
+                return (line.context.entranceCount > 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
+            }
 
-            return (line.context.entranceCount > 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
+            return (line.context.entranceCount > 2 && line.context.carType == carCategory) ? 'visible' : 'hidden';
         })
     ;
 };
@@ -210,17 +213,17 @@ Chart2D.prototype.highLightSingleVisit = function highLightSingleVisit(carCatego
     }
 
     this.myLine.selectAll('.line')
-        .style('opacity', function (line) {
-
-            if (carCategory == 'car-all') {
-                return line.context.entranceCount < 3 ?  1 : 0.01;
-            }
-            else if (carCategory == 'car-internal') {
-                return (line.context.entranceCount < 3 && line.context.carType == '2P') ?  1 : 0.01;
-            }
-
-            return (line.context.entranceCount < 3 && line.context.carType != '2P') ? 1 : 0.01;
-        })
+        // .style('opacity', function (line) {
+        //
+        //     if (carCategory == 'car-all') {
+        //         return line.context.entranceCount < 3 ?  1 : 0.01;
+        //     }
+        //     else if (carCategory == 'car-internal') {
+        //         return (line.context.entranceCount < 3 && line.context.carType == '2P') ?  1 : 0.01;
+        //     }
+        //
+        //     return (line.context.entranceCount < 3 && line.context.carType != '2P') ? 1 : 0.01;
+        // })
         .style('visibility', function (line) {
 
             if (carCategory == 'car-all') {
@@ -232,8 +235,12 @@ Chart2D.prototype.highLightSingleVisit = function highLightSingleVisit(carCatego
             else if (carCategory == 'car-camping') {
                 return (line.context.entranceCount < 3 && line.context.camping == true) ? 'visible' : 'hidden';
             }
+            else if (carCategory == 'car-visiting') {
+                return (line.context.entranceCount < 3 && line.context.carType != '2P') ? 'visible' : 'hidden';
 
-            return (line.context.entranceCount < 3 && line.context.carType != '2P') ? 'visible' : 'hidden';
+            }
+
+            return (line.context.entranceCount < 3 && line.context.carType == carCategory) ? 'visible' : 'hidden';
         })
     ;
 };
@@ -244,17 +251,17 @@ Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory) {
     }
 
     this.myLine.selectAll('.line')
-        .style('opacity', function (line) {
-
-            if (carCategory == 'car-all') {
-                return line.context.entranceCount < 2 ?  1 : 0.01;
-            }
-            else if (carCategory == 'car-internal') {
-                return (line.context.entranceCount < 2 && line.context.carType == '2P') ?  1 : 0.01;
-            }
-
-            return (line.context.entranceCount < 2 && line.context.carType != '2P') ? 1 : 0.01;
-        })
+        // .style('opacity', function (line) {
+        //
+        //     if (carCategory == 'car-all') {
+        //         return line.context.entranceCount < 2 ?  1 : 0.01;
+        //     }
+        //     else if (carCategory == 'car-internal') {
+        //         return (line.context.entranceCount < 2 && line.context.carType == '2P') ?  1 : 0.01;
+        //     }
+        //
+        //     return (line.context.entranceCount < 2 && line.context.carType != '2P') ? 1 : 0.01;
+        // })
         .style('visibility', function (line) {
 
             if (carCategory == 'car-all') {
@@ -266,9 +273,12 @@ Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory) {
             else if (carCategory == 'car-camping') {
                 return (line.context.entranceCount < 2 && line.context.camping == true) ? 'visible' : 'hidden';
             }
+            else if (carCategory == 'car-visiting') {
+                return (line.context.entranceCount < 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
+            }
 
 
-            return (line.context.entranceCount < 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
+            return (line.context.entranceCount < 2 && line.context.carType == carCategory) ? 'visible' : 'hidden';
         })
     ;
 };
@@ -279,16 +289,16 @@ Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit(c
     }
 
     this.myLine.selectAll('.line')
-        .style('opacity', function (line) {
-            if (carCategory == 'car-all') {
-                return 1;
-            }
-            else if (carCategory == 'car-internal') {
-                return line.context.carType == '2P' ? 1 : 0.01;
-            }
-
-            return  line.context.carType != '2P' ? 1 : 0.01;
-        })
+        // .style('opacity', function (line) {
+        //     if (carCategory == 'car-all') {
+        //         return 1;
+        //     }
+        //     else if (carCategory == 'car-internal') {
+        //         return line.context.carType == '2P' ? 1 : 0.01;
+        //     }
+        //
+        //     return  line.context.carType != '2P' ? 1 : 0.01;
+        // })
         .style('visibility', function (line) {
             if (carCategory == 'car-all') {
                 return 'visible';
@@ -299,8 +309,11 @@ Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit(c
             else if (carCategory == 'car-camping') {
                 return line.context.camping == true ? 'visible' : 'hidden';
             }
+            else if (carCategory == 'car-visiting') {
+                return line.context.carType != '2P' ? 'visible' : 'hidden';
+            }
 
-            return  line.context.carType != '2P' ? 'visible' : 'hidden';
+            return  line.context.carType == carCategory ? 'visible' : 'hidden';
         })
     ;
 };

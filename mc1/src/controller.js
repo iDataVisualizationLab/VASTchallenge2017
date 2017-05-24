@@ -17,3 +17,11 @@ mc1.controller.clickVehicleCategory = function(self) {
     let entranceType = document.querySelector('input[name="entranceType"]:checked').value;
     mc1.visitDuration.highlightVisitsByEntranceType(entranceType, self.value);
 };
+
+
+mc1.controller.clickVehicleType = function(self) {
+    console.log(self.name + "=" + self.value + "-" + self.checked);
+
+    let entranceType = document.querySelector('input[name="entranceType"]:checked').value;
+    mc1.visitDuration.highlightVisitsByEntranceType(entranceType, self.value);
+};
