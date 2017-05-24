@@ -144,7 +144,15 @@ VisitDuration.prototype.simulateCarMovement = function (context, gateSensorDataA
 
     var doSimulation = function (simplePath, index) {
 
-        let carTraceYPos = 15 + index*15;
+        let myIndex = index % 35;
+        if (myIndex == 0) {
+            // clear text
+            self.parkMap.clearCarTrace();
+        }
+        let carTraceYPos = 15 + myIndex*15;
+
+
+
         self.renderCarTrace(simplePath.from, 0, carTraceYPos);
 
         if (simplePath.from.getGate() == simplePath.to.getGate()) {
@@ -168,7 +176,7 @@ VisitDuration.prototype.simulateCarMovement = function (context, gateSensorDataA
 
         var doJumping = function (cell) {
 
-            console.log('jump to cell: ' + cell.getPos());
+            console.log('jump to cell: ' + cell.getPos() + "; name: " + cell.getName());
             self.simulatedMapPoints.push(cell);
 
             self.parkMap.highLightOneCell(cell, context.color);
