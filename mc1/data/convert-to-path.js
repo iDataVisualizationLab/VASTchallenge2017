@@ -98,7 +98,8 @@ var readExistingSensorData = function() {
                 tmpCar = new Object();
                 tmpCar.carId = carId;
                 tmpCar.carType = csvrow[2];
-                tmpCar.multiEnterExit = false;
+                tmpCar.entranceCount = 0;
+                tmpCar.camping = false;
                 tmpCar.path = [];
                 myCar[carId] = tmpCar;
             }
@@ -106,6 +107,10 @@ var readExistingSensorData = function() {
             tmpCar = myCar[carId];
             // add current hop to path
             tmpCar.path.push(tmpGateTime);
+            if (!tmpCar.camping && tmpGateTime.gate.startsWith('camping')) {
+                tmpCar.camping = true;
+            }
+
             tmpCar.entranceCount = countEntrance(tmpCar.path);
 
         })
