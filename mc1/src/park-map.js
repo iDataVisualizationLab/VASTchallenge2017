@@ -39,7 +39,7 @@ var MapPoint = function MapPoint(pos, r, g, b, alpha, name) {
     }
 };
 
-MapPoint.ROAD_COLOR = '#000000';
+MapPoint.ROAD_COLOR = '#DDDDDD';
 MapPoint.BACKGROUND = '#FFFFFF';
 
 MapPoint.prototype.getR = function getR() {
