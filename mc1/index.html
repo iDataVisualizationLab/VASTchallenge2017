@@ -33,6 +33,51 @@
 
         </td>
         <td>
+            <div>
+                <table>
+                    <tr>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td><input type="radio" name="entranceType" value="all" checked onclick="mc1.controller.clickEntranceType(this)"/> </td>
+                                    <td> <label>Show All Visits</label></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input type="radio" name='entranceType' value="single-entrance" onclick="mc1.controller.clickEntranceType(this)"/>
+                                    </td>
+                                    <td>
+                                        <label>Show Single Entrance</label>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="entranceType" value="multi-entrances" onclick="mc1.controller.clickEntranceType(this)"/> </td>
+                                    <td> <label>Show Multiple Entrances</label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td><input type="radio" name="vehicleCategory" value="car-all" checked onclick="mc1.controller.clickVehicleCategory(this)"/></td>
+                                    <td>All Vehicles</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="vehicleCategory" value="car-internal" onclick="mc1.controller.clickVehicleCategory(this)"/></td>
+                                    <td>Internal Vehicles</td>
+                                </tr>
+                                <tr>
+                                    <td><input type="radio" name="vehicleCategory" value="car-visitor" onclick="mc1.controller.clickVehicleCategory(this)"/></td>
+                                    <td>Visiting Vehicles</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
             <div id="visitDuration"></div>
 
         </td>
@@ -48,6 +93,7 @@
 <script type="text/javascript" src="lib/pathfinding-browser.js"></script>
 
 <script type="text/javascript" src="src/util.js"></script>
+<script type="text/javascript" src="src/controller.js"></script>
 <script type="text/javascript" src="src/park-map.js"></script>
 <script type="text/javascript" src="src/car-point.js"></script>
 <script type="text/javascript" src="src/chart-2d.js"></script>

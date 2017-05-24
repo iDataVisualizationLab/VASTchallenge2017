@@ -33,8 +33,9 @@ VisitDuration.prototype.render = function render(lines) {
 
         let colorIdx = line.carType;
         let color = line.carType == '2P' ? '#000000' : colorFunction(colorIdx);
+        line.color = color;
 
-        line.path = line.path.map(function (timeGate) {
+        let path = line.path.map(function (timeGate) {
             let carPoint;
             let mapPoint = self.parkMap.getMapPointByName(timeGate.gate);
 
@@ -44,7 +45,8 @@ VisitDuration.prototype.render = function render(lines) {
             return carPoint;
         });
 
-        self.visitChart.addData({carId: line.carId, carType: line.carType, color: color}, line.path, 'time', 'y');
+        delete line.path;
+        self.visitChart.addData(line, path, 'time', 'y');
 
     });
 
@@ -243,5 +245,20 @@ VisitDuration.prototype.renderCarTrace = function renderCarTrace(carPoint, x, y,
             .style("font-size", "10px")
 
         ;
+    }
+};
+
+VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisitsByEntranceType (entranceType, vehicleCategory) {
+
+    if (entranceType == 'multi-entrances') {
+        this.visitChart.highLightMultiVisits(vehicleCategory);
+    }
+    else if (entranceType == 'single-entrance') {
+        debugger;
+        this.visitChart.highLightSingleVisit(vehicleCategory);
+    }
+    else {
+        this.visitChart.highLightAllTypesOfVisit(vehicleCategory);
+
     }
 };

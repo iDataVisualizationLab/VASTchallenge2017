@@ -98,6 +98,7 @@ var readExistingSensorData = function() {
                 tmpCar = new Object();
                 tmpCar.carId = carId;
                 tmpCar.carType = csvrow[2];
+                tmpCar.multiEnterExit = false;
                 tmpCar.path = [];
                 myCar[carId] = tmpCar;
             }
@@ -105,6 +106,7 @@ var readExistingSensorData = function() {
             tmpCar = myCar[carId];
             // add current hop to path
             tmpCar.path.push(tmpGateTime);
+            tmpCar.multiEnterExit = multiEnterOrExit(tmpCar.path);
 
         })
         .on('end',function() {
@@ -116,6 +118,17 @@ var readExistingSensorData = function() {
                 console.error(err)
             });
         });
+
+    function multiEnterOrExit(path) {
+        let entranceCount = 0;
+        path.forEach(function (p) {
+            if (p.gate.startsWith('entrance')) {
+                entranceCount ++;
+            }
+        });
+
+        return entranceCount > 2;
+    }
 };
 
 readExistingSensorData();

@@ -117,14 +117,16 @@ Chart2D.prototype.renderAxis = function renderAxis(bottomLabel, leftLabel) {
 Chart2D.prototype.renderChart = function renderChart(events) {
 
     let self = this;
-    var myLine = this.svg.selectAll('.line-graph').data(this.lineData).enter()
+    self.myLine = this.svg.selectAll('.line-graph').data(this.lineData).enter()
         .append('g')
         .attr('class', 'line-graph')
     ;
 
-    myLine
+    self.myLine
         .append('path')
-        .attr("class", "line")
+        .attr("class", function (line) {
+            return "line line-multi-visit-" + (line.context.multiEnterExit ? 1 : 0)
+        })
         .attr("d", function (line) {
             return line.valueLine(line.data);
         })
@@ -138,7 +140,7 @@ Chart2D.prototype.renderChart = function renderChart(events) {
 
     if (!!events && events.length > 0) {
         events.forEach(function (e) {
-            myLine.on(e.name, function (l, index) {
+            self.myLine.on(e.name, function (l, index) {
                 e.callback(e.params, l, index)
             });
         })
@@ -162,4 +164,99 @@ Chart2D.prototype.renderChart = function renderChart(events) {
     //         })
     //     ;
     // });
+};
+
+
+Chart2D.prototype.getMyLines = function getMyLines() {
+  return this.myLine;
+};
+
+Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits(carCategory) {
+    if (!carCategory) {
+        carCategory = 'car-all';
+    }
+
+    this.myLine.selectAll('.line')
+        .style('opacity', function (line) {
+            if (carCategory == 'car-all') {
+                return line.context.multiEnterExit ? 1 : 0;
+            }
+            else if (carCategory == 'car-internal') {
+                return (line.context.multiEnterExit && line.context.carType == '2P') ? 1 : 0;
+            }
+
+            return (line.context.multiEnterExit && line.context.carType != '2P') ? 1 : 0;
+
+        })
+        .style('visibility', function (line) {
+            if (carCategory == 'car-all') {
+                return line.context.multiEnterExit ? 'visible' : 'hidden';
+            }
+            else if (carCategory == 'car-internal') {
+                return (line.context.multiEnterExit && line.context.carType == '2P') ? 'visible' : 'hidden';
+            }
+
+            return (line.context.multiEnterExit && line.context.carType != '2P') ? 'visible' : 'hidden';
+        })
+    ;
+};
+
+Chart2D.prototype.highLightSingleVisit = function highLightSingleVisit(carCategory) {
+    if (!carCategory) {
+        carCategory = 'car-all';
+    }
+
+    this.myLine.selectAll('.line')
+        .style('opacity', function (line) {
+
+            if (carCategory == 'car-all') {
+                return line.context.multiEnterExit == false ?  1 : 0.01;
+            }
+            else if (carCategory == 'car-internal') {
+                return (line.context.multiEnterExit == false && line.context.carType == '2P') ?  1 : 0.01;
+            }
+
+            return (line.context.multiEnterExit == false && line.context.carType != '2P') ? 1 : 0.01;
+        })
+        .style('visibility', function (line) {
+
+            if (carCategory == 'car-all') {
+                return line.context.multiEnterExit == false ?  'visible' : 'hidden';
+            }
+            else if (carCategory == 'car-internal') {
+                return (line.context.multiEnterExit == false && line.context.carType == '2P') ? 'visible' : 'hidden';
+            }
+
+            return (line.context.multiEnterExit == false && line.context.carType != '2P') ? 'visible' : 'hidden';
+        })
+    ;
+};
+
+Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit(carCategory) {
+    if (!carCategory) {
+        carCategory = 'car-all';
+    }
+
+    this.myLine.selectAll('.line')
+        .style('opacity', function (line) {
+            if (carCategory == 'car-all') {
+                return 1;
+            }
+            else if (carCategory == 'car-internal') {
+                return line.context.carType == '2P' ? 1 : 0.01;
+            }
+
+            return  line.context.carType != '2P' ? 1 : 0.01;
+        })
+        .style('visibility', function (line) {
+            if (carCategory == 'car-all') {
+                return 'visible';
+            }
+            else if (carCategory == 'car-internal') {
+                return line.context.carType == '2P' ? 'visible' : 'hidden';
+            }
+
+            return  line.context.carType != '2P' ? 'visible' : 'hidden';
+        })
+    ;
 };
