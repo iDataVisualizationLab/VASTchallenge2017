@@ -106,7 +106,7 @@ var readExistingSensorData = function() {
             tmpCar = myCar[carId];
             // add current hop to path
             tmpCar.path.push(tmpGateTime);
-            tmpCar.multiEnterExit = multiEnterOrExit(tmpCar.path);
+            tmpCar.entranceCount = countEntrance(tmpCar.path);
 
         })
         .on('end',function() {
@@ -119,7 +119,7 @@ var readExistingSensorData = function() {
             });
         });
 
-    function multiEnterOrExit(path) {
+    function countEntrance(path) {
         let entranceCount = 0;
         path.forEach(function (p) {
             if (p.gate.startsWith('entrance')) {
@@ -127,7 +127,7 @@ var readExistingSensorData = function() {
             }
         });
 
-        return entranceCount > 2;
+        return entranceCount;
     }
 };
 

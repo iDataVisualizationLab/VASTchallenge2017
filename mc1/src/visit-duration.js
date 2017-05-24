@@ -254,8 +254,10 @@ VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisits
         this.visitChart.highLightMultiVisits(vehicleCategory);
     }
     else if (entranceType == 'single-entrance') {
-        debugger;
         this.visitChart.highLightSingleVisit(vehicleCategory);
+    }
+    else if (entranceType == 'no-exit') {
+        this.visitChart.highLightNoExit(vehicleCategory);
     }
     else {
         this.visitChart.highLightAllTypesOfVisit(vehicleCategory);

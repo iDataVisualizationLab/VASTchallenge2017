@@ -179,24 +179,24 @@ Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits(carCatego
     this.myLine.selectAll('.line')
         .style('opacity', function (line) {
             if (carCategory == 'car-all') {
-                return line.context.multiEnterExit ? 1 : 0;
+                return line.context.entranceCount > 2 ? 1 : 0;
             }
             else if (carCategory == 'car-internal') {
-                return (line.context.multiEnterExit && line.context.carType == '2P') ? 1 : 0;
+                return (line.context.entranceCount > 2 && line.context.carType == '2P') ? 1 : 0;
             }
 
-            return (line.context.multiEnterExit && line.context.carType != '2P') ? 1 : 0;
+            return (line.context.entranceCount > 2 && line.context.carType != '2P') ? 1 : 0;
 
         })
         .style('visibility', function (line) {
             if (carCategory == 'car-all') {
-                return line.context.multiEnterExit ? 'visible' : 'hidden';
+                return line.context.entranceCount > 2 ? 'visible' : 'hidden';
             }
             else if (carCategory == 'car-internal') {
-                return (line.context.multiEnterExit && line.context.carType == '2P') ? 'visible' : 'hidden';
+                return (line.context.entranceCount > 2 && line.context.carType == '2P') ? 'visible' : 'hidden';
             }
 
-            return (line.context.multiEnterExit && line.context.carType != '2P') ? 'visible' : 'hidden';
+            return (line.context.entranceCount > 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
         })
     ;
 };
@@ -210,24 +210,55 @@ Chart2D.prototype.highLightSingleVisit = function highLightSingleVisit(carCatego
         .style('opacity', function (line) {
 
             if (carCategory == 'car-all') {
-                return line.context.multiEnterExit == false ?  1 : 0.01;
+                return line.context.entranceCount < 3 ?  1 : 0.01;
             }
             else if (carCategory == 'car-internal') {
-                return (line.context.multiEnterExit == false && line.context.carType == '2P') ?  1 : 0.01;
+                return (line.context.entranceCount < 3 && line.context.carType == '2P') ?  1 : 0.01;
             }
 
-            return (line.context.multiEnterExit == false && line.context.carType != '2P') ? 1 : 0.01;
+            return (line.context.entranceCount < 3 && line.context.carType != '2P') ? 1 : 0.01;
         })
         .style('visibility', function (line) {
 
             if (carCategory == 'car-all') {
-                return line.context.multiEnterExit == false ?  'visible' : 'hidden';
+                return line.context.entranceCount < 3 ?  'visible' : 'hidden';
             }
             else if (carCategory == 'car-internal') {
-                return (line.context.multiEnterExit == false && line.context.carType == '2P') ? 'visible' : 'hidden';
+                return (line.context.entranceCount < 3 && line.context.carType == '2P') ? 'visible' : 'hidden';
             }
 
-            return (line.context.multiEnterExit == false && line.context.carType != '2P') ? 'visible' : 'hidden';
+            return (line.context.entranceCount < 3 && line.context.carType != '2P') ? 'visible' : 'hidden';
+        })
+    ;
+};
+
+Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory) {
+    if (!carCategory) {
+        carCategory = 'car-all';
+    }
+
+    this.myLine.selectAll('.line')
+        .style('opacity', function (line) {
+
+            if (carCategory == 'car-all') {
+                return line.context.entranceCount < 2 ?  1 : 0.01;
+            }
+            else if (carCategory == 'car-internal') {
+                return (line.context.entranceCount < 2 && line.context.carType == '2P') ?  1 : 0.01;
+            }
+
+            return (line.context.entranceCount < 2 && line.context.carType != '2P') ? 1 : 0.01;
+        })
+        .style('visibility', function (line) {
+
+            if (carCategory == 'car-all') {
+                return line.context.entranceCount < 2 ?  'visible' : 'hidden';
+            }
+            else if (carCategory == 'car-internal') {
+                return (line.context.entranceCount < 2 && line.context.carType == '2P') ? 'visible' : 'hidden';
+            }
+
+            return (line.context.entranceCount < 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
         })
     ;
 };
