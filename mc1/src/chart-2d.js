@@ -198,6 +198,9 @@ Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits(carCatego
             else if (carCategory == 'car-camping') {
                 return (line.context.entranceCount > 2 && line.context.camping == true) ? 'visible' : 'hidden';
             }
+            else if (carCategory == 'no-car-camping') {
+                return (line.context.entranceCount > 2 && line.context.camping == false && line.context.carType != '2P') ? 'visible' : 'hidden';
+            }
             else if (carCategory == 'car-visiting') {
                 return (line.context.entranceCount > 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
             }
@@ -234,6 +237,9 @@ Chart2D.prototype.highLightSingleVisit = function highLightSingleVisit(carCatego
             }
             else if (carCategory == 'car-camping') {
                 return (line.context.entranceCount < 3 && line.context.camping == true) ? 'visible' : 'hidden';
+            }
+            else if (carCategory == 'car-no-camping') {
+                return (line.context.entranceCount < 3 && line.context.camping == false && line.context.carType != '2P') ? 'visible' : 'hidden';
             }
             else if (carCategory == 'car-visiting') {
                 return (line.context.entranceCount < 3 && line.context.carType != '2P') ? 'visible' : 'hidden';
@@ -273,6 +279,9 @@ Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory) {
             else if (carCategory == 'car-camping') {
                 return (line.context.entranceCount < 2 && line.context.camping == true) ? 'visible' : 'hidden';
             }
+            else if (carCategory == 'car-no-camping') {
+                return (line.context.entranceCount < 2 && line.context.camping == false && line.context.carType != '2P' ) ? 'visible' : 'hidden';
+            }
             else if (carCategory == 'car-visiting') {
                 return (line.context.entranceCount < 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
             }
@@ -308,6 +317,9 @@ Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit(c
             }
             else if (carCategory == 'car-camping') {
                 return line.context.camping == true ? 'visible' : 'hidden';
+            }
+            else if (carCategory == 'car-no-camping') {
+                return line.context.camping == false && line.context.carType != '2P' ? 'visible' : 'hidden';
             }
             else if (carCategory == 'car-visiting') {
                 return line.context.carType != '2P' ? 'visible' : 'hidden';
