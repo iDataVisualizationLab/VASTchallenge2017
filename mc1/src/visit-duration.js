@@ -145,7 +145,7 @@ VisitDuration.prototype.simulateCarMovement = function (context, gateSensorDataA
     var doSimulation = function (simplePath, index) {
 
         let myIndex = index % 35;
-        if (myIndex == 0) {
+        if (index != 0 && myIndex == 0) {
             // clear text
             self.parkMap.clearCarTrace();
         }
