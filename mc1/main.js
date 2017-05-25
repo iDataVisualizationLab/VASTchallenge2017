@@ -31,7 +31,12 @@ mc1.visitDurationSvg = d3.select('body').select('#visitDuration').append('svg')
 d3.json("data/all-car-path.json", function(error, lines) {
     let visitChart = new Chart2D(mc1.visitDurationSvg, width, height, {margin: margin, timeChart: true});
 
+    let visitParser = new VisitParser(mc1.parkMap);
+
+    let parsedVisits = visitParser.parse(lines);
     mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap);
-    mc1.visitDuration.render(lines);
+    mc1.visitDuration.render(parsedVisits);
+
+    //mc1.roadHitmap = new RoadHitmap(mc1.parkMap, parsedVisits);
 
 });

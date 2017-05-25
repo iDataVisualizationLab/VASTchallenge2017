@@ -29,6 +29,7 @@
 <table>
     <tr>
         <td>
+            <div><label>Time: </label><input type="range" min="0" max="800" step="1" onchange="mc1.controller.changeRoadHitmapTime(this)"/></div>
             <div id="map"></div>
 
         </td>
@@ -148,7 +149,11 @@
 <script type="text/javascript" src="src/park-map.js"></script>
 <script type="text/javascript" src="src/car-point.js"></script>
 <script type="text/javascript" src="src/chart-2d.js"></script>
+
+<script type="text/javascript" src="src/visit-parser.js"></script>
 <script type="text/javascript" src="src/visit-duration.js"></script>
+<script type="text/javascript" src="src/road-hitmap.js"></script>
+
 <script type="text/javascript" src="main.js">
     // Following this idea: https://hacks.mozilla.org/2011/12/faster-canvas-pixel-manipulation-with-typed-arrays/
 

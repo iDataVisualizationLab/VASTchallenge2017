@@ -31,3 +31,9 @@ mc1.controller.clickVehicleBehavior = function(self) {
 
     mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, self.value);
 };
+
+mc1.controller.changeRoadHitmapTime = function (self) {
+        console.log(self.value);
+
+        mc1.roadHitmap.renderVisits();
+};

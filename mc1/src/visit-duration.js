@@ -3,10 +3,10 @@ var VisitDuration = function VisitDuration(visitChart, parkMap) {
     this.visitChart = visitChart;
     this.parkMap = parkMap;
 
-    this.parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
+    let parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
 
-    let minDate = this.parseTime('2015-05-01 00:43:28');
-    let maxDate = this.parseTime('2016-05-31 23:56:06');
+    let minDate = parseTime('2015-05-01 00:43:28');
+    let maxDate = parseTime('2016-05-31 23:56:06');
 
     this.visitChart.setXDomain(minDate, maxDate);
     this.visitChart.setYDomain(0, 20000);
@@ -25,28 +25,15 @@ VisitDuration.prototype.init = function init() {
 };
 
 VisitDuration.prototype.render = function render(lines) {
-
-    let colorFunction = d3.scaleOrdinal(d3.schemeCategory10);
     // parse the date / time
     let self = this;
     lines.forEach(function(line, index) {
 
-        let colorIdx = line.carType;
-        let color = line.carType == '2P' ? '#000000' : colorFunction(colorIdx);
-        line.color = color;
-
-        let path = line.path.map(function (timeGate) {
-            let carPoint;
-            let mapPoint = self.parkMap.getMapPointByName(timeGate.gate);
-
-            carPoint = new CarPoint(mapPoint, self.parseTime(timeGate.time));
+        line.path.forEach(function (carPoint) {
             carPoint.y = 50 + index;
-
-            return carPoint;
         });
 
-        delete line.path;
-        self.visitChart.addData(line, path, 'time', 'y');
+        self.visitChart.addData(line, line.path, 'time', 'y');
 
     });
 
@@ -133,6 +120,19 @@ VisitDuration.prototype.simulateCarMovement = function (context, gateSensorDataA
 
     // show car tace
     let carTrace = self.parkMap.getCarTraceContainer();
+    // let colorF =  d3.scaleOrdinal(d3.schemeCategory10);
+    //
+    // for(let i=0; i< 10; i++) {
+    //     carTrace.append('rect')
+    //         .attr('x', 0)
+    //         .attr('y', -5)
+    //         .attr('width', 6)
+    //         .attr('height', 6)
+    //         .attr('fill', colorF(i) )
+    //         .style('opacity', 0.1)
+    //     ;
+    // }
+
     carTrace.append('text')
         .text('Car: ' + context.carId)
         .attr('x', 13)
