@@ -49,15 +49,22 @@ d3.csv("data/sensorData.csv", function(error, data) {
   console.log(data);
 
   var chemicals = varChems.map(function(id) {
+         var counter = [];
+         var count = 0;
     return {
       id: id,
-      values: data.map(function(d) {
+      values: data.map(function(d,i) {
          // && d.date.getMonth() == 3
          var n = id.indexOf("_");
          var l = id.length;
          // console.log(id.substring(l-1, l))
-        if(d.Chemical == id.substring(0, n) && d.Monitor == id.substring(l-1, l))
-            return {date: d.date, Reading: d.Reading};
+        if(d.Chemical == id.substring(0, n) && d.Monitor == id.substring(l-1, l)){
+          counter.push(data[i]);
+          if(count>0)
+           var hours = Math.abs(counter[count].date - counter[count-1].date) / 36e5;
+           count++;
+            return {date: d.date, Reading: d.Reading, hours: hours};
+          }
         else
             return -1;
       })
@@ -123,6 +130,8 @@ console.log(parseTime("8/01/16 01:00") +" here "+ x(parseTime("8/1/16 01:00")));
       .style("stroke", function(d,i) { return z(i); })
       .style("stroke-width", 1);
 var dataSetsCount = -1;
+var dataSetsCount2 = -1;
+var dataSetsCount3 = -1;
    svg.call(tip);
  chemical.append("g").selectAll("circle")
       .data(function(d){return d.values})
@@ -149,12 +158,28 @@ var dataSetsCount = -1;
       })
       .attr("cx", function(dd){return xx(dd.date)})
       .attr("cy", function(dd){return y(dd.Reading)})
-      .attr("fill", "red")
+      .attr("fill", function(dd,i){
+           if(i==0){
+          
+          dataSetsCount2++;
+          // console.log(chemicalsData[dataSetsCount].values[i].date);
+        }
+        // console.log(chemicalsData[dataSetsCount].values.length)
+        if(i>0 && i<chemicalsData[dataSetsCount2].values.length-1)
+        var hours = Math.abs(chemicalsData[dataSetsCount2].values[i+1].date - chemicalsData[dataSetsCount2].values[i].date) / 36e5;
+        if(hours>1 && hours<1400)
+          return "yellow";
+
+        if(i>0 && i<chemicalsData[dataSetsCount2].values.length)
+          var hours = Math.abs(chemicalsData[dataSetsCount2].values[i].date - chemicalsData[dataSetsCount2].values[i-1].date) / 36e5;
+        if(hours>1 && hours<1400)
+          return "red";
+      })
       .attr("stroke", "black")
-      .on("mouseover", function(d){
+      .on("mouseover", function(d,i){
         console.log(d);
-        var tipContent = d.date;
-         tip.show(d.date, this);
+        var tipContent = d.hours;
+         tip.show(tipContent, this);
       })
       .on('mouseout', function(d){
                 tip.hide();
