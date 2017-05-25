@@ -40,4 +40,5 @@ svg{
 }
 .d3-tip{
 	width: 300px;
+	margin-left: 25px;
 }

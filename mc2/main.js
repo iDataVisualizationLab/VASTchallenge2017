@@ -33,6 +33,7 @@ var maxDate = parseTime("3/31/17 00:00");
 
 var tip = d3.tip()
     .attr('class', 'd3-tip d3-tooltip')
+    .direction('n')
     .offset([0, 120])
     .html(function(d) {
         return d;       
@@ -148,12 +149,13 @@ var dataSetsCount3 = -1;
         if(i>0 && i<chemicalsData[dataSetsCount].values.length-1)
         var hours = Math.abs(chemicalsData[dataSetsCount].values[i+1].date - chemicalsData[dataSetsCount].values[i].date) / 36e5;
         if(hours>1 && hours<1400)
-          return 3;
+          return 2;
 
         if(i>0 && i<chemicalsData[dataSetsCount].values.length)
           var hours = Math.abs(chemicalsData[dataSetsCount].values[i].date - chemicalsData[dataSetsCount].values[i-1].date) / 36e5;
+      
         if(hours>1 && hours<1400)
-          return 3;
+          return hours+1;
 
       })
       .attr("cx", function(dd){return xx(dd.date)})
@@ -175,6 +177,7 @@ var dataSetsCount3 = -1;
         if(hours>1 && hours<1400)
           return "red";
       })
+      .attr("opacity",1)
       .attr("stroke", "black")
       .on("mouseover", function(d,i){
         console.log(d);
