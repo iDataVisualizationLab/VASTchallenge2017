@@ -475,10 +475,10 @@ ParkMap.prototype.render = function render(showLabel) {
                         return cls;
                     })
                     .attr("x", function (item) {
-                        return ParkMap.CELL_WIDTH + ParkMap.CELL_WIDTH * item.getColumn();
+                        return item.x = ParkMap.CELL_WIDTH + ParkMap.CELL_WIDTH * item.getColumn();
                     })
                     .attr("y", function (item) {
-                        return ParkMap.CELL_HEIGHT + ParkMap.CELL_HEIGHT * row_i;
+                        return item.y = ParkMap.CELL_HEIGHT + ParkMap.CELL_HEIGHT * row_i;
                     })
                     .attr("width", ParkMap.CELL_WIDTH)
                     .attr("height", ParkMap.CELL_HEIGHT)
