@@ -8,4 +8,17 @@
 label{
 	float: left;
 	display: inline;
+	margin-right: 10px;
+}
+#senSelDiv, #chemSelDiv{
+	background: #ccc;
+	min-height: 20px;
+	margin-bottom: 5px;
+	padding: 10px;
+}
+p{
+	margin: 0px;
+}
+#checkall, #checkallChems{
+	float: left;
 }
