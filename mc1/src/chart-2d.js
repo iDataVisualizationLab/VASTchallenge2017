@@ -288,7 +288,7 @@ Chart2D.prototype.highLightSingleVisit = function highLightSingleVisit (carCateg
     ;
 };
 
-Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory) {
+Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory, campingBehavior) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
@@ -308,23 +308,39 @@ Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory) {
         .style('visibility', function (line) {
 
             if (carCategory == 'car-all') {
-                return line.context.entranceCount < 2 ?  'visible' : 'hidden';
+                if (campingBehavior == 'all') {
+                    return line.context.entranceCount < 2 ?  'visible' : 'hidden';
+                }
+                return line.context.entranceCount < 2 && line.context.camping == campingBehavior ?  'visible' : 'hidden';
             }
             else if (carCategory == 'car-internal') {
-                return (line.context.entranceCount < 2 && line.context.carType == '2P') ? 'visible' : 'hidden';
+                if (campingBehavior == 'all') {
+                    return (line.context.entranceCount < 2 && line.context.carType == '2P') ? 'visible' : 'hidden';
+                }
+
+                return (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
             }
-            else if (carCategory == 'car-camping') {
-                return (line.context.entranceCount < 2 && line.context.camping == true) ? 'visible' : 'hidden';
-            }
-            else if (carCategory == 'car-no-camping') {
-                return (line.context.entranceCount < 2 && line.context.camping == false && line.context.carType != '2P' ) ? 'visible' : 'hidden';
-            }
+            // else if (carCategory == 'car-camping') {
+            //     return (line.context.entranceCount < 2 && line.context.camping == true) ? 'visible' : 'hidden';
+            // }
+            // else if (carCategory == 'car-no-camping') {
+            //     return (line.context.entranceCount < 2 && line.context.camping == false && line.context.carType != '2P' ) ? 'visible' : 'hidden';
+            // }
             else if (carCategory == 'car-visiting') {
-                return (line.context.entranceCount < 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
+                if (campingBehavior == 'all') {
+                    return (line.context.entranceCount < 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
+
+                }
+
+                return (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
             }
 
 
-            return (line.context.entranceCount < 2 && line.context.carType == carCategory) ? 'visible' : 'hidden';
+            if (campingBehavior == 'all') {
+                return (line.context.entranceCount < 2 && line.context.carType == carCategory) ? 'visible' : 'hidden';
+            }
+
+            return (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
         })
     ;
 };

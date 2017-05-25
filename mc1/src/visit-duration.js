@@ -271,7 +271,7 @@ VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisits
         this.visitChart.highLightSingleVisit(vehicleCategory, campingBehavior);
     }
     else if (entranceType == 'no-exit') {
-        this.visitChart.highLightNoExit(vehicleCategory);
+        this.visitChart.highLightNoExit(vehicleCategory, campingBehavior);
     }
     else {
         this.visitChart.highLightAllTypesOfVisit(vehicleCategory, campingBehavior);
