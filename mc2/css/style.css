@@ -6,19 +6,38 @@
   stroke-width: 1.5px;
 }
 label{
-	float: left;
-	display: inline;
+	/*float: left;*/
+	/*display: inline;*/
 	margin-right: 10px;
 }
 #senSelDiv, #chemSelDiv{
-	background: #ccc;
+	background: rgba(150, 150, 150, .5);
 	min-height: 20px;
-	margin-bottom: 5px;
 	padding: 10px;
+	width: 140px;
+	min-height: 190px;
+
+}
+#senSelDiv{
+	float: left;
+}
+#chemSelDiv{
+	float: right;
 }
 p{
 	margin: 0px;
 }
 #checkall, #checkallChems{
 	float: left;
+}
+.inputArea{
+	width: 330px;
+	margin-left: 90px;
+	position: relative;
+}
+svg{
+	margin-top: -200px;
+}
+.d3-tip{
+	width: 300px;
 }
