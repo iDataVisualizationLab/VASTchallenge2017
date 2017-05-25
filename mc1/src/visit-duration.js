@@ -256,19 +256,25 @@ VisitDuration.prototype.renderCarTrace = function renderCarTrace(carPoint, x, y,
     }
 };
 
-VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisitsByEntranceType (entranceType, vehicleCategory) {
+VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisitsByEntranceType (entranceType, vehicleCategory, campingBehavior) {
+
+    if (campingBehavior == 'behavior-camping') {
+        campingBehavior =  true;
+    }else if ( campingBehavior == 'behavior-no-camping') {
+        campingBehavior = false;
+    }
 
     if (entranceType == 'multi-entrances') {
-        this.visitChart.highLightMultiVisits(vehicleCategory);
+        this.visitChart.highLightMultiVisits(vehicleCategory, campingBehavior);
     }
     else if (entranceType == 'single-entrance') {
-        this.visitChart.highLightSingleVisit(vehicleCategory);
+        this.visitChart.highLightSingleVisit(vehicleCategory, campingBehavior);
     }
     else if (entranceType == 'no-exit') {
         this.visitChart.highLightNoExit(vehicleCategory);
     }
     else {
-        this.visitChart.highLightAllTypesOfVisit(vehicleCategory);
+        this.visitChart.highLightAllTypesOfVisit(vehicleCategory, campingBehavior);
 
     }
 };

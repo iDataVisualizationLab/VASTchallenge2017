@@ -107,7 +107,7 @@ var readExistingSensorData = function() {
             tmpCar = myCar[carId];
             // add current hop to path
             tmpCar.path.push(tmpGateTime);
-            if (!tmpCar.camping && tmpGateTime.gate.startsWith('camping')) {
+            if (!tmpCar.camping && hasCampingBehavior(tmpCar.path)) {
                 tmpCar.camping = true;
             }
 
@@ -123,6 +123,19 @@ var readExistingSensorData = function() {
                 console.error(err)
             });
         });
+
+    function hasCampingBehavior(path) {
+
+        let p;
+        for (let i=0; i< path.length; i++) {
+            p = path[i];
+            if (p.gate.startsWith('camping') && i < path.length - 1 && path[i + 1].gate.startsWith('camping')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     function countEntrance(path) {
         let entranceCount = 0;
