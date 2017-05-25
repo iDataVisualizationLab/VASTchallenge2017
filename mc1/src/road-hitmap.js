@@ -42,11 +42,47 @@ RoadHitmap.prototype.renderVisits = function renderVisits (endTime, startTime) {
         startTime =  '2015-05-01 00:43:28';
     }
 
+    let self = this;
     endTime = this.parseTime(endTime);
     startTime = this.parseTime(startTime);
 
     let visitsInThisPeriod = this.getVisitsByTimePeriod(endTime, startTime);
 
-    debugger;
+    let roadSvg = this.parkMap.getSvg();
+
+    roadSvg.selectAll('visit-overlay-traffic').data(visitsInThisPeriod).enter()
+        .append('g')
+        .attr('class', 'visit-overlay-traffic')
+        .each(function (visit) {
+
+            let steps;
+            let startCarPoint;
+            let endCarPoint;
+
+            for(let i=0; i < visit.temporalPath.length - 1; i++) {
+                startCarPoint = visit.temporalPath[i];
+                endCarPoint = visit.temporalPath[i+1];
+                steps = self.parkMap.findSinglePathByName(startCarPoint.getMapPoint().getName(), endCarPoint.getMapPoint().getName());
+                steps.pop(); // remove start
+                steps.shift(); // remove end
+
+
+                d3.select(this).selectAll('.overlay-road-cell').data(steps).enter()
+                    .append('rect')
+                    .attr('class', 'overlay-road-cell')
+                    .attr('x', function (mapPoint) {
+                        return mapPoint.x;
+                    })
+                    .attr('y', function (mapPoint) {
+                        return mapPoint.y;
+                    })
+                    .attr('width', ParkMap.CELL_WIDTH)
+                    .attr('height', ParkMap.CELL_HEIGHT)
+                    .attr('fill', visit.color)
+                    .style('opacity', 0.1)
+                ;
+            }
+        })
+    ;
 };
 
