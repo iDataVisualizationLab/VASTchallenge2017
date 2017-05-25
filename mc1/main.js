@@ -37,6 +37,8 @@ d3.json("data/all-car-path.json", function(error, lines) {
     mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap);
     mc1.visitDuration.render(parsedVisits);
 
-    //mc1.roadHitmap = new RoadHitmap(mc1.parkMap, parsedVisits);
+    mc1.roadHitmap = new RoadHitmap(mc1.parkMap, parsedVisits);
+
+    mc1.roadHitmap.renderVisits();
 
 });
