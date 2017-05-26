@@ -75,16 +75,25 @@ Chart2D.prototype.setYDomain = function setYDomain(min, max) {
  *
  * @param bottomLabel
  * @param leftLabel
+ * @param format (time for mat if time chart
  */
-Chart2D.prototype.renderAxis = function renderAxis(bottomLabel, leftLabel) {
+Chart2D.prototype.renderAxis = function renderAxis(bottomLabel, leftLabel, format) {
 
     let height = this.height;
     let width = this.width;
     let margin = this.options.margin;
+
+    let bottom = d3.axisBottom(this.x);
+
+    if (this.options.timeChart && !!format) {
+        bottom = d3.axisBottom(this.x).tickFormat(d3.timeFormat(format))
+
+    }
     // Add the x Axis
     this.svg.append("g")
         .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(this.x));
+        .call(bottom)
+    ;
 
     // text label for the x axis
     if (!!bottomLabel) {

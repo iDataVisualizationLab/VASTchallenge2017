@@ -28,3 +28,28 @@ CarPoint.prototype.getFormattedTime = function getFormattedTime(formatTemplate) 
 
     return format(this.time);
 };
+
+CarPoint.prototype.getTimeInDayBySeconds = function getTimeInDayBySeconds() {
+    return this.getHours()*3600 + this.getMinutes()*60 + this.getSeconds();
+};
+
+CarPoint.prototype.getTimeInDayAsString = function getTimeInDayAsString() {
+    return this.getHours() + ':' + this.getMinutes() + ':' + this.getSeconds();
+};
+
+CarPoint.prototype.getHours = function getHours() {
+    return this.time.getHours();
+};
+
+CarPoint.prototype.getMinutes = function getMinutes() {
+    return this.time.getMinutes();
+};
+
+CarPoint.prototype.getSeconds = function getSeconds() {
+    return this.time.getSeconds();
+};
+
+CarPoint.prototype.clone = function clone() {
+    return new CarPoint(this.mapPoint, this.time);
+};
+

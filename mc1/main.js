@@ -28,21 +28,33 @@ mc1.visitDurationSvg = d3.select('body').select('#visitDuration').append('svg')
             "translate(" + margin.left + "," + margin.top + ")")
     ;
 
+mc1.firstDaySpanSvg = d3.select('body').select('#firstDaySpan').append('svg')
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")")
+;
+
 d3.json("data/all-car-path.json", function(error, lines) {
+    let visitParser = new VisitParser(mc1.parkMap);
+    let parsedVisits = visitParser.parse(lines);
+
     let visitChart = new Chart2D(mc1.visitDurationSvg, width, height, {margin: margin, timeChart: true});
 
-    let visitParser = new VisitParser(mc1.parkMap);
+    let firstDaySpanChart = new Chart2D(mc1.firstDaySpanSvg, width, height, {margin: margin, timeChart: true});
+    mc1.firstDayDuration = new VisitTimeBlock(firstDaySpanChart, mc1.parkMap);
+    mc1.firstDayDuration.render(parsedVisits);
 
-    let parsedVisits = visitParser.parse(lines);
     mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap);
     mc1.visitDuration.render(parsedVisits);
 
-    d3.csv('data/Lekagul Sensor Data.csv', function (err, rawData) {
-
-        mc1.roadHitmap = new RoadHitmap(mc1.parkMap, rawData);
-
-        mc1.roadHitmap.renderVisits();
-    });
+    // d3.csv('data/Lekagul Sensor Data.csv', function (err, rawData) {
+    //
+    //     mc1.roadHitmap = new RoadHitmap(mc1.parkMap, rawData);
+    //
+    //     mc1.roadHitmap.renderVisits();
+    // });
 
 
 });

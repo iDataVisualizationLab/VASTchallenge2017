@@ -36,8 +36,8 @@
         <td>
             <div>
                 <select id="graphType" name="graphType">
-                    <option value="one-year" selected>One year Span</option>
-                    <option value="first-day">First Day Span</option>
+                    <option value="one-year" selected>Entire year</option>
+                    <option value="first-day">24 hours after arrival</option>
                 </select>
             </div>
             <div>
@@ -77,6 +77,7 @@
                     </tr>
                 </table>
             </div>
+            <div id="firstDaySpan"></div>
             <div id="visitDuration"></div>
 
         </td>
@@ -98,6 +99,7 @@
 <script type="text/javascript" src="src/chart-2d.js"></script>
 
 <script type="text/javascript" src="src/visit-parser.js"></script>
+<script type="text/javascript" src="src/visit-time-block.js"></script>
 <script type="text/javascript" src="src/visit-duration.js"></script>
 <script type="text/javascript" src="src/road-hitmap.js"></script>
 

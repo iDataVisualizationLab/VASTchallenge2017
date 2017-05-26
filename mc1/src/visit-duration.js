@@ -1,12 +1,18 @@
-var VisitDuration = function VisitDuration(visitChart, parkMap) {
+var VisitDuration = function VisitDuration(visitChart, parkMap, startDate, endDate) {
 
     this.visitChart = visitChart;
     this.parkMap = parkMap;
 
     let parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
+    if (!startDate) {
+        startDate = '2015-05-01 00:43:28';
+    }
 
-    let minDate = parseTime('2015-05-01 00:43:28');
-    let maxDate = parseTime('2016-05-31 23:56:06');
+    if (!endDate) {
+        endDate = '2016-05-31 23:56:06';
+    }
+    let minDate = parseTime(startDate);
+    let maxDate = parseTime(endDate);
 
     this.visitChart.setXDomain(minDate, maxDate);
     this.visitChart.setYDomain(0, 20000);
@@ -30,7 +36,7 @@ VisitDuration.prototype.render = function render(lines) {
     lines.forEach(function(line, index) {
 
         line.path.forEach(function (carPoint) {
-            carPoint.y = 50 + index;
+            carPoint.y = 50 + index; // the same y coordinate for the same car 'index' (individual car). So we have horizontal line
         });
 
         self.visitChart.addData(line, line.path, 'time', 'y');
@@ -42,6 +48,7 @@ VisitDuration.prototype.render = function render(lines) {
 };
 
 VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(param, line) {
+
     console.log('event mouse over');
 
     let self = param;
