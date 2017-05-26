@@ -2,6 +2,9 @@
 // toHour is closed hour that the car get recorded within 24 hours.
 
 var VisitTimeBlock = function VisitTimeBlock(visitChart, parkMap, fromHour, toHour) {
+
+    // this.super_();
+
     this.visitChart = visitChart;
     this.parkMap = parkMap;
 
@@ -24,6 +27,9 @@ var VisitTimeBlock = function VisitTimeBlock(visitChart, parkMap, fromHour, toHo
     this.init();
 
 };
+
+// _.inherits(VisitTimeBlock, VisitDuration);
+
 
 VisitTimeBlock.prototype.init = function init() {
     this.events = [
@@ -261,5 +267,28 @@ VisitTimeBlock.prototype.renderCarTrace = function renderCarTrace(carPoint, x, y
             .style("font-size", "10px")
 
         ;
+    }
+};
+
+VisitTimeBlock.prototype.highlightVisitsByEntranceType = function highlightVisitsByEntranceType (entranceType, vehicleCategory, campingBehavior) {
+
+    if (campingBehavior == 'behavior-camping') {
+        campingBehavior =  true;
+    }else if ( campingBehavior == 'behavior-no-camping') {
+        campingBehavior = false;
+    }
+
+    if (entranceType == 'multi-entrances') {
+        this.visitChart.highLightMultiVisits(vehicleCategory, campingBehavior);
+    }
+    else if (entranceType == 'single-entrance') {
+        this.visitChart.highLightSingleVisit(vehicleCategory, campingBehavior);
+    }
+    else if (entranceType == 'no-exit') {
+        this.visitChart.highLightNoExit(vehicleCategory, campingBehavior);
+    }
+    else {
+        this.visitChart.highLightAllTypesOfVisit(vehicleCategory, campingBehavior);
+
     }
 };
