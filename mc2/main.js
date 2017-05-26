@@ -180,6 +180,24 @@ var dataSetsCount3 = -1;
       .attr("opacity",1)
       .attr("stroke", "black")
       .on("mouseover", function(d,i){
+        // console.log(i);
+        // if(i==0){
+          
+        //   dataSetsCount++;
+        //   // console.log(chemicalsData[dataSetsCount].values[i].date);
+        // }
+        // // console.log(chemicalsData[dataSetsCount].values.length)
+        // if(i>0 && i<chemicalsData[dataSetsCount].values.length-1)
+        // var hours = Math.abs(chemicalsData[dataSetsCount].values[i+1].date - chemicalsData[dataSetsCount].values[i].date) / 36e5;
+        // if(hours>1 && hours<1400)
+        //   return 2;
+
+        // if(i>0 && i<chemicalsData[dataSetsCount].values.length)
+        //   var hours = Math.abs(chemicalsData[dataSetsCount].values[i].date - chemicalsData[dataSetsCount].values[i-1].date) / 36e5;
+      
+        // if(hours>1 && hours<1400)
+        //   return hours+1;
+
         console.log(d);
         var tipContent = d.hours;
          tip.show(tipContent, this);
