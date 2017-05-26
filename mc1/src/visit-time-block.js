@@ -48,7 +48,7 @@ VisitTimeBlock.prototype.render = function render(lines) {
 
             if (i==0) {
                 firstDayInMilliseconds = carPoint.getTimeInMiliseconds();
-                endDayInMilliseconds = firstDayInMilliseconds + (self.toTime - self.fromTime)*1000;
+                endDayInMilliseconds = firstDayInMilliseconds + (getTimeInDayBySeconds(self.toTime) - getTimeInDayBySeconds(self.fromTime))*1000;
             }
 
             if (carPoint.getTimeInMiliseconds() < endDayInMilliseconds) {
