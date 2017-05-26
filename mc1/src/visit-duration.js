@@ -44,7 +44,7 @@ VisitDuration.prototype.render = function render(lines) {
     });
 
     this.visitChart.renderChart(this.events);
-    this.visitChart.renderAxis('Time', 'Visit');
+    this.visitChart.renderAxis('Time', 'Visits');
 };
 
 VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(param, line) {

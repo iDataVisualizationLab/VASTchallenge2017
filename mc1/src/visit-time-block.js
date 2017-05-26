@@ -21,17 +21,17 @@ var VisitTimeBlock = function VisitTimeBlock(visitChart, parkMap, fromHour, toHo
     this.visitChart.setXDomain(this.fromTime, this.toTime);
     this.visitChart.setYDomain(0, 20000);
 
-    this.init();
+    // this.init();
 
 };
 
-VisitTimeBlock.prototype.init = function init() {
-    this.events = [
-        {name: 'mouseover', callback: this.onLineMouseOver, params: this},
-        // {name: 'mouseout', callback: this.onLineMouseOut, params: this}
-    ];
-
-};
+// VisitTimeBlock.prototype.init = function init() {
+//     this.events = [
+//         {name: 'mouseover', callback: this.onLineMouseOver, params: this},
+//         // {name: 'mouseout', callback: this.onLineMouseOut, params: this}
+//     ];
+//
+// };
 
 VisitTimeBlock.prototype.render = function render(lines) {
     // parse the date / time
@@ -69,5 +69,5 @@ VisitTimeBlock.prototype.render = function render(lines) {
     });
 
     this.visitChart.renderChart(this.events);
-    this.visitChart.renderAxis('Hours', 'Visit', "%H:%M");
+    this.visitChart.renderAxis('Hours', 'Visits', "%H:%M");
 };
