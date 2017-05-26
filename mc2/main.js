@@ -1,5 +1,5 @@
 var svg = d3.select("svg"),
-    margin = {top: 20, right: 150, bottom: 30, left: 50},
+    margin = {top: 50, right: 150, bottom: 30, left: 50},
     width = svg.attr("width") - margin.left - margin.right,
     height = svg.attr("height") - margin.top - margin.bottom,
     g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -7,10 +7,9 @@ var parseTime = d3.timeParse("%m/%d/%Y %H:%M");
 
 var x = d3.scaleTime().range([0, width]),
     y = d3.scaleLinear().range([height, 0]),
-    z = d3.scaleOrdinal(d3.schemeCategory10);
+    z = d3.scaleOrdinal(d3.schemeCategory20);
 
 var line = d3.line()
-    .curve(d3.curveBasis)
     .x(function(d) { return xx(d.date); })
     .y(function(d) { 
         if(d.Reading<1.5){
@@ -32,6 +31,14 @@ for(i=1;i<10;i++){
 var minDate = parseTime("4/1/16 00:00");
 var maxDate = parseTime("3/31/17 00:00");
 
+var tip = d3.tip()
+    .attr('class', 'd3-tip d3-tooltip')
+    .direction('n')
+    .offset([0, 120])
+    .html(function(d) {
+        return d;       
+    });
+
 var chemicalsData = [];
 d3.csv("data/sensorData.csv", function(error, data) {
   if (error) throw error;
@@ -43,17 +50,24 @@ d3.csv("data/sensorData.csv", function(error, data) {
   console.log(data);
 
   var chemicals = varChems.map(function(id) {
+         var counter = [];
+         var count = 0;
     return {
       id: id,
-      values: data.map(function(d) {
+      values: data.map(function(d,i) {
          // && d.date.getMonth() == 3
          var n = id.indexOf("_");
          var l = id.length;
          // console.log(id.substring(l-1, l))
-        if(d.Chemical == id.substring(0, n) && d.Monitor == id.substring(l-1, l))
-            return {date: d.date, Reading: d.Reading};
+        if(d.Chemical == id.substring(0, n) && d.Monitor == id.substring(l-1, l)){
+          counter.push(data[i]);
+          if(count>0)
+           var hours = Math.abs(counter[count].date - counter[count-1].date) / 36e5;
+           count++;
+            return {date: d.date, Reading: d.Reading, hours: hours};
+          }
         else
-            return 0;
+            return -1;
       })
     };
   });
@@ -62,7 +76,7 @@ console.log(chemicals)
     var obj = {};
     obj.id = chemicals[i].id;
     obj.values = chemicals[i].values.filter(function(d){
-        if(d!=0){
+        if(d!=-1){
             return d;
         }
     });
@@ -116,6 +130,82 @@ console.log(parseTime("8/01/16 01:00") +" here "+ x(parseTime("8/1/16 01:00")));
       .attr("d", function(d) { return line(d.values); })
       .style("stroke", function(d,i) { return z(i); })
       .style("stroke-width", 1);
+var dataSetsCount = -1;
+var dataSetsCount2 = -1;
+var dataSetsCount3 = -1;
+   svg.call(tip);
+ chemical.append("g").selectAll("circle")
+      .data(function(d){return d.values})
+      .enter()
+      .append("circle")
+      .attr("r", function(dd, i){
+        // console.log(i);
+        if(i==0){
+          
+          dataSetsCount++;
+          // console.log(chemicalsData[dataSetsCount].values[i].date);
+        }
+        // console.log(chemicalsData[dataSetsCount].values.length)
+        if(i>0 && i<chemicalsData[dataSetsCount].values.length-1)
+        var hours = Math.abs(chemicalsData[dataSetsCount].values[i+1].date - chemicalsData[dataSetsCount].values[i].date) / 36e5;
+        if(hours>1 && hours<1400)
+          return 2;
+
+        if(i>0 && i<chemicalsData[dataSetsCount].values.length)
+          var hours = Math.abs(chemicalsData[dataSetsCount].values[i].date - chemicalsData[dataSetsCount].values[i-1].date) / 36e5;
+      
+        if(hours>1 && hours<1400)
+          return hours+1;
+
+      })
+      .attr("cx", function(dd){return xx(dd.date)})
+      .attr("cy", function(dd){return y(dd.Reading)})
+      .attr("fill", function(dd,i){
+           if(i==0){
+          
+          dataSetsCount2++;
+          // console.log(chemicalsData[dataSetsCount].values[i].date);
+        }
+        // console.log(chemicalsData[dataSetsCount].values.length)
+        if(i>0 && i<chemicalsData[dataSetsCount2].values.length-1)
+        var hours = Math.abs(chemicalsData[dataSetsCount2].values[i+1].date - chemicalsData[dataSetsCount2].values[i].date) / 36e5;
+        if(hours>1 && hours<1400)
+          return "yellow";
+
+        if(i>0 && i<chemicalsData[dataSetsCount2].values.length)
+          var hours = Math.abs(chemicalsData[dataSetsCount2].values[i].date - chemicalsData[dataSetsCount2].values[i-1].date) / 36e5;
+        if(hours>1 && hours<1400)
+          return "red";
+      })
+      .attr("opacity",1)
+      .attr("stroke", "black")
+      .on("mouseover", function(d,i){
+        // console.log(i);
+        // if(i==0){
+          
+        //   dataSetsCount++;
+        //   // console.log(chemicalsData[dataSetsCount].values[i].date);
+        // }
+        // // console.log(chemicalsData[dataSetsCount].values.length)
+        // if(i>0 && i<chemicalsData[dataSetsCount].values.length-1)
+        // var hours = Math.abs(chemicalsData[dataSetsCount].values[i+1].date - chemicalsData[dataSetsCount].values[i].date) / 36e5;
+        // if(hours>1 && hours<1400)
+        //   return 2;
+
+        // if(i>0 && i<chemicalsData[dataSetsCount].values.length)
+        //   var hours = Math.abs(chemicalsData[dataSetsCount].values[i].date - chemicalsData[dataSetsCount].values[i-1].date) / 36e5;
+      
+        // if(hours>1 && hours<1400)
+        //   return hours+1;
+
+        console.log(d);
+        var tipContent = d.hours;
+         tip.show(tipContent, this);
+      })
+      .on('mouseout', function(d){
+                tip.hide();
+                
+            })
 
   chemical.append("text")
       .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
@@ -135,12 +225,12 @@ function xx(date2){
     if (m==3)
         return x(date2)*4;  
     else if (m==4 || m==5 || m==6){
-        return x(parseTime("7/31/16 23:00"));
+        return x(parseTime("7/31/16 23:59"));
     }
     else if (m==7)
         return x(parseTime("8/01/16 00:00"))+ (x(date2)-x(parseTime("8/01/16 00:00")))*4;
     else if (m==8 || m==9 || m==10){
-        return x(parseTime("11/30/16 23:00"));
+        return x(parseTime("11/30/16 23:59"));
     }
     else if (m==11)
         return x(parseTime("12/01/16 00:00"))+ (x(date2)-x(parseTime("12/01/16 00:00")))*4;
