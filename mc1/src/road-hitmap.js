@@ -118,7 +118,7 @@ RoadHitmap.prototype.renderVisits = function renderVisits (endTime, startTime) {
     let visitsInThisPeriod = this.getVisitsByTimePeriod(endTime, startTime);
     let visitedCells = this.getVisitedRoadCells(visitsInThisPeriod);
 
-    debugger;
+    // debugger;
 
     Object.keys(visitedCells).forEach(function (pos) {
         let cellData = visitedCells[pos];

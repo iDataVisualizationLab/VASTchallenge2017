@@ -35,99 +35,46 @@
         </td>
         <td>
             <div>
+                <select id="graphType" name="graphType">
+                    <option value="one-year" selected>One year Span</option>
+                    <option value="first-day">First Day Span</option>
+                </select>
+            </div>
+            <div>
                 <table>
                     <tr>
                         <td>
-                            <table>
-                                <tr>
-                                    <td><input type="radio" name="entranceType" value="all" checked onclick="mc1.controller.clickEntranceType(this)"/> </td>
-                                    <td> <label>Show All Visits</label></td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input type="radio" name='entranceType' value="single-entrance" onclick="mc1.controller.clickEntranceType(this)"/>
-                                    </td>
-                                    <td>
-                                        <label>Show Single Entrance</label>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input type="radio" name='entranceType' value="no-exit" onclick="mc1.controller.clickEntranceType(this)"/>
-                                    </td>
-                                    <td>
-                                        <label>Show No Exit</label>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><input type="radio" name="entranceType" value="multi-entrances" onclick="mc1.controller.clickEntranceType(this)"/> </td>
-                                    <td> <label>Show Multiple Entrances</label>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                        <td>
-                            <table>
-                                <tr>
-                                    <td><input type="radio" name="vehicleCategory" value="car-all" checked onclick="mc1.controller.clickVehicleCategory(this)"/></td>
-                                    <td>All Vehicles</td>
-                                </tr>
-                                <tr>
-                                    <td><input type="radio" name="vehicleCategory" value="car-internal" onclick="mc1.controller.clickVehicleCategory(this)"/></td>
-                                    <td>Internal Vehicles</td>
-                                </tr>
-                                <tr>
-                                    <td><input type="radio" name="vehicleCategory" value="car-visiting" onclick="mc1.controller.clickVehicleCategory(this)"/></td>
-                                    <td>Visiting Vehicles</td>
-                                </tr>
-
-                                <tr>
-                                    <td><input type="radio" name="vehicleCategory" value="1" onclick="mc1.controller.clickVehicleCategory(this)"/></td>
-                                    <td>2 Axle car</td>
-                                </tr>
-                                <tr>
-                                    <td><input type="radio" name="vehicleCategory" value="2" onclick="mc1.controller.clickVehicleCategory(this)"/></td>
-                                    <td>2 axle truck</td>
-                                </tr>
-                                <tr>
-                                    <td><input type="radio" name="vehicleCategory" value="3" onclick="mc1.controller.clickVehicleCategory(this)"/></td>
-                                    <td>3 Axle truck</td>
-                                </tr>
-                                <tr>
-                                    <td><input type="radio" name="vehicleCategory" value="4" onclick="mc1.controller.clickVehicleCategory(this)"/></td>
-                                    <td>4 Axle or above truck</td>
-                                </tr>
-                                <tr>
-                                    <td><input type="radio" name="vehicleCategory" value="5" onclick="mc1.controller.clickVehicleCategory(this)"/></td>
-                                    <td>2 Axle bus</td>
-                                </tr>
-                                <tr>
-                                    <td><input type="radio" name="vehicleCategory" value="6" onclick="mc1.controller.clickVehicleCategory(this)"/></td>
-                                    <td>3 Axle bus</td>
-                                </tr>
-                            </table>
+                            <select id="entranceType" name="entranceType" onchange="mc1.controller.clickEntranceType(this)">
+                                <option value="all" selected>All Types of Visit</option>
+                                <option value="single-entrance">Single entrance</option>
+                                <option value="no-exit">No Exit</option>
+                                <option value="multi-entrances">Multiple Entrances</option>
+                            </select>
                         </td>
 
                         <td>
-                            <table>
-                                <tr>
-                                    <td><input type="radio" name="vehicleBehavior" value="all" checked onclick="mc1.controller.clickVehicleBehavior(this)"/></td>
-                                    <td>All Behaviors</td>
-                                </tr>
-                                <tr>
-                                    <td><input type="radio" name="vehicleBehavior" value="behavior-camping" onclick="mc1.controller.clickVehicleBehavior(this)"/></td>
-                                    <td>Camping Vehicles</td>
-                                </tr>
-                                <tr>
-                                    <td><input type="radio" name="vehicleBehavior" value="behavior-no-camping" onclick="mc1.controller.clickVehicleBehavior(this)"/></td>
-                                    <td>No Camping Vehicles</td>
-                                </tr>
-                            </table>
+                            <select id="vehicleCategory" name="vehicleCategory" onchange="mc1.controller.clickVehicleCategory(this)">
+                                <option value="car-all" selected>All Vehicles</option>
+                                <option value="car-internal">Internal Vehicles</option>
+                                <option value="car-visiting">Visiting Vehicles</option>
+                                <option value="1">2 Axle car</option>
+                                <option value="2">2 axle truck</option>
+                                <option value="3">3 Axle truck</option>
+                                <option value="4">4 Axle or above truck</option>
+                                <option value="5">2 Axle bus</option>
+                                <option value="6">3 Axle bus</option>
+                            </select>
                         </td>
+
+                        <td>
+                            <select id="vehicleBehavior" name="vehicleBehavior" onchange="mc1.controller.clickVehicleBehavior(this)">
+                                <option value="all" selected>All Camping Behaviors</option>
+                                <option value="behavior-camping" >Camping Vehicles</option>
+                                <option value="behavior-no-camping" >No Camping Vehicles</option>
+                            </select>
+                        </td>
+
                     </tr>
-
                 </table>
             </div>
             <div id="visitDuration"></div>
