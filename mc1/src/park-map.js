@@ -374,6 +374,17 @@ ParkMap.prototype.highLightOneCell = function highLightOneCell(mapPoint, color) 
     ;
 };
 
+ParkMap.prototype.highLightOneCellAtPos = function highLightOneCell(pos, color, alpha) {
+
+    if (alpha != 0 && !alpha) {
+        alpha = 1;
+    }
+    this.svg.select('.road-cell-' + pos)
+        .attr('fill', color)
+        .style('opacity', alpha)
+    ;
+};
+
 ParkMap.prototype.clearOneCell = function clearOneCell(mapPoint) {
     if (!mapPoint.getIsRoad()) {
         return;

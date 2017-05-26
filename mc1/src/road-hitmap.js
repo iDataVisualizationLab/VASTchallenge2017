@@ -1,7 +1,8 @@
-var RoadHitmap = function RoadHitMap(partMap, visits) {
+var RoadHitmap = function RoadHitMap(partMap, rawData) {
   this.parkMap = partMap;
-  this.visits = visits;
+  this.rawData = rawData;
   this.parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
+  this.visitedCells = {};
 
 };
 
@@ -9,37 +10,105 @@ RoadHitmap.prototype.getVisitsByTimePeriod = function getVisitsByTimePeriod (end
     let startTimeInMiliseconds = startTime.getTime();
     let endTimeInMiliseconds = endTime.getTime();
 
-    let visitsInThisPeriod = [];
-    let tmpVisit;
-    let tmpPath;
+    let tmpRecord;
+    let tmpCarObject;
+    let myVisits = {};
+    let carId;
+    let timeStamp;
 
-    for(let i=0; i< this.visits.length; i++) {
-        tmpVisit = this.visits[i];
-        tmpPath = tmpVisit.path.filter(function (carPoint) {
+    let colorFunction = d3.scaleOrdinal(d3.schemeCategory10);
 
-            let pointTime = carPoint.getTimeInMiliseconds();
 
-            return pointTime > startTimeInMiliseconds && pointTime < endTimeInMiliseconds;
-        });
+    for(let i=0; i< this.rawData.length; i++) {
+        tmpRecord = this.rawData[i];
 
-        if (tmpPath.length > 0) { // has overlap
+        carId = tmpRecord['car-id'];
+        timeStamp = this.parseTime(tmpRecord['Timestamp']);
+        if (!(timeStamp.getTime() > startTimeInMiliseconds && timeStamp.getTime() < endTimeInMiliseconds)) {
+            continue;
+        }
 
-            tmpVisit.temporalPath = tmpPath;
-            visitsInThisPeriod.push(tmpVisit);
+        if (!myVisits.hasOwnProperty(carId)) {
+            tmpCarObject = new Object();
+            tmpCarObject.carId = tmpRecord['car-id'];
+            tmpCarObject.carType = tmpRecord['car-type'];
+            let colorIdx = tmpCarObject.carType;
+            tmpCarObject.color = tmpCarObject.carType == '2P' ? '#000000' : colorFunction(colorIdx);
+
+            tmpCarObject.path = [];
+            myVisits[carId] = tmpCarObject;
+        }
+        else {
+            tmpCarObject = myVisits[carId];
+        }
+
+        tmpCarObject.path.push({time: timeStamp, gate: tmpRecord['gate-name']});
+    }
+
+    return myVisits;
+};
+
+RoadHitmap.prototype.getVisitedRoadCells = function getVisitedRoadCells (visits) {
+
+    let visit;
+    let visitedRoadCells = {};
+    let self = this;
+    let startGate;
+    let endGate;
+
+    let steps;
+    let cellPos;
+    let tmpCell;
+
+    let baseColor = hexToRgb(MapPoint.BACKGROUND, 0.1);
+    for(let carId in visits) {
+        if (!visits.hasOwnProperty(carId)) {
+            continue;
+        }
+
+        visit = visits[carId];
+        for(let i=0; i< visit.path.length - 1; i++) {
+            startGate = visit.path[i].gate;
+            endGate = visit.path[i+1].gate;
+
+            steps = self.parkMap.findSinglePathByName(startGate, endGate);
+            steps.pop();
+            steps.shift();
+
+            steps.forEach(function (cell) {
+                cellPos = cell.getPos();
+                if (!visitedRoadCells.hasOwnProperty(cellPos)) {
+                    visitedRoadCells[cellPos] = {
+                        count: 0
+                    };
+                }
+
+                tmpCell = visitedRoadCells[cellPos];
+                tmpCell.count ++;
+
+                if (!!tmpCell.color) {
+                    baseColor = tmpCell.color;
+                }
+                tmpCell.color = mergeTwoRGBs(baseColor, hexToRgb(visit.color, 0.1));
+
+            });
+
         }
     }
 
-    return visitsInThisPeriod;
+    return visitedRoadCells;
 };
 
 RoadHitmap.prototype.renderVisits = function renderVisits (endTime, startTime) {
 
     if (!endTime) {
-        endTime =  '2015-05-02 16:56:18';
+        endTime =  '2015-05-1 23:59:59';
+        // endTime =  '2016-05-31 23:56:06';
+
     }
 
     if (!startTime) {
-        startTime =  '2015-05-01 00:43:28';
+        startTime =  '2015-05-01 00:00:01';
     }
 
     let self = this;
@@ -47,42 +116,16 @@ RoadHitmap.prototype.renderVisits = function renderVisits (endTime, startTime) {
     startTime = this.parseTime(startTime);
 
     let visitsInThisPeriod = this.getVisitsByTimePeriod(endTime, startTime);
+    let visitedCells = this.getVisitedRoadCells(visitsInThisPeriod);
 
-    let roadSvg = this.parkMap.getSvg();
+    debugger;
 
-    roadSvg.selectAll('visit-overlay-traffic').data(visitsInThisPeriod).enter()
-        .append('g')
-        .attr('class', 'visit-overlay-traffic')
-        .each(function (visit) {
+    Object.keys(visitedCells).forEach(function (pos) {
+        let cellData = visitedCells[pos];
+        // do something with key or value
 
-            let steps;
-            let startCarPoint;
-            let endCarPoint;
+        self.parkMap.highLightOneCellAtPos(pos, rgbToHex(cellData.color[0], cellData.color[1], cellData.color[2]), cellData.color[3]);
 
-            for(let i=0; i < visit.temporalPath.length - 1; i++) {
-                startCarPoint = visit.temporalPath[i];
-                endCarPoint = visit.temporalPath[i+1];
-                steps = self.parkMap.findSinglePathByName(startCarPoint.getMapPoint().getName(), endCarPoint.getMapPoint().getName());
-                steps.pop(); // remove start
-                steps.shift(); // remove end
-
-
-                d3.select(this).selectAll('.overlay-road-cell').data(steps).enter()
-                    .append('rect')
-                    .attr('class', 'overlay-road-cell')
-                    .attr('x', function (mapPoint) {
-                        return mapPoint.x;
-                    })
-                    .attr('y', function (mapPoint) {
-                        return mapPoint.y;
-                    })
-                    .attr('width', ParkMap.CELL_WIDTH)
-                    .attr('height', ParkMap.CELL_HEIGHT)
-                    .attr('fill', visit.color)
-                    .style('opacity', 0.1)
-                ;
-            }
-        })
-    ;
+    });
 };
 

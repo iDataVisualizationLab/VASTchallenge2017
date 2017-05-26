@@ -37,8 +37,12 @@ d3.json("data/all-car-path.json", function(error, lines) {
     mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap);
     mc1.visitDuration.render(parsedVisits);
 
-    mc1.roadHitmap = new RoadHitmap(mc1.parkMap, parsedVisits);
+    d3.csv('data/Lekagul Sensor Data.csv', function (err, rawData) {
 
-    mc1.roadHitmap.renderVisits();
+        mc1.roadHitmap = new RoadHitmap(mc1.parkMap, rawData);
+
+        mc1.roadHitmap.renderVisits();
+    });
+
 
 });
