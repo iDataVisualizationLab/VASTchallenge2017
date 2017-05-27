@@ -83,6 +83,7 @@ var readExistingSensorData = function() {
                 tmpCar.entranceCount = 0;
                 tmpCar.camping = false;
                 tmpCar.path = [];
+                tmpCar.velocity = 0;
                 myCar[carId] = tmpCar;
             }
 
@@ -90,6 +91,10 @@ var readExistingSensorData = function() {
             if (tmpCar.path.length > 0 ) {
                 let prePoint = tmpCar.path[tmpCar.path.length-1];
                 prePoint.velocity = calculateVelocity(prePoint, tmpGateTime);
+
+                if (!isNaN(prePoint.velocity) && tmpCar.velocity < prePoint.velocity) {
+                    tmpCar.velocity = prePoint.velocity;
+                }
             }
             // add current hop to path
             tmpCar.path.push( tmpGateTime );

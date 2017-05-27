@@ -40,9 +40,10 @@ d3.json("data/all-car-path.json", function(error, lines) {
     let visitParser = new VisitParser(mc1.parkMap);
     let parsedVisits = visitParser.parse(lines);
 
-    let visitChart = new Chart2D(mc1.visitDurationSvg, width, height, {margin: margin, timeChart: true});
+   let visitChart = new Chart2D(mc1.visitDurationSvg, width, height, {id: 1, margin: margin, timeChart: true});
 
-    let firstDaySpanChart = new Chart2D(mc1.firstDaySpanSvg, width, height, {margin: margin, timeChart: true});
+    let firstDaySpanChart = new Chart2D(mc1.firstDaySpanSvg, width, height, {id: 2, margin: margin, timeChart: true});
+
     mc1.firstDayDuration = new VisitTimeBlock(firstDaySpanChart, mc1.parkMap);
     mc1.firstDayDuration.render(parsedVisits);
 

@@ -75,10 +75,10 @@
                         </td>
 
                         <td>
-                            <select id="velocityBehavior" name="velocityBehavior">
+                            <select id="velocityBehavior" name="velocityBehavior" onchange="mc1.controller.clickVelocityBehavior(this)">
                                 <option value="all" selected>All Velocity Behaviors</option>
-                                <option value="Below-10">Below 10% extra Limit</option>
-                                <option value="Above-10">Above 10% extra Limit</option>
+                                <option value="below-limit">Below 10% extra Limit</option>
+                                <option value="above-limit">Above 10% extra Limit</option>
                             </select>
                         </td>
 

@@ -33,6 +33,15 @@ VisitDuration.prototype.init = function init() {
 VisitDuration.prototype.render = function render(lines) {
     // parse the date / time
     let self = this;
+    // lines = lines.map(function (l) {
+    //
+    //     l.path = l.path.map(function (p) {
+    //         return p.clone();
+    //     });
+    //
+    //     return l;
+    // });
+
     lines.forEach(function(line, index) {
 
         line.path.forEach(function (carPoint) {
@@ -263,7 +272,7 @@ VisitDuration.prototype.renderCarTrace = function renderCarTrace(carPoint, x, y,
     }
 };
 
-VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisitsByEntranceType (entranceType, vehicleCategory, campingBehavior) {
+VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisitsByEntranceType (entranceType, vehicleCategory, campingBehavior, velocityBehavior) {
 
     if (campingBehavior == 'behavior-camping') {
         campingBehavior =  true;
@@ -272,16 +281,16 @@ VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisits
     }
 
     if (entranceType == 'multi-entrances') {
-        this.visitChart.highLightMultiVisits(vehicleCategory, campingBehavior);
+        this.visitChart.highLightMultiVisits(vehicleCategory, campingBehavior, velocityBehavior);
     }
     else if (entranceType == 'single-entrance') {
-        this.visitChart.highLightSingleVisit(vehicleCategory, campingBehavior);
+        this.visitChart.highLightSingleVisit(vehicleCategory, campingBehavior, velocityBehavior);
     }
     else if (entranceType == 'no-exit') {
-        this.visitChart.highLightNoExit(vehicleCategory, campingBehavior);
+        this.visitChart.highLightNoExit(vehicleCategory, campingBehavior, velocityBehavior);
     }
     else {
-        this.visitChart.highLightAllTypesOfVisit(vehicleCategory, campingBehavior);
+        this.visitChart.highLightAllTypesOfVisit(vehicleCategory, campingBehavior, velocityBehavior);
 
     }
 };

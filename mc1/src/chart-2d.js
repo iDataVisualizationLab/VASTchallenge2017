@@ -180,7 +180,7 @@ Chart2D.prototype.getMyLines = function getMyLines() {
   return this.myLine;
 };
 
-Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCategory, campingBehavior) {
+Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCategory, campingBehavior, velocityBehavior) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
@@ -200,47 +200,97 @@ Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCateg
         .style('visibility', function (line) {
             if (carCategory == 'car-all') {
                 if (campingBehavior == 'all') {
-                    return line.context.entranceCount > 2 ? 'visible' : 'hidden';
+                    if (velocityBehavior == 'all') {
+                        return line.context.entranceCount > 2 ? 'visible' : 'hidden';
+                    }else if (velocityBehavior == 'below-limit') {
+                        return line.context.entranceCount > 2 && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                    }else {
+                        return line.context.entranceCount > 2 && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                    }
                 }
                 else {
-                    return line.context.entranceCount > 2 && line.context.camping == campingBehavior ? 'visible' : 'hidden';
+                    switch (velocityBehavior) {
+                        case 'all':
+                            return line.context.entranceCount > 2 && line.context.camping == campingBehavior ? 'visible' : 'hidden';
+                        case 'below-limit':
+                            return line.context.entranceCount > 2 && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                        case 'above-limit':
+                            return line.context.entranceCount > 2 && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                    }
                 }
             }
             else if (carCategory == 'car-internal') {
                 if (campingBehavior == 'all') {
-                    return (line.context.entranceCount > 2 && line.context.carType == '2P') ? 'visible' : 'hidden';
+                    switch (velocityBehavior) {
+                        case 'all':
+                            return (line.context.entranceCount > 2 && line.context.carType == '2P') ? 'visible' : 'hidden';
+                        case 'below-limit':
+                            return (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ) ? 'visible' : 'hidden';
+                        case 'above-limit':
+                            return (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ) ? 'visible' : 'hidden';
+                    }
                 }
                 else {
-                    return (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
-
+                    switch (velocityBehavior) {
+                        case 'all':
+                            return (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+                        case 'below-limit':
+                            return (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ) ? 'visible' : 'hidden';
+                        case 'above-limit':
+                            return (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ) ? 'visible' : 'hidden';
+                    }
                 }
             }
-            // else if (carCategory == 'car-camping') {
-            //     return (line.context.entranceCount > 2 && line.context.camping == true) ? 'visible' : 'hidden';
-            // }
-            // else if (carCategory == 'no-car-camping') {
-            //     return (line.context.entranceCount > 2 && line.context.camping == false && line.context.carType != '2P') ? 'visible' : 'hidden';
-            // }
             else if (carCategory == 'car-visiting') {
                 if (campingBehavior == 'all') {
-                    return (line.context.entranceCount > 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
+
+                    switch (velocityBehavior) {
+                        case 'all':
+                            return (line.context.entranceCount > 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
+                        case 'below-limit':
+                            return (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ) ? 'visible' : 'hidden';
+                        case 'above-limit':
+                            return (line.context.entranceCount > 2 && line.context.carType != '2P') && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                    }
+
                 }
 
-                return (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+                switch (velocityBehavior) {
+                    case 'all':
+                        return (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+                    case 'below-limit':
+                        return (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                    case 'above-limit':
+                        return (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                }
+
             }
 
             if (carCategory == 'all') {
+                switch (velocityBehavior) {
+                    case 'all':
+                        return (line.context.entranceCount > 2 && line.context.carType == carCategory) ? 'visible' : 'hidden';
+                    case 'below-limit':
+                        return (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                    case 'above-limit':
+                        return (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                }
 
-                return (line.context.entranceCount > 2 && line.context.carType == carCategory) ? 'visible' : 'hidden';
             }
 
-            return (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
-
+            switch (velocityBehavior) {
+                case 'all':
+                    return (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+                case 'below-limit':
+                    return (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                case 'above-limit':
+                    return (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+            }
         })
     ;
 };
 
-Chart2D.prototype.highLightSingleVisit = function highLightSingleVisit (carCategory, campingBehavior) {
+Chart2D.prototype.highLightSingleVisit = function highLightSingleVisit (carCategory, campingBehavior,  velocityBehavior) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
@@ -261,43 +311,96 @@ Chart2D.prototype.highLightSingleVisit = function highLightSingleVisit (carCateg
 
             if (carCategory == 'car-all') {
                 if (campingBehavior == 'all') {
-                    return line.context.entranceCount < 3 ?  'visible' : 'hidden';
+                    switch (velocityBehavior) {
+                        case 'all':
+                            return line.context.entranceCount < 3 ?  'visible' : 'hidden';
+                        case 'below-limit':
+                            return line.context.entranceCount < 3 && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ?  'visible' : 'hidden';
+                        case 'above-limit':
+                            return line.context.entranceCount < 3 && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ?  'visible' : 'hidden';
+                    }
                 }
 
-                return line.context.entranceCount < 3 && line.context.camping == campingBehavior ?  'visible' : 'hidden';
+                switch (velocityBehavior) {
+                    case 'all':
+                        return line.context.entranceCount < 3 && line.context.camping == campingBehavior ?  'visible' : 'hidden';
+                    case 'below-limit':
+                        return line.context.entranceCount < 3 && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ?  'visible' : 'hidden';
+                    case 'above-limit':
+                        return line.context.entranceCount < 3 && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ?  'visible' : 'hidden';
+                }
             }
             else if (carCategory == 'car-internal') {
                 if (campingBehavior == 'all') {
-                    return (line.context.entranceCount < 3 && line.context.carType == '2P') ? 'visible' : 'hidden';
+                    switch (velocityBehavior) {
+                        case 'all':
+                            return (line.context.entranceCount < 3 && line.context.carType == '2P') ? 'visible' : 'hidden';
+                        case 'below-limit':
+                            return (line.context.entranceCount < 3 && line.context.carType == '2P' && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ) ? 'visible' : 'hidden';
+                        case 'above-limit':
+                            return (line.context.entranceCount < 3 && line.context.carType == '2P'&& line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ) ? 'visible' : 'hidden';
+                    }
+
                 }
 
-                return (line.context.entranceCount < 3 && line.context.carType == '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+                switch (velocityBehavior) {
+                    case 'all':
+                        return (line.context.entranceCount < 3 && line.context.carType == '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+                    case 'below-limit':
+                        return (line.context.entranceCount < 3 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                    case 'above-limit':
+                        return (line.context.entranceCount < 3 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                }
+
             }
-            // else if (carCategory == 'car-camping') {
-            //     return (line.context.entranceCount < 3 && line.context.camping == true) ? 'visible' : 'hidden';
-            // }
-            // else if (carCategory == 'car-no-camping') {
-            //     return (line.context.entranceCount < 3 && line.context.camping == false && line.context.carType != '2P') ? 'visible' : 'hidden';
-            // }
             else if (carCategory == 'car-visiting') {
                 if (campingBehavior == 'all') {
-                    return (line.context.entranceCount < 3 && line.context.carType != '2P') ? 'visible' : 'hidden';
+                    switch (velocityBehavior) {
+                        case 'all':
+                            return (line.context.entranceCount < 3 && line.context.carType != '2P') ? 'visible' : 'hidden';
+                        case 'below-limit':
+                            return (line.context.entranceCount < 3 && line.context.carType != '2P' && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                        case 'above-limit':
+                            return (line.context.entranceCount < 3 && line.context.carType != '2P' && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                    }
+
                 }
 
-                return (line.context.entranceCount < 3 && line.context.carType != '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+                switch (velocityBehavior) {
+                    case 'all':
+                        return (line.context.entranceCount < 3 && line.context.carType != '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+                    case 'below-limit':
+                        return (line.context.entranceCount < 3 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                    case 'above-limit':
+                        return (line.context.entranceCount < 3 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                }
 
             }
 
             if (campingBehavior == 'all') {
-                return (line.context.entranceCount < 3 && line.context.carType == carCategory) ? 'visible' : 'hidden';
+                switch (velocityBehavior) {
+                    case 'all':
+                        return (line.context.entranceCount < 3 && line.context.carType == carCategory) ? 'visible' : 'hidden';
+                    case 'below-limit':
+                        return (line.context.entranceCount < 3 && line.context.carType == carCategory && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                    case 'above-limit':
+                        return (line.context.entranceCount < 3 && line.context.carType == carCategory && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                }
             }
 
-            return (line.context.entranceCount < 3 && line.context.carType == carCategory && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+            switch (velocityBehavior) {
+                case 'all':
+                    return (line.context.entranceCount < 3 && line.context.carType == carCategory && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+                case 'below-limit':
+                    return (line.context.entranceCount < 3 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                case 'above-limit':
+                    return (line.context.entranceCount < 3 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+            }
         })
     ;
 };
 
-Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory, campingBehavior) {
+Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory, campingBehavior, velocityBehavior) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
@@ -318,43 +421,94 @@ Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory, campin
 
             if (carCategory == 'car-all') {
                 if (campingBehavior == 'all') {
-                    return line.context.entranceCount < 2 ?  'visible' : 'hidden';
+
+                    switch (velocityBehavior) {
+                        case 'all':
+                            return line.context.entranceCount < 2 ?  'visible' : 'hidden';
+                        case 'below-limit':
+                            return line.context.entranceCount < 2 && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ?  'visible' : 'hidden';
+                        case 'above-limit':
+                            return line.context.entranceCount < 2 && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ?  'visible' : 'hidden';
+                    }
                 }
-                return line.context.entranceCount < 2 && line.context.camping == campingBehavior ?  'visible' : 'hidden';
+
+                switch (velocityBehavior) {
+                    case 'all':
+                        return line.context.entranceCount < 2 && line.context.camping == campingBehavior ?  'visible' : 'hidden';
+                    case 'below-limit':
+                        return line.context.entranceCount < 2 && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ?  'visible' : 'hidden';
+                    case 'above-limit':
+                        return line.context.entranceCount < 2 && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ?  'visible' : 'hidden';
+                }
             }
             else if (carCategory == 'car-internal') {
                 if (campingBehavior == 'all') {
-                    return (line.context.entranceCount < 2 && line.context.carType == '2P') ? 'visible' : 'hidden';
+                    switch (velocityBehavior) {
+                        case 'all':
+                            return (line.context.entranceCount < 2 && line.context.carType == '2P') ? 'visible' : 'hidden';
+                        case 'below-limit':
+                            return (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ) ? 'visible' : 'hidden';
+                        case 'above-limit':
+                            return (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ) ? 'visible' : 'hidden';
+                    }
                 }
 
-                return (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+                switch (velocityBehavior) {
+                    case 'all':
+                        return (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+                    case 'below-limit':
+                        return (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                    case 'above-limit':
+                        return (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                }
             }
-            // else if (carCategory == 'car-camping') {
-            //     return (line.context.entranceCount < 2 && line.context.camping == true) ? 'visible' : 'hidden';
-            // }
-            // else if (carCategory == 'car-no-camping') {
-            //     return (line.context.entranceCount < 2 && line.context.camping == false && line.context.carType != '2P' ) ? 'visible' : 'hidden';
-            // }
             else if (carCategory == 'car-visiting') {
                 if (campingBehavior == 'all') {
-                    return (line.context.entranceCount < 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
+                    switch (velocityBehavior) {
+                        case 'all':
+                            return (line.context.entranceCount < 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
+                        case 'below-limit':
+                            return (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                        case 'above-limit':
+                            return (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                    }
 
                 }
 
-                return (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+                switch (velocityBehavior) {
+                    case 'all':
+                        return (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+                    case 'below-limit':
+                        return (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                    case 'above-limit':
+                        return (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                }
             }
-
 
             if (campingBehavior == 'all') {
-                return (line.context.entranceCount < 2 && line.context.carType == carCategory) ? 'visible' : 'hidden';
+                switch (velocityBehavior) {
+                    case 'all':
+                        return (line.context.entranceCount < 2 && line.context.carType == carCategory) ? 'visible' : 'hidden';
+                    case 'below-limit':
+                        return (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                    case 'above-limit':
+                        return (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                }
             }
 
-            return (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+            switch (velocityBehavior) {
+                case 'all':
+                    return (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
+                case 'below-limit':
+                    return (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+                case 'above-limit':
+                    return (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10) ? 'visible' : 'hidden';
+            }
         })
     ;
 };
 
-Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (carCategory, campingBehavior) {
+Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (carCategory, campingBehavior, velocityBehavior) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
@@ -374,39 +528,97 @@ Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (
             if (carCategory == 'car-all') {
 
                 if (campingBehavior == 'all') {
-                    return 'visible';
+                    switch (velocityBehavior) {
+                        case 'all':
+                            return 'visible';
+                        case 'below-limit':
+                            return line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'invisible';
+                            // return 'invisible';
+                        case 'above-limit':
+                            return line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'invisible';
+                    }
                 }
 
-                return line.context.camping == campingBehavior ? 'visible' : 'hidden';
+                let myVisibility = 'visible';
+                switch (velocityBehavior) {
+                    case 'all':
+                        myVisibility = line.context.camping == campingBehavior ? 'visible' : 'hidden';
+                        break;
+                    case 'below-limit':
+                        myVisibility = line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                        break;
+                    case 'above-limit':
+                        myVisibility = line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                        break;
+                }
+
+                return 'invisible';
             }
             else if (carCategory == 'car-internal') {
                 if (campingBehavior == 'all') {
-                    return line.context.carType == '2P' ? 'visible' : 'hidden';
+                    switch (velocityBehavior) {
+                        case 'all':
+                            return line.context.carType == '2P' ? 'visible' : 'hidden';
+                        case 'below-limit':
+                            return line.context.carType == '2P' && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                        case 'above-limit':
+                            return line.context.carType == '2P' && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                    }
                 }
 
-                return line.context.carType == '2P' && line.context.camping == campingBehavior ? 'visible' : 'hidden';
+                switch (velocityBehavior) {
+                    case 'all':
+                        return line.context.carType == '2P' && line.context.camping == campingBehavior ? 'visible' : 'hidden';
+                    case 'below-limit':
+                        return line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                    case 'above-limit':
+                        return line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                }
             }
-            // else if (carCategory == 'car-camping') {
-            //     return line.context.camping == true ? 'visible' : 'hidden';
-            // }
-            // else if (carCategory == 'car-no-camping') {
-            //     return line.context.camping == false && line.context.carType != '2P' ? 'visible' : 'hidden';
-            // }
             else if (carCategory == 'car-visiting') {
 
                 if (campingBehavior == 'all') {
-                    return line.context.carType != '2P' ? 'visible' : 'hidden';
+                    switch (velocityBehavior) {
+                        case 'all':
+                            return line.context.carType != '2P' ? 'visible' : 'hidden';
+                        case 'below-limit':
+                            return line.context.carType != '2P' && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                        case 'above-limit':
+                            return line.context.carType != '2P' && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                    }
 
                 }
-                return line.context.carType != '2P' && line.context.camping == campingBehavior ? 'visible' : 'hidden';
+
+                switch (velocityBehavior) {
+                    case 'all':
+                        return line.context.carType != '2P' && line.context.camping == campingBehavior ? 'visible' : 'hidden';
+                    case 'below-limit':
+                        return line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                    case 'above-limit':
+                        return line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                }
             }
 
             if (campingBehavior == 'all') {
-                return  line.context.carType == carCategory ? 'visible' : 'hidden';
+                switch (velocityBehavior) {
+                    case 'all':
+                        return  line.context.carType == carCategory ? 'visible' : 'hidden';
+                    case 'below-limit':
+                        return  line.context.carType == carCategory && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                    case 'above-limit':
+                        return  line.context.carType == carCategory && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                }
 
             }
 
-            return  line.context.carType == carCategory && line.context.camping == campingBehavior ? 'visible' : 'hidden';
+            switch (velocityBehavior) {
+                case 'all':
+                    return  line.context.carType == carCategory && line.context.camping == campingBehavior ? 'visible' : 'hidden';
+                case 'below-limit':
+                    return  line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+                case 'above-limit':
+                    return  line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
+            }
         })
     ;
 };
