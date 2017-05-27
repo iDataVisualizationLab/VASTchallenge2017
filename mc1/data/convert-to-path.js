@@ -3,9 +3,45 @@ var parse = require('csv-parse');
 var jsonfile = require('jsonfile');
 
 
+var PF = require('pathfinding');
 
+var moment = require('moment');
 var file = 'Lekagul Sensor Data.csv';
-var mappingUniprotToMgi = {};
+
+let ignoreHeader = true;
+let grid = new PF.Grid(200, 200);
+let CELL_WIDTH = 3;
+let CELL_HEIGHT = 3;
+let SPEED_LIMIT = 25;
+let EXTRA_10 = 27.5;
+let CELL_WIDTH_IN_MILE = 0.06; // mile
+
+var MapPoint = function (row, column, name, walkable) {
+    this.row = +row;
+    this.column = +column;
+    this.name = name;
+    this.walkable = walkable;
+};
+
+var mapPointByName = {};
+
+var calculateVelocity = function (fromGateTime, toGateTime) {
+
+    if (fromGateTime.gate == toGateTime.gate) {
+        return 0;
+    }
+
+    let timeTo = moment(toGateTime.time, 'YYYY-MM-DD HH:mm:ss').toDate();
+    let timeFrom = moment(fromGateTime.time, 'YYYY-MM-DD HH:mm:ss').toDate();
+
+    let timeDurationInMiliSecond = timeTo.getTime() - timeFrom.getTime();
+    let distance = findSinglePathByName(fromGateTime.gate , toGateTime.gate);
+    distance.shift(); // avoid counting current position
+
+    let velocity = distance.length * CELL_WIDTH_IN_MILE * 3600000 / timeDurationInMiliSecond; // mile per hour
+
+    return velocity.toFixed(2);
+};
 
 var readExistingSensorData = function() {
     let myCarData = {};
@@ -29,65 +65,11 @@ var readExistingSensorData = function() {
                 return;
             }
 
-            // time = csvrow[0];
-            // carId = csvrow[1];
-            // tmpGateName = csvrow[3];
-            // // gate timestamp record
-            // tmpGateTime = {};
-            // tmpGateTime[tmpGateName] = time;
-            //
-            // if (!myCar.hasOwnProperty(carId)) {
-            //     tmpCar = new Object();
-            //     tmpCar.carId = carId;
-            //     tmpCar.carType = csvrow[2];
-            //     tmpCar.path = [];
-            //     tmpCar.enter = false;
-            //     tmpCar.exit = false;
-            //
-            //     myCar[carId] = tmpCar;
-            // }
-            //
-            // tmpCar = myCar[carId];
-            // if (tmpCar.path.length < 1 && (tmpCar.carType != '2P' && !tmpGateName.startsWith('entrance') || tmpCar.carType == '2P' && !tmpGateName.startsWith('ranger-base') )) {
-            //     console.error('This car has not entered the park. carId=' + tmpCar.carId + "; time=" + tmpCar.time);
-            //     outliner[tmpCar.carId] = tmpCar;
-            // }
-            //
-            // // ignore outliner
-            // if (outliner.hasOwnProperty(carId)) {
-            //     console.error('This car is in outlier list. id=' + carId);
-            //     return;
-            // }
-            //
-            // // add current hop to path
-            // tmpCar.path.push(tmpGateTime);
-            // if (tmpCar.carType != '2P' && tmpGateName.startsWith('entrance') || tmpCar.carType == '2P' && tmpGateName.startsWith('ranger-base') ) {
-            //     if (tmpCar.exit) {
-            //         throw new Error('Car has already exit. Invalid data processing for car id: ' + carId);
-            //     }
-            //
-            //     if (tmpCar.enter) {
-            //         tmpCar.exit = true;
-            //     }
-            //     else {
-            //         tmpCar.enter = true;
-            //     }
-            // }
-            //
-            // if (!myCarData.hasOwnProperty(tmpCar.carType)) {
-            //     myCarData[tmpCar.carType] = [];
-            // }
-            //
-            // cars = myCarData[tmpCar.carType];
-            // if (tmpCar.exit) {
-            //     cars.push(myCar[carId]);
-            //     delete myCar[carId];
-            // }
-
             time = csvrow[0];
             carId = csvrow[1];
             tmpGateName = csvrow[3];
             // gate timestamp record
+
             tmpGateTime = {
                 time: time,
                 gate: tmpGateName
@@ -105,8 +87,12 @@ var readExistingSensorData = function() {
             }
 
             tmpCar = myCar[carId];
+            if (tmpCar.path.length > 0 ) {
+                let prePoint = tmpCar.path[tmpCar.path.length-1];
+                prePoint.velocity = calculateVelocity(prePoint, tmpGateTime);
+            }
             // add current hop to path
-            tmpCar.path.push(tmpGateTime);
+            tmpCar.path.push( tmpGateTime );
             if (!tmpCar.camping && hasCampingBehavior(tmpCar.path)) {
                 tmpCar.camping = true;
             }
@@ -149,5 +135,73 @@ var readExistingSensorData = function() {
     }
 };
 
-readExistingSensorData();
 
+
+fs.createReadStream('map-data.csv')
+    .pipe(parse({delimiter: ','}))
+    .on('data', function(csvrow, i) {
+        if (ignoreHeader) {
+            ignoreHeader = false;
+            return;
+        }
+
+        let mp = new MapPoint(csvrow[0], csvrow[1], csvrow[2], csvrow[3] == 1);
+        if (!!mp.name) {
+            mapPointByName[mp.name] = mp;
+        }
+
+        grid.setWalkableAt(mp.row, mp.column, mp.walkable);
+    })
+    .on('end',function() {
+
+        readExistingSensorData();
+
+    });
+
+
+var finder = new PF.AStarFinder();
+function findSinglePathByName (fromName, toName) {
+    let myGrid = grid.clone();
+
+    let fromPoint = mapPointByName[fromName];
+    let toPoint = mapPointByName[toName];
+
+    if (!fromPoint || !toPoint) {
+        throw new Error('Invalid name');
+    }
+
+    myGrid.setWalkableAt(fromPoint.row, fromPoint.column, true);
+    myGrid.setWalkableAt(toPoint.row, toPoint.column, true);
+
+    let paths = finder.findPath(fromPoint.row, fromPoint.column, toPoint.row, toPoint.column, myGrid);
+
+    return paths;
+}
+
+//
+// function convertPathToMapPoint (path) {
+//
+//     let self = this;
+//     return path.map(function (coords) {
+//         if (coords.length != 2) {
+//             throw new Error('Invalid point coordinate. Require row amd col vaue');
+//         }
+//         return self.getMapPoint(coords[0], coords[1]);
+//     })
+// }
+//
+// function getMapPoint (row, col) {
+//
+//     if (row < 0 || row >= this.mapPoints.length) {
+//         throw new Error('Invalid row index');
+//     }
+//
+//     let rowItems = this.mapPoints[row];
+//     if (col < 0 || col >= rowItems.length) {
+//         throw new Error('Invalid col index');
+//     }
+//
+//     return rowItems[col];
+// };
+//
+//

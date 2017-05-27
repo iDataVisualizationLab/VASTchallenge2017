@@ -6,6 +6,8 @@
     "file-system": "^2.2.2",
     "csv-parse": "^1.2.0",
     "csv-write-stream": "^2.0.0",
-    "jsonfile": "^2.4.0"
+    "jsonfile": "^2.4.0",
+    "pathfinding": "^0.4.8",
+    "moment" : "^2.18.1"
   }
 }

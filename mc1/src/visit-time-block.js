@@ -42,6 +42,19 @@ VisitTimeBlock.prototype.init = function init() {
 VisitTimeBlock.prototype.render = function render(lines) {
     // parse the date / time
     let self = this;
+    lines = lines.map(function (l) {
+
+        l.path = l.path.map(function (p) {
+            return p;
+        });
+
+        return l;
+    });
+
+    lines.sort(function (l1, l2) {
+        return l1.path[0].getTimeInDayBySeconds() - l2.path[0].getTimeInDayBySeconds();
+    });
+
     lines.forEach(function(line, index) {
 
         let tmpPath = [];
@@ -49,12 +62,22 @@ VisitTimeBlock.prototype.render = function render(lines) {
         let firstDayInMilliseconds;
         let endDayInMilliseconds;
         let d;
+        let maxEndDate;
         for(let i=0; i< line.path.length; i++) {
             carPoint = line.path[i].clone();
 
             if (i==0) {
                 firstDayInMilliseconds = carPoint.getTimeInMiliseconds();
-                endDayInMilliseconds = firstDayInMilliseconds + (getTimeInDayBySeconds(self.toTime) - getTimeInDayBySeconds(self.fromTime))*1000;
+                maxEndDate = new Date(firstDayInMilliseconds);
+                maxEndDate.setHours(23);
+                maxEndDate.setMinutes(59);
+                maxEndDate.setSeconds(59);
+                maxEndDate.setMilliseconds(999);
+
+
+                // endDayInMilliseconds = firstDayInMilliseconds + (getTimeInDayBySeconds(self.toTime) - getTimeInDayBySeconds(self.fromTime))*1000;
+                 endDayInMilliseconds = maxEndDate.getTime();
+
             }
 
             if (carPoint.getTimeInMiliseconds() < endDayInMilliseconds) {
@@ -71,6 +94,9 @@ VisitTimeBlock.prototype.render = function render(lines) {
         self.visitChart.addData(line, tmpPath);
 
     });
+
+
+
 
     this.visitChart.renderChart(this.events);
     this.visitChart.renderAxis('Hours', 'Visits', "%H:%M");
