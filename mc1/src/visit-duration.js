@@ -215,7 +215,7 @@ VisitDuration.prototype.simulateCarMovement = function (context, gateSensorDataA
 
 
                 },
-                simplePath.velocity
+                ParkMap.CELL_WIDTH_IN_MILE * 100 / simplePath.velocity
             );
         };
 
