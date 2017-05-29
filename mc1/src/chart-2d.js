@@ -56,7 +56,9 @@ Chart2D.prototype.addData = function addData(context, dataArray, xKey, yKey) {
         .x(function(d) {
             return self.x(d[xKey]);
         })
-        .y(function(d) { return self.y(d[yKey]); })
+        .y(function(d) {
+            let t = self.y(d[yKey]);
+            return self.y(d[yKey]); })
     ;
 
     this.lineData.push( {valueLine: valueLine, data: dataArray, context: context});
@@ -134,7 +136,7 @@ Chart2D.prototype.renderChart = function renderChart(events) {
     self.myLine
         .append('path')
         .attr("class", function (line) {
-            return "line line-multi-visit-" + (line.context.multiEnterExit ? 1 : 0)
+            return "line line-multi-visit-" + (!!line.context.multiEnterExit ? 1 : 0)
         })
         .attr("d", function (line) {
             return line.valueLine(line.data);
@@ -532,10 +534,9 @@ Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (
                         case 'all':
                             return 'visible';
                         case 'below-limit':
-                            return line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'invisible';
-                            // return 'invisible';
+                            return line.context.velocity <= ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
                         case 'above-limit':
-                            return line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'invisible';
+                            return line.context.velocity > ParkMap.SPEED_LIMIT_EXTRA_10 ? 'visible' : 'hidden';
                     }
                 }
 
@@ -552,7 +553,7 @@ Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (
                         break;
                 }
 
-                return 'invisible';
+                return myVisibility;
             }
             else if (carCategory == 'car-internal') {
                 if (campingBehavior == 'all') {

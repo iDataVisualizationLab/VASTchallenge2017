@@ -33,14 +33,8 @@ VisitDuration.prototype.init = function init() {
 VisitDuration.prototype.render = function render(lines) {
     // parse the date / time
     let self = this;
-    // lines = lines.map(function (l) {
-    //
-    //     l.path = l.path.map(function (p) {
-    //         return p.clone();
-    //     });
-    //
-    //     return l;
-    // });
+
+    // this.visitChart.setYDomain(0, Math.round(lines.length + lines.length / 10));
 
     lines.forEach(function(line, index) {
 
