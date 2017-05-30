@@ -58,7 +58,6 @@ VisitDuration.prototype.render = function render(lines) {
 
 VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(e) {
 
-    console.log('event mouse over');
 
     let self = this;
     let line = e.line;
@@ -71,6 +70,9 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(e) {
     // self.parkMap.findThenHighLightPath(mapPointPaths, line.context.color);
 
     // self.renderCarTrace(line.data[0], 0, 0);
+
+    console.log('event mouse over. Simulating: ' + line.context.carId);
+
 
     self.simulateCarMovement(line.context, line.data);
 
