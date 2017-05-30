@@ -14,6 +14,11 @@ var Chart2D = function Chart2D(svg, width, height, options) {
     this.y = d3.scaleLinear().range([height, 0]);
 };
 
+Chart2D.prototype.setEventHandler = function setEventHandler(eventHandler) {
+    this.eventHandler = eventHandler;
+};
+
+
 Chart2D.prototype.getSvg = function getSvg() {
     return this.svg;
 };
@@ -154,7 +159,15 @@ Chart2D.prototype.renderChart = function renderChart(events) {
     if (!!events && events.length > 0) {
         events.forEach(function (e) {
             self.myLine.on(e.name, function (l, index) {
-                e.callback(e.params, l, index)
+                // e.callback(e.params, l, index);
+                let event = {
+                    name: e.name,
+                    line: l
+                };
+
+                if (!!self.eventHandler) {
+                    self.eventHandler.fireEvent(event);
+                }
             });
         })
     }

@@ -41,6 +41,7 @@ d3.json("data/all-car-path.json", function(error, lines) {
     mc1.visitParser = visitParser;
 
     let parsedVisits = visitParser.parse(lines);
+    let eventHandler = new EventHandler();
 
     // parsedVisits = parsedVisits.slice(0, 10);
 
@@ -48,10 +49,10 @@ d3.json("data/all-car-path.json", function(error, lines) {
 
     let firstDaySpanChart = new Chart2D(mc1.firstDaySpanSvg, width, height, {id: 2, margin: margin, timeChart: true});
 
-    mc1.firstDayDuration = new VisitTimeBlock(firstDaySpanChart, mc1.parkMap);
+    mc1.firstDayDuration = new VisitTimeBlock(firstDaySpanChart, mc1.parkMap, null, null, eventHandler);
     mc1.firstDayDuration.render(parsedVisits);
 
-    mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap);
+    mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap, null, null, eventHandler);
     mc1.visitDuration.render(parsedVisits);
 
     // d3.csv('data/Lekagul Sensor Data.csv', function (err, rawData) {

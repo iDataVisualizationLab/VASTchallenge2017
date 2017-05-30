@@ -1,4 +1,4 @@
-var VisitDuration = function VisitDuration(visitChart, parkMap, startDate, endDate) {
+var VisitDuration = function VisitDuration(visitChart, parkMap, startDate, endDate, eventHandler) {
 
     this.visitChart = visitChart;
     this.parkMap = parkMap;
@@ -16,6 +16,9 @@ var VisitDuration = function VisitDuration(visitChart, parkMap, startDate, endDa
 
     this.visitChart.setXDomain(minDate, maxDate);
     this.visitChart.setYDomain(0, 20000);
+    this.eventHandler = eventHandler;
+
+    this.visitChart.setEventHandler(this.eventHandler);
 
     this.init();
 
@@ -24,9 +27,12 @@ var VisitDuration = function VisitDuration(visitChart, parkMap, startDate, endDa
 
 VisitDuration.prototype.init = function init() {
     this.events = [
-        {name: 'mouseover', callback: this.onLineMouseOver, params: this},
-        {name: 'mouseout', callback: this.onLineMouseOut, params: this}
+        {name: 'mouseover'},
+        {name: 'mouseout'}
     ];
+
+    this.eventHandler.addEvent('mouseover', this.onLineMouseOver, this);
+    this.eventHandler.addEvent('mouseout', this.onLineMouseOut, this);
 
 };
 
@@ -50,11 +56,12 @@ VisitDuration.prototype.render = function render(lines) {
     this.visitChart.renderAxis('Time', 'Visits');
 };
 
-VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(param, line) {
+VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(e) {
 
     console.log('event mouse over');
 
-    let self = param;
+    let self = this;
+    let line = e.line;
 
     self.visitChart.highlightSingleVisit(line.context.carId);
 
@@ -69,13 +76,13 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(param, line) 
 
 };
 
-VisitDuration.prototype.onLineMouseOut = function onLineMouseOver(param, line) {
+VisitDuration.prototype.onLineMouseOut = function onLineMouseOver(e) {
     // let path = line.data;
     // let startPoint;
     // let endPoint;
     // let steps;
     //
-    let self = param;
+    let self = this;
     self.visitChart.clearSetting();
     //
     // for(let i=0; i< path.length-1; i++) {
