@@ -47,6 +47,47 @@ SimulationManager.prototype.simulateTraffic = function simulateCarMovement (visi
     }, 30);
 };
 
+
+SimulationManager.prototype.simulateTrafficByTimeBlock = function simulateTrafficByTimeBlock (visits) {
+
+    let i =0;
+
+    let startIndex = 0;
+    let myNextStartIndex = 0;
+    let line;
+    let firstCar;
+
+    let myCars;
+
+    let self = this;
+
+    d3.interval(function (elapsed) {
+
+        console.log("time: " + elapsed);
+        myCars = [];
+        for(i=startIndex; i< visits.length; i++) {
+            line = visits[i];
+
+            if (startIndex == i) {
+                firstCar = visits[i];
+            }
+
+            if (getTimeInDayByMilliseconds(line.startTime) >  elapsed * TIME_RATIO + getTimeInDayByMilliseconds(firstCar.startTime)) {
+                break;
+            }
+
+            myCars.push(line);
+            myNextStartIndex = i;
+        }
+
+        startIndex = myNextStartIndex + 1;
+        myCars.forEach(function (l) {
+            self.simulateCarMovement(l);
+        });
+
+    }, 30);
+};
+
 /**
  *
  * @param line

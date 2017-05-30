@@ -74,7 +74,7 @@ mc1.controller.simulateTimeBlock = function(self) {
 
     console.log("entranceType: " + entranceType + "; vehicleCategory: " + vehicleCategory + "; vehicleBehavior: " + vehicleBehavior + "; velocityBehavior: " + self.value + "; ");
 
-    mc1.simulationManager.simulateTraffic(mc1.visitParser.getVisits());
+    mc1.simulationManager.simulateTrafficByTimeBlock(mc1.firstDayDuration.getVisits());
 };
 
 // mc1.controller.changeRoadHitmapTime = function (self) {

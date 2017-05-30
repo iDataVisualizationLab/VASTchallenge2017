@@ -116,8 +116,8 @@ function rgbToHex(r, g, b) {
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
-function getTimeInDayBySeconds(date) {
-    return date.getHours()*3600 + date.getMinutes()*60 + date.getSeconds();
+function getTimeInDayByMilliseconds(date) {
+    return date.getHours()*3600 + date.getMinutes()*60 + date.getSeconds() + date.getMilliseconds();
 }
 
 /**
