@@ -41,7 +41,7 @@ SimulationManager.prototype.simulateTraffic = function simulateCarMovement (visi
 
         startIndex = myNextStartIndex + 1;
         myCars.forEach(function (l) {
-            self.simulateCarMovement(l, l.path);
+            self.simulateCarMovement(l);
         });
 
     }, 30);
@@ -55,8 +55,8 @@ SimulationManager.prototype.simulateTraffic = function simulateCarMovement (visi
 SimulationManager.prototype.simulateCarMovement = function simulateCarMovement (line, delay) {
 
     let self = this;
-    let context = line.context;
-    let gateSensorDataArray = line.data;
+    let context = !!line.context ? line.context : line;
+    let gateSensorDataArray = line.data || line.path;
 
     if (this.simulatingCars.hasOwnProperty(context.carId)) {
         return;
@@ -111,7 +111,7 @@ SimulationManager.prototype.simulateCarMovement = function simulateCarMovement (
 
             let pos = carPoint.path[idx];
 
-            self.parkMap.highLightOneCellAtPos(pos, context.color);
+            self.parkMap.highLightOneCellAtPos(pos, context.color, 0.1, true);
 
             let travelTime = ParkMap.CELL_WIDTH_IN_MILE * 3600000 / carPoint.velocity;
             d3.timeout(function () {

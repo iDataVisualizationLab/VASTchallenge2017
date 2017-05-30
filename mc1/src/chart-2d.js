@@ -160,6 +160,7 @@ Chart2D.prototype.renderChart = function renderChart(events) {
         events.forEach(function (e) {
             self.myLine.on(e.name, function (l, index) {
                 // e.callback(e.params, l, index);
+
                 let event = {
                     name: e.name,
                     line: l

@@ -14,18 +14,22 @@ var MapPoint = function MapPoint(pos, r, g, b, alpha, name) {
     this.r = r;
     this.g = g;
     this.b = b;
+
+    if (!alpha && alpha != 0) {
+        alpha = 1;
+    }
+
+    if (alpha > 1) {
+        alpha = 1;
+    }
+
     this.alpha = alpha;
     this.isRoad = false;
     this.row = Math.floor(pos / 200);
     this.column = Math.ceil(pos % 200);
 
-    let componentToHex = function(c) {
-        var hex = c.toString(16);
-        return hex.length == 1 ? "0" + hex : hex;
-    };
+   this.setColor();
 
-
-    this.color =  "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
     if (r == 255 && g == 255 && b == 255) {
         this.isRoad = true;
         this.color = MapPoint.ROAD_COLOR;
@@ -46,17 +50,48 @@ MapPoint.prototype.getR = function getR() {
     return this.r;
 };
 
+MapPoint.prototype.setR = function setR(r) {
+    this.r = r;
+};
+
 MapPoint.prototype.getG = function getG() {
     return this.g;
+};
+
+MapPoint.prototype.setG = function setG(g) {
+    this.g = g;
 };
 
 MapPoint.prototype.getB = function getB() {
     return this.b;
 };
 
+MapPoint.prototype.setB = function setB(b) {
+    this.b = b;
+};
+
+MapPoint.prototype.getAlpha = function getAlpha() {
+    return this.alpha;
+};
+
+MapPoint.prototype.setAlpha = function setAlpha(alpha) {
+    this.alpha = alpha;
+};
+
 MapPoint.prototype.getColor = function getColor() {
 
     return this.color;
+};
+
+MapPoint.prototype.setColor = function setColor() {
+
+    let componentToHex = function(c) {
+        var hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    };
+
+
+    this.color =  "#" + componentToHex(this.r) + componentToHex(this.g) + componentToHex(this.b);
 };
 
 MapPoint.prototype.getLabel = function getLabel() {
@@ -197,6 +232,7 @@ var ParkMap = function ParkMap (byteData, svg) {
     this.mapPoints = []; // two dimensional array after the setup complete
     this.rawData = byteData;
     this.pointNameMapping = {};
+    this.roadPoints = {};
 
     let tmpPoint;
     let pos = 0;
@@ -214,6 +250,10 @@ var ParkMap = function ParkMap (byteData, svg) {
 
         if (!!tmpPoint.getName()) {
             this.pointNameMapping[tmpPoint.getName()] = tmpPoint;
+        }
+
+        if (tmpPoint.getIsRoad()) {
+            this.roadPoints[tmpPoint.getPos()] = tmpPoint;
         }
 
         if (tmpPoint.isEntrance()) {
@@ -376,14 +416,51 @@ ParkMap.prototype.highLightOneCell = function highLightOneCell(mapPoint, color) 
     ;
 };
 
-ParkMap.prototype.highLightOneCellAtPos = function highLightOneCell(pos, color, alpha) {
+/**
+ * Highlight road point with merge color option if previously the point is filled with other color
+ *
+ * @param pos
+ * @param color
+ * @param alpha
+ * @param mergedColor: true if we want to merge color
+ */
+ParkMap.prototype.highLightOneCellAtPos = function highLightOneCell(pos, color, alpha, mergedColor) {
+
+    let roadPoint = this.roadPoints[pos];
+
+    if (!roadPoint) {
+        console.error('not a road point at: ' + pos);
+        return;
+    }
 
     if (alpha != 0 && !alpha) {
         alpha = 1;
     }
+
+    let rgb2 = hexToRgb(color, alpha);
+
+    if (!!mergedColor) {
+        let rgb1 = [roadPoint.getR(), roadPoint.getG(), roadPoint.getB(), roadPoint.getAlpha()];
+        let merged = mergeTwoRGBs(rgb1, rgb2);
+
+        roadPoint.setR(merged[0]);
+        roadPoint.setG(merged[1]);
+        roadPoint.setB(merged[2]);
+        roadPoint.setAlpha(merged[3]);
+    }
+    else {
+        roadPoint.setR(rgb2[0]);
+        roadPoint.setG(rgb2[1]);
+        roadPoint.setB(rgb2[2]);
+        roadPoint.setAlpha(alpha);
+
+    }
+
+    roadPoint.setColor();
+
     this.svg.select('.road-cell-' + pos)
-        .attr('fill', color)
-        .style('opacity', alpha)
+        .attr('fill', roadPoint.getColor())
+        .style('opacity', roadPoint.getAlpha())
     ;
 };
 

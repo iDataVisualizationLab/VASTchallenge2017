@@ -62,8 +62,7 @@ mc1.controller.simulateTraffic = function(self) {
 
     console.log("entranceType: " + entranceType + "; vehicleCategory: " + vehicleCategory + "; vehicleBehavior: " + vehicleBehavior + "; velocityBehavior: " + self.value + "; ");
 
-
-    mc1.visitDuration.simulateTraffic(mc1.visitParser.getVisits());
+    mc1.simulationManager.simulateTraffic(mc1.visitParser.getVisits());
 };
 
 // mc1.controller.changeRoadHitmapTime = function (self) {
