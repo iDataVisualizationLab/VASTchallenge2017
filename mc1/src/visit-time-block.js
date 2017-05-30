@@ -1,7 +1,7 @@
 // fromHour is 0 by default
 // toHour is closed hour that the car get recorded within 24 hours.
 
-var VisitTimeBlock = function VisitTimeBlock(visitChart, parkMap, fromHour, toHour, eventHandler) {
+var VisitTimeBlock = function VisitTimeBlock(visitChart, parkMap, fromHour, toHour, eventHandler, simulationManager) {
 
     Object.assign(this, VisitDuration.prototype);
     delete this.render; // remove extended functions to support override
@@ -28,6 +28,7 @@ var VisitTimeBlock = function VisitTimeBlock(visitChart, parkMap, fromHour, toHo
 
     this.eventHandler = eventHandler;
     this.visitChart.setEventHandler(this.eventHandler);
+    this.simulationManager = simulationManager;
 
     this.init();
 
