@@ -26,7 +26,7 @@ var VisitTimeBlock = function VisitTimeBlock(visitChart, parkMap, fromHour, toHo
     this.visitChart.setXDomain(this.fromTime, this.toTime);
     this.visitChart.setYDomain(0, 20000);
 
-    // this.init();
+    this.init();
 
 };
 
