@@ -130,7 +130,9 @@ Chart2D.prototype.renderChart = function renderChart(events) {
     let self = this;
     self.myLine = this.svg.selectAll('.line-graph').data(this.lineData).enter()
         .append('g')
-        .attr('class', 'line-graph')
+        .attr('class', function (l) {
+            return 'line-graph car-id-' + l.context.carId;
+        })
     ;
 
     self.myLine
@@ -180,6 +182,27 @@ Chart2D.prototype.renderChart = function renderChart(events) {
 
 Chart2D.prototype.getMyLines = function getMyLines() {
   return this.myLine;
+};
+
+
+
+Chart2D.prototype.highlightSingleVisit = function highlightSingleVisit (carId) {
+
+    let self = this;
+    self.myLine.selectAll('.line')
+        .style('opacity', function (l) {
+
+            return l.context.carId == carId ? 1 : 0.1;
+        })
+
+};
+
+Chart2D.prototype.clearSetting = function highlightSingleVisit () {
+
+    let self = this;
+    self.myLine.selectAll('.line')
+        .style('opacity', 1)
+
 };
 
 Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCategory, campingBehavior, velocityBehavior) {

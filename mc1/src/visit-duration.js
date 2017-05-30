@@ -25,7 +25,7 @@ var VisitDuration = function VisitDuration(visitChart, parkMap, startDate, endDa
 VisitDuration.prototype.init = function init() {
     this.events = [
         {name: 'mouseover', callback: this.onLineMouseOver, params: this},
-        // {name: 'mouseout', callback: this.onLineMouseOut, params: this}
+        {name: 'mouseout', callback: this.onLineMouseOut, params: this}
     ];
 
 };
@@ -56,6 +56,8 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(param, line) 
 
     let self = param;
 
+    self.visitChart.highlightSingleVisit(line.context.carId);
+
     // let mapPointPaths = line.data.map(function (carPoint) {
     //     return carPoint.getMapPoint();
     // });
@@ -68,20 +70,21 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(param, line) 
 };
 
 VisitDuration.prototype.onLineMouseOut = function onLineMouseOver(param, line) {
-    let path = line.data;
-    let startPoint;
-    let endPoint;
-    let steps;
-
+    // let path = line.data;
+    // let startPoint;
+    // let endPoint;
+    // let steps;
+    //
     let self = param;
-
-    for(let i=0; i< path.length-1; i++) {
-        startPoint = path[i];
-        endPoint = path[i+1];
-
-        steps = self.parkMap.findSinglePathByName(startPoint.gate, endPoint.gate);
-        self.parkMap.clearPath(steps);
-    }
+    self.visitChart.clearSetting();
+    //
+    // for(let i=0; i< path.length-1; i++) {
+    //     startPoint = path[i];
+    //     endPoint = path[i+1];
+    //
+    //     steps = self.parkMap.findSinglePathByName(startPoint.gate, endPoint.gate);
+    //     self.parkMap.clearPath(steps);
+    // }
 };
 
 VisitDuration.prototype.simulateTraffic = function simulateCarMovement (visits) {
