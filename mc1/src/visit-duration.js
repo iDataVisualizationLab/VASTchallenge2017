@@ -84,65 +84,58 @@ VisitDuration.prototype.onLineMouseOut = function onLineMouseOver(param, line) {
     }
 };
 
-VisitDuration.prototype.simulateCarMovement = function (context, gateSensorDataArray) {
+VisitDuration.prototype.simulateTraffic = function simulateCarMovement (visits) {
+
+    let i =0;
+
+    let startIndex = 0;
+    let myNextStartIndex = 0;
+    let line;
+    let firstCar;
+
+    let myCars;
 
     let self = this;
 
-    if (!!self.simulationTimer) {
-        self.simulationTimer.stop();
-        self.parkMap.clearCarTrace();
+    d3.interval(function (elapsed) {
 
-        if (!!self.simulatedMapPoints && self.simulatedMapPoints.length > 0) {
-            self.parkMap.clearPath(self.simulatedMapPoints);
-            self.simulatedMapPoints = [];
-        }
-    }
+        console.log("time: " + elapsed);
+        myCars = [];
+        for(i=startIndex; i< visits.length; i++) {
+            line = visits[i];
 
-    console.log('Simulating for car: ' + context.carId + "; type: " + context.carType);
-    let timeDurationInMiliSecond;
-    let fromCarPoint;
-    let toCarPoint;
-    let distance;
+            if (startIndex == i) {
+                firstCar = visits[i];
+            }
 
-    self.simulationPath = [];
-    self.simulatedMapPoints = [];
+            if (line.startTime.getTime() >  elapsed * TIME_RATIO + firstCar.startTime.getTime()) {
+                break;
+            }
 
-    let velocity;
-
-    for(let i=0; i< gateSensorDataArray.length - 1; i++) {
-        fromCarPoint = gateSensorDataArray[i];
-        toCarPoint =  gateSensorDataArray[i+1];
-        timeDurationInMiliSecond = toCarPoint.getTimeInMiliseconds() - fromCarPoint.getTimeInMiliseconds();
-
-        if (fromCarPoint.getGate() != toCarPoint.getGate()) {
-            distance = this.parkMap.findSinglePathByName(fromCarPoint.getGate(), toCarPoint.getGate());
-            distance.shift(); // avoid counting current position
-            velocity = distance.length * ParkMap.CELL_WIDTH_IN_MILE * 3600000 / timeDurationInMiliSecond; // mile per hour
-        }
-        else {
-            velocity = 0; // not movement, stay in side for gaming, camping
+            myCars.push(line);
+            myNextStartIndex = i;
         }
 
-        self.simulationPath.push({from: fromCarPoint, to: toCarPoint, velocity: velocity, path: distance, id: self.simulationPath.length})
-    }
+        startIndex = myNextStartIndex + 1;
+        myCars.forEach(function (l) {
+            self.simulateCarMovement(l, l.path);
+        });
 
-    var nextSimplePath = self.simulationPath.shift();
+    }, 30);
+};
+
+/**
+ *
+ * @param context
+ * @param gateSensorDataArray
+ * @param delay time in milliseconds
+ */
+VisitDuration.prototype.simulateCarMovement = function simulateCarMovement (context, gateSensorDataArray, delay) {
+
+    let self = this;
 
     // show car tace
     let carTrace = self.parkMap.getCarTraceContainer();
-    // let colorF =  d3.scaleOrdinal(d3.schemeCategory10);
-    //
-    // for(let i=0; i< 10; i++) {
-    //     carTrace.append('rect')
-    //         .attr('x', 0)
-    //         .attr('y', -5)
-    //         .attr('width', 6)
-    //         .attr('height', 6)
-    //         .attr('fill', colorF(i) )
-    //         .style('opacity', 0.1)
-    //     ;
-    // }
-
     carTrace.append('text')
         .text('Car: ' + context.carId)
         .attr('x', 13)
@@ -151,79 +144,204 @@ VisitDuration.prototype.simulateCarMovement = function (context, gateSensorDataA
 
     ;
 
-
-    var doSimulation = function (simplePath, index) {
-
-        let myIndex = index % 35;
-        if (index != 0 && myIndex == 0) {
-            // clear text
-            self.parkMap.clearCarTrace();
+    var doSimulation = function (index) {
+        if (!index && index !=0) {
+            index = 0;
         }
-        let carTraceYPos = 15 + myIndex*15;
 
+        if (index >= gateSensorDataArray.length) {
+            console.log('no gate to simulate');
+            return;
+        }
 
-
-        self.renderCarTrace(simplePath.from, 0, carTraceYPos);
-
-        if (simplePath.from.getGate() == simplePath.to.getGate()) {
-            console.log('enter and quite the same place: ' + simplePath.from.getGate() + "; duration: " + ((simplePath.to.getTimeInMiliseconds() - simplePath.from.getTimeInMiliseconds())/1000*60) + "(min)");
-            nextSimplePath = self.simulationPath.shift();
-            if (!!nextSimplePath) {
-
-                doSimulation(nextSimplePath, ++index);
-            }
-            else {
-                self.renderCarTrace(simplePath.to, 0, carTraceYPos + 15, true); // last gate
-            }
+        let carPoint = gateSensorDataArray[index];
+        if (!carPoint.path || carPoint.path.length < 1) {
+            console.log('arrive last gate: ' + carPoint.getGate());
 
             return;
-
         }
 
-        console.log('Simulate Path: from: ' + simplePath.from.getGate() + "; t: " + simplePath.to.getGate());
+        console.log('at gate:' + carPoint.getGate());
+
+
         // highlight cell
-        let nextCell = simplePath.path.shift();
 
-        var doJumping = function (cell) {
+        var doJumping = function (idx) {
 
-            console.log('jump to cell: ' + cell.getPos() + "; name: " + cell.getName());
-            self.simulatedMapPoints.push(cell);
+            if (!idx && idx != 0) {
+                idx = 0;
+            }
 
-            self.parkMap.highLightOneCell(cell, context.color);
-
-            self.simulationTimer = d3.timer(function (e) {
-                    // clear cell
-                    // console.log('out of cell : ' + cell.getPos());
-                    self.simulationTimer.stop();
-                    // self.parkMap.clearOneCell(cell);
-
-                    nextCell = simplePath.path.shift();
-                    if (!!nextCell) {
-                        doJumping(nextCell);
-                    }
-                    else {
-                        nextSimplePath = self.simulationPath.shift();
-                        if (!!nextSimplePath) {
-
-                            doSimulation(nextSimplePath, ++index);
-                        }else {
-
-                            self.renderCarTrace(simplePath.to, 0, carTraceYPos + 15, true); // last gate
-
-                        }
-                    }
+            if (idx >= carPoint.path.length-1) {
+                console.log('no more path. Go to next gate');
+                doSimulation(index + 1);
+                return;
+            }
 
 
+            let pos = carPoint.path[idx];
+
+            self.parkMap.highLightOneCellAtPos(pos, context.color);
+
+            let travelTime = ParkMap.CELL_WIDTH_IN_MILE * 3600000 / carPoint.velocity;
+            d3.timeout(function () {
+                        idx ++;
+                        doJumping(idx);
                 },
-                ParkMap.CELL_WIDTH_IN_MILE * 100 / simplePath.velocity
+
+                convertToSimulationTime(travelTime)
             );
         };
 
-        doJumping(nextCell);
+        doJumping();
     };
 
-    doSimulation(nextSimplePath, 0);
+    d3.timeout(
+        function () {
+            doSimulation();
+        },
+        delay
+    );
 };
+
+// /**
+//  *
+//  * @param context
+//  * @param gateSensorDataArray
+//  * @param delay time in milliseconds
+//  */
+// VisitDuration.prototype.simulateCarMovement = function simulateCarMovement (context, gateSensorDataArray, delay) {
+//
+//     let self = this;
+//
+//     if (!!self.simulationTimer) {
+//         self.simulationTimer.stop();
+//         self.parkMap.clearCarTrace();
+//
+//         if (!!self.simulatedMapPoints && self.simulatedMapPoints.length > 0) {
+//             self.parkMap.clearPath(self.simulatedMapPoints);
+//             self.simulatedMapPoints = [];
+//         }
+//     }
+//
+//     console.log('Simulating for car: ' + context.carId + "; type: " + context.carType);
+//     let timeDurationInMiliSecond;
+//     let fromCarPoint;
+//     let toCarPoint;
+//     let distance;
+//
+//     self.simulationPath = [];
+//     self.simulatedMapPoints = [];
+//
+//     let velocity;
+//
+//     for(let i=0; i< gateSensorDataArray.length - 1; i++) {
+//         fromCarPoint = gateSensorDataArray[i];
+//         toCarPoint =  gateSensorDataArray[i+1];
+//         timeDurationInMiliSecond = toCarPoint.getTimeInMiliseconds() - fromCarPoint.getTimeInMiliseconds();
+//
+//         if (fromCarPoint.getGate() != toCarPoint.getGate()) {
+//             distance = this.parkMap.findSinglePathByName(fromCarPoint.getGate(), toCarPoint.getGate());
+//             distance.shift(); // avoid counting current position
+//             velocity = distance.length * ParkMap.CELL_WIDTH_IN_MILE * 3600000 / timeDurationInMiliSecond; // mile per hour
+//         }
+//         else {
+//             velocity = 0; // not movement, stay in side for gaming, camping
+//         }
+//
+//         self.simulationPath.push({from: fromCarPoint, to: toCarPoint, velocity: velocity, path: distance, id: self.simulationPath.length})
+//     }
+//
+//     var nextSimplePath = self.simulationPath.shift();
+//
+//     // show car tace
+//     let carTrace = self.parkMap.getCarTraceContainer();
+//     carTrace.append('text')
+//         .text('Car: ' + context.carId)
+//         .attr('x', 13)
+//         .attr('y', 1)
+//         .style("font-size", "10px")
+//
+//     ;
+//
+//
+//     var doSimulation = function (simplePath, index) {
+//
+//         let myIndex = index % 35;
+//         if (index != 0 && myIndex == 0) {
+//             // clear text
+//             self.parkMap.clearCarTrace();
+//         }
+//         let carTraceYPos = 15 + myIndex*15;
+//
+//
+//
+//         self.renderCarTrace(simplePath.from, 0, carTraceYPos);
+//
+//         if (simplePath.from.getGate() == simplePath.to.getGate()) {
+//             console.log('enter and quite the same place: ' + simplePath.from.getGate() + "; duration: " + ((simplePath.to.getTimeInMiliseconds() - simplePath.from.getTimeInMiliseconds())/1000*60) + "(min)");
+//             nextSimplePath = self.simulationPath.shift();
+//             if (!!nextSimplePath) {
+//
+//                 doSimulation(nextSimplePath, ++index);
+//             }
+//             else {
+//                 self.renderCarTrace(simplePath.to, 0, carTraceYPos + 15, true); // last gate
+//             }
+//
+//             return;
+//
+//         }
+//
+//         console.log('Simulate Path: from: ' + simplePath.from.getGate() + "; t: " + simplePath.to.getGate());
+//         // highlight cell
+//         let nextCell = simplePath.path.shift();
+//
+//         var doJumping = function (cell) {
+//
+//             console.log('jump to cell: ' + cell.getPos() + "; name: " + cell.getName());
+//             self.simulatedMapPoints.push(cell);
+//
+//             self.parkMap.highLightOneCell(cell, context.color);
+//
+//             self.simulationTimer = d3.timer(function (e) {
+//                     // clear cell
+//                     // console.log('out of cell : ' + cell.getPos());
+//                     self.simulationTimer.stop();
+//                     // self.parkMap.clearOneCell(cell);
+//
+//                     nextCell = simplePath.path.shift();
+//                     if (!!nextCell) {
+//                         doJumping(nextCell);
+//                     }
+//                     else {
+//                         nextSimplePath = self.simulationPath.shift();
+//                         if (!!nextSimplePath) {
+//
+//                             doSimulation(nextSimplePath, ++index);
+//                         }else {
+//
+//                             self.renderCarTrace(simplePath.to, 0, carTraceYPos + 15, true); // last gate
+//
+//                         }
+//                     }
+//
+//
+//                 },
+//                 ParkMap.CELL_WIDTH_IN_MILE * 100 / simplePath.velocity
+//             );
+//         };
+//
+//         doJumping(nextCell);
+//     };
+//
+//     d3.timer(
+//         function () {
+//             doSimulation(nextSimplePath, 0);
+//         },
+//         delay
+//     );
+// };
 
 VisitDuration.prototype.renderCarTrace = function renderCarTrace(carPoint, x, y, end) {
 

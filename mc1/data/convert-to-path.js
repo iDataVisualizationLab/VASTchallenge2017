@@ -38,9 +38,13 @@ var calculateVelocity = function (fromGateTime, toGateTime) {
     let distance = findSinglePathByName(fromGateTime.gate , toGateTime.gate);
     distance.shift(); // avoid counting current position
 
+    let path = distance.map(function (coords) {
+       return coords[0]*200 + coords[1];
+    });
+
     let velocity = distance.length * CELL_WIDTH_IN_MILE * 3600000 / timeDurationInMiliSecond; // mile per hour
 
-    return velocity.toFixed(2);
+    return {velocity: velocity.toFixed(2), path: path};
 };
 
 var readExistingSensorData = function() {
@@ -84,13 +88,16 @@ var readExistingSensorData = function() {
                 tmpCar.camping = false;
                 tmpCar.path = [];
                 tmpCar.velocity = 0;
+                tmpCar.startTime = time;
                 myCar[carId] = tmpCar;
             }
 
             tmpCar = myCar[carId];
             if (tmpCar.path.length > 0 ) {
                 let prePoint = tmpCar.path[tmpCar.path.length-1];
-                prePoint.velocity = calculateVelocity(prePoint, tmpGateTime);
+                let velocityAndPath = calculateVelocity(prePoint, tmpGateTime);
+                prePoint.velocity = velocityAndPath.velocity;
+                prePoint.path = velocityAndPath.path;
 
                 if (!isNaN(prePoint.velocity) && tmpCar.velocity < prePoint.velocity) {
                     tmpCar.velocity = prePoint.velocity;

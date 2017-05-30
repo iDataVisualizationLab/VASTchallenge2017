@@ -1,7 +1,8 @@
-var CarPoint = function (mapPoint, time, velocity) {
+var CarPoint = function (mapPoint, time, velocity, path) {
   this.mapPoint = mapPoint;
   this.time = time;
   this.velocity = +velocity;
+  this.path = path;
 };
 
 CarPoint.prototype.getMapPoint = function getMapPoint() {
@@ -18,6 +19,10 @@ CarPoint.prototype.getGate = function getGate() {
 
 CarPoint.prototype.getVelocity = function getVelocity() {
     return this.velocity;
+};
+
+CarPoint.prototype.getPath = function getPath() {
+    return this.path;
 };
 
 
@@ -56,6 +61,6 @@ CarPoint.prototype.getSeconds = function getSeconds() {
 };
 
 CarPoint.prototype.clone = function clone() {
-    return new CarPoint(this.mapPoint, this.time, this.velocity);
+    return new CarPoint(this.mapPoint, this.time, this.velocity, this.path);
 };
 

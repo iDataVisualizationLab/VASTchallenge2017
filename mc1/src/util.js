@@ -2,6 +2,8 @@ var Util = function Util () {
 
 };
 
+var TIME_RATIO = 500;
+
 /**
  * Create byte array of a map, each pixel represents by 4 consecutive elements that stand for Red, Green, Blue and Alpha
  * @param width
@@ -116,4 +118,12 @@ function rgbToHex(r, g, b) {
 
 function getTimeInDayBySeconds(date) {
     return date.getHours()*3600 + date.getMinutes()*60 + date.getSeconds();
+}
+
+/**
+ *
+ * @param actualtime
+ */
+function convertToSimulationTime(actualtime) {
+    return actualtime / TIME_RATIO;
 }

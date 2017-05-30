@@ -38,6 +38,8 @@ mc1.firstDaySpanSvg = d3.select('body').select('#firstDaySpan').append('svg')
 
 d3.json("data/all-car-path.json", function(error, lines) {
     let visitParser = new VisitParser(mc1.parkMap);
+    mc1.visitParser = visitParser;
+
     let parsedVisits = visitParser.parse(lines);
 
     // parsedVisits = parsedVisits.slice(0, 10);

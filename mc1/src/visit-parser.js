@@ -13,12 +13,13 @@ VisitParser.prototype.parse = function (visits) {
         let colorIdx = line.carType;
         line.color = line.carType == '2P' ? '#000000' : colorFunction(colorIdx);
         line.velocity = +line.velocity;
+        line.startTime = self.parseTime(line.startTime);
 
         let path = line.path.map(function (timeGate) {
             let carPoint;
             let mapPoint = self.parkMap.getMapPointByName(timeGate.gate);
 
-            carPoint = new CarPoint(mapPoint, self.parseTime(timeGate.time), timeGate.velocity);
+            carPoint = new CarPoint(mapPoint, self.parseTime(timeGate.time), timeGate.velocity, timeGate.path);
 
             return carPoint;
         });
@@ -27,5 +28,11 @@ VisitParser.prototype.parse = function (visits) {
         line.path = path;
     });
 
+    this.visits = visits;
+
     return visits;
+};
+
+VisitParser.prototype.getVisits = function getVisits () {
+    return this.visits;
 };

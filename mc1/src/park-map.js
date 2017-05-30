@@ -268,6 +268,7 @@ ParkMap.CELL_HEIGHT = 3;
 ParkMap.SPEED_LIMIT = 25;
 ParkMap.CELL_WIDTH_IN_MILE = 0.06; // mile
 ParkMap.SPEED_LIMIT_EXTRA_10 = 27.5;
+ParkMap.TIME_RATIO = 10; // time in simulation multiplies with this number will get actual time
 
 
 ParkMap.prototype.getSvg = function getSvg() {

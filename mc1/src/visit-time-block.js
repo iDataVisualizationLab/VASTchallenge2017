@@ -3,8 +3,8 @@
 
 var VisitTimeBlock = function VisitTimeBlock(visitChart, parkMap, fromHour, toHour) {
 
-    // Object.assign(this, VisitDuration.prototype);
-    // delete this.render; // remove extended functions to support override
+    Object.assign(this, VisitDuration.prototype);
+    delete this.render; // remove extended functions to support override
     // delete this.highlightVisitsByEntranceType; // remove extended functions to support override
 
     this.visitChart = visitChart;
@@ -88,27 +88,4 @@ VisitTimeBlock.prototype.render = function render(lines) {
 
     this.visitChart.renderChart(this.events);
     this.visitChart.renderAxis('Hours', 'Visits', "%H:%M");
-};
-
-VisitTimeBlock.prototype.highlightVisitsByEntranceType = function highlightVisitsByEntranceType (entranceType, vehicleCategory, campingBehavior, velocityBehavior) {
-
-    if (campingBehavior == 'behavior-camping') {
-        campingBehavior =  true;
-    }else if ( campingBehavior == 'behavior-no-camping') {
-        campingBehavior = false;
-    }
-
-    if (entranceType == 'multi-entrances') {
-        this.visitChart.highLightMultiVisits(vehicleCategory, campingBehavior, velocityBehavior);
-    }
-    else if (entranceType == 'single-entrance') {
-        this.visitChart.highLightSingleVisit(vehicleCategory, campingBehavior, velocityBehavior);
-    }
-    else if (entranceType == 'no-exit') {
-        this.visitChart.highLightNoExit(vehicleCategory, campingBehavior, velocityBehavior);
-    }
-    else {
-        this.visitChart.highLightAllTypesOfVisit(vehicleCategory, campingBehavior, velocityBehavior);
-
-    }
 };
