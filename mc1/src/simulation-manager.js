@@ -1,5 +1,10 @@
 var SimulationManager = function (parkMap) {
     this.parkMap = parkMap;
+    this.simulatingCars = {};
+};
+
+SimulationManager.prototype.simulateTraffic = function reset() {
+    this.simulatingCars = {};
 };
 
 SimulationManager.prototype.simulateTraffic = function simulateCarMovement (visits) {
@@ -52,6 +57,12 @@ SimulationManager.prototype.simulateCarMovement = function simulateCarMovement (
     let self = this;
     let context = line.context;
     let gateSensorDataArray = line.data;
+
+    if (this.simulatingCars.hasOwnProperty(context.carId)) {
+        return;
+    }
+
+    this.simulatingCars[context.carId] = line;
 
     // show car tace
     let carTrace = self.parkMap.getCarTraceContainer();
