@@ -127,3 +127,7 @@ function getTimeInDayBySeconds(date) {
 function convertToSimulationTime(actualtime) {
     return actualtime / TIME_RATIO;
 }
+
+function getTimeInDayBySeconds (dateTime) {
+    return dateTime.getHours()*3600 + dateTime.getMinutes()*60 + dateTime.getSeconds();
+}

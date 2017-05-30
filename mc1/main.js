@@ -52,7 +52,8 @@ d3.json("data/all-car-path.json", function(error, lines) {
     mc1.simulationManager = new SimulationManager(mc1.parkMap);
 
     mc1.firstDayDuration = new VisitTimeBlock(firstDaySpanChart, mc1.parkMap, null, null, eventHandler, mc1.simulationManager);
-    mc1.firstDayDuration.render(parsedVisits);
+    mc1.firstDayDuration.setVisits(parsedVisits);
+    mc1.firstDayDuration.render();
 
     mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap, null, null, eventHandler, mc1.simulationManager);
     mc1.visitDuration.render(parsedVisits);

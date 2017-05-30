@@ -65,6 +65,18 @@ mc1.controller.simulateTraffic = function(self) {
     mc1.simulationManager.simulateTraffic(mc1.visitParser.getVisits());
 };
 
+mc1.controller.simulateTimeBlock = function(self) {
+    console.log(self.name + "=" + self.value);
+
+    let entranceType = document.getElementById('entranceType').value;
+    let vehicleCategory = document.getElementById('vehicleCategory').value;
+    let vehicleBehavior = document.getElementById('vehicleBehavior').value;
+
+    console.log("entranceType: " + entranceType + "; vehicleCategory: " + vehicleCategory + "; vehicleBehavior: " + vehicleBehavior + "; velocityBehavior: " + self.value + "; ");
+
+    mc1.simulationManager.simulateTraffic(mc1.visitParser.getVisits());
+};
+
 // mc1.controller.changeRoadHitmapTime = function (self) {
 //         console.log(self.value);
 //

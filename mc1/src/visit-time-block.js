@@ -34,21 +34,31 @@ var VisitTimeBlock = function VisitTimeBlock(visitChart, parkMap, fromHour, toHo
 
 };
 
-VisitTimeBlock.prototype.render = function render(lines) {
-    // parse the date / time
-    let self = this;
-    lines = lines.map(function (l) {
-
-        l.path = l.path.map(function (p) {
-            return p;
-        });
-
+/**
+ * Create new data and sort to render by time block
+ * @param visits
+ */
+VisitTimeBlock.prototype.setVisits = function setVisits (visits) {
+    let lines = visits.map(function (l) {
         return l;
     });
 
     lines.sort(function (l1, l2) {
-        return l1.path[0].getTimeInDayBySeconds() - l2.path[0].getTimeInDayBySeconds();
+        return getTimeInDayBySeconds(l1.startTime) - getTimeInDayBySeconds(l2.startTime);
     });
+
+    this.lines = lines;
+};
+
+VisitTimeBlock.prototype.getVisits = function getVisits () {
+    return this.lines;
+};
+
+
+VisitTimeBlock.prototype.render = function render() {
+    // parse the date / time
+    let self = this;
+    let lines = this.lines;
 
     lines.forEach(function(line, index) {
 
