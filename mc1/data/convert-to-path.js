@@ -28,7 +28,7 @@ var mapPointByName = {};
 var calculateVelocity = function (fromGateTime, toGateTime) {
 
     if (fromGateTime.gate == toGateTime.gate) {
-        return 0;
+        return {velocity: 0, path: null}; // some delay time
     }
 
     let timeTo = moment(toGateTime.time, 'YYYY-MM-DD HH:mm:ss').toDate();
