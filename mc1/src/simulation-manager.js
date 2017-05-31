@@ -127,12 +127,28 @@ SimulationManager.prototype.simulateCarMovement = function simulateCarMovement (
 
         let carPoint = gateSensorDataArray[index];
         if (!carPoint.path || carPoint.path.length < 1) {
-            console.log('arrive last gate: ' + carPoint.getGate());
+
+            if (index < gateSensorDataArray.length-1) {
+                let nextGate = gateSensorDataArray[index + 1];
+                let relaxTime = nextGate.getTimeInMiliseconds() - carPoint.getTimeInMiliseconds();
+                console.log('arrive gate for relaxing: ' + carPoint.getGate() + ": duration: " + relaxTime + "(ms)");
+
+                d3.timeout(
+                    function () {
+                        doSimulation(index + 1);
+                    },
+                    convertToSimulationTime(relaxTime)
+                );
+            }
+            else {
+                console.log('arrive last gate: ' + carPoint.getGate() + ": at: " + carPoint.getFormattedTime());
+
+            }
 
             return;
         }
 
-        console.log('at gate:' + carPoint.getGate());
+        console.log('at gate:' + carPoint.getGate() + ":at: " + carPoint.getFormattedTime());
 
 
         // highlight cell
