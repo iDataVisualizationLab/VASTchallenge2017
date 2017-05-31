@@ -224,7 +224,7 @@ Chart2D.prototype.renderPassingGates = function renderPassingGates(gates) {
 
         d3.select(this).selectAll('.passing-gate').data(myEndPoints).enter()
             .append('circle')
-            .attr('class', 'passing-gate')
+            .attr('class', 'passing-gate gate-car-id-' + line.context.carId)
             .attr('r', 1)
             .attr('cx', function (d) {
                 return self.x(d.time);
@@ -270,7 +270,9 @@ Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCateg
         carCategory = 'car-all';
     }
 
-    this.myLine.selectAll('.line')
+    let self = this;
+    this.myLine
+        //.selectAll('.line')
         // .style('opacity', function (line) {
         //     if (carCategory == 'car-all') {
         //         return line.context.entranceCount > 2 ? 1 : 0;
@@ -380,7 +382,8 @@ Chart2D.prototype.highLightSingleVisit = function highLightSingleVisit (carCateg
         carCategory = 'car-all';
     }
 
-    this.myLine.selectAll('.line')
+    this.myLine
+        // .selectAll('.line')
         // .style('opacity', function (line) {
         //
         //     if (carCategory == 'car-all') {
@@ -490,7 +493,8 @@ Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory, campin
         carCategory = 'car-all';
     }
 
-    this.myLine.selectAll('.line')
+    this.myLine
+        //.selectAll('.line')
         // .style('opacity', function (line) {
         //
         //     if (carCategory == 'car-all') {
@@ -598,7 +602,8 @@ Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (
         carCategory = 'car-all';
     }
 
-    this.myLine.selectAll('.line')
+    this.myLine
+        //.selectAll('.line')
         // .style('opacity', function (line) {
         //     if (carCategory == 'car-all') {
         //         return 1;
