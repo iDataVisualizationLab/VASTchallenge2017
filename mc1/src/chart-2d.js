@@ -62,11 +62,39 @@ Chart2D.prototype.addData = function addData(context, dataArray, xKey, yKey) {
             return self.x(d[xKey]);
         })
         .y(function(d) {
-            let t = self.y(d[yKey]);
             return self.y(d[yKey]); })
     ;
 
-    this.lineData.push( {valueLine: valueLine, data: dataArray, context: context});
+    self.lineData.push( {valueLine: valueLine, data: dataArray, context: context});
+
+
+    // let myPaths = [];
+    // let myContinuesPath = [];
+    //
+    // dataArray.forEach(function (carPoint, index) {
+    //     myContinuesPath.push(carPoint);
+    //
+    //     if (!carPoint.path && index < dataArray.length-1) {
+    //         myPaths.push(myContinuesPath);
+    //         myContinuesPath = [];
+    //     }
+    //
+    // });
+    //
+    // if (context.carId == '20153712013720-181') {
+    //     debugger;
+    // }
+    // myPaths.forEach(function (cPath, index) {
+    //     self.lineData.push( {valueLine: valueLine, data: cPath, context: context});
+    //
+    //     if (index < myPaths.length-1) {
+    //         let nxtPath = myPaths[index+1];
+    //         let nxtPoint = nxtPath[0];
+    //
+    //         self.lineData.push( {valueLine: valueLine, data: [cPath[cPath.length-1], nxtPoint], context: context, stopping: true});
+    //     }
+    //
+    // });
 };
 
 Chart2D.prototype.setXDomain = function setXDomain(min, max) {
@@ -148,9 +176,13 @@ Chart2D.prototype.renderChart = function renderChart(events) {
         .attr("d", function (line) {
             return line.valueLine(line.data);
         })
-        .style('stroke-width', 1)
+        .style('stroke-width', 0.5)
         .style('stroke', function (line) {
-            return line.context.color;
+
+            if( line.context.carId == '20153712013720-181') {
+                debugger;
+            }
+            return !!line.stopping ? '#FF0000' : line.context.color;
         })
         .style('fill', 'none')
 
@@ -173,24 +205,38 @@ Chart2D.prototype.renderChart = function renderChart(events) {
         })
     }
 
-    // myLine.each(function (line) {
-    //     let myEndPoints = [line.data[0], line.data[line.data.length -1]];
-    //     debugger;
-    //     d3.select(this).selectAll('.passing-gate').data(myEndPoints).enter()
-    //         .append('circle')
-    //         .attr('class', 'passing-gate')
-    //         .attr('r', 2)
-    //         .attr('cx', function (d) {
-    //             return self.x(d.time);
-    //         })
-    //         .attr('cy', function (d) {
-    //             return self.y(d.y);
-    //         })
-    //         .style('fill', function (d) {
-    //             return d.mapPoint.getColor();
-    //         })
-    //     ;
-    // });
+    this.renderPassingGates();
+};
+
+Chart2D.prototype.renderPassingGates = function renderPassingGates(gates) {
+    let self = this;
+
+    if (!gates) {
+        // gates = ['gate', 'general', 'entrance', 'camping', 'ranger-stop', 'ranger-base'];
+        gates = ['gate', 'entrance', 'camping', 'ranger-base'];
+    }
+
+    self.myLine.each(function (line) {
+        let myEndPoints = line.data.filter(function (cp) {
+            return !cp.path;
+        });
+
+
+        d3.select(this).selectAll('.passing-gate').data(myEndPoints).enter()
+            .append('circle')
+            .attr('class', 'passing-gate')
+            .attr('r', 1)
+            .attr('cx', function (d) {
+                return self.x(d.time);
+            })
+            .attr('cy', function (d) {
+                return self.y(d.y);
+            })
+            .style('fill', function (d) {
+                return d.mapPoint.getColor();
+            })
+        ;
+    });
 };
 
 
