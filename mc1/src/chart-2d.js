@@ -179,10 +179,7 @@ Chart2D.prototype.renderChart = function renderChart(events) {
         .style('stroke-width', 0.5)
         .style('stroke', function (line) {
 
-            if( line.context.carId == '20153712013720-181') {
-                debugger;
-            }
-            return !!line.stopping ? '#FF0000' : line.context.color;
+            return line.context.color;
         })
         .style('fill', 'none')
 
@@ -218,7 +215,14 @@ Chart2D.prototype.renderPassingGates = function renderPassingGates(gates) {
 
     self.myLine.each(function (line) {
         let myEndPoints = line.data.filter(function (cp) {
-            return !cp.path;
+
+            for(let i=0; i< gates.length; i++) {
+                if (cp.getGate().startsWith(gates[i])) {
+                    return true;
+                }
+            }
+
+            return false;
         });
 
 
