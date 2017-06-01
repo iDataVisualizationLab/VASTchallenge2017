@@ -65,7 +65,7 @@ Chart2D.prototype.addData = function addData(context, dataArray, xKey, yKey) {
             return self.y(d[yKey]); })
     ;
 
-    self.lineData.push( {valueLine: valueLine, data: dataArray, context: context});
+    self.lineData.push( {valueLine: valueLine, data: dataArray, context: context, x: xKey, y: yKey});
 
 
     // let myPaths = [];
@@ -225,16 +225,22 @@ Chart2D.prototype.renderPassingGates = function renderPassingGates(gates) {
             return false;
         });
 
+        if (myEndPoints.length > 0) {
+            debugger;
+        }
+
 
         d3.select(this).selectAll('.passing-gate').data(myEndPoints).enter()
             .append('circle')
             .attr('class', 'passing-gate gate-car-id-' + line.context.carId)
             .attr('r', 1)
             .attr('cx', function (d) {
-                return self.x(d.time);
+                let xKey = line.x;
+                return self.x(d[xKey]);
             })
             .attr('cy', function (d) {
-                return self.y(d.y);
+                let yKey = line.y;
+                return self.y(d[yKey]);
             })
             .style('fill', function (d) {
                 return d.mapPoint.getColor();
