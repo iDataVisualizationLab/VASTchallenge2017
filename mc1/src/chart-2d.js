@@ -12,6 +12,10 @@ var Chart2D = function Chart2D(svg, width, height, options) {
     // set the ranges
     this.x = !!this.options.timeChart ? d3.scaleTime().range([0, width]) :  d3.scaleLinear().range([0, width]);
     this.y = d3.scaleLinear().range([height, 0]);
+
+    this.fisheye = d3.fisheye.circular()
+        .radius(200)
+        .distortion(2);
 };
 
 Chart2D.prototype.setEventHandler = function setEventHandler(eventHandler) {
@@ -203,6 +207,15 @@ Chart2D.prototype.renderChart = function renderChart(events) {
     }
 
     this.renderPassingGates();
+
+    self.svg.on("mousemove", function() {
+        self.fisheye.focus(d3.mouse(this));
+        self.myLine.selectAll('.line')
+            .attr("d", function(d) {
+                    return d.valueLine(d.map(self.fisheye));
+                }
+            );
+    });
 };
 
 Chart2D.prototype.renderPassingGates = function renderPassingGates(gates) {
@@ -224,11 +237,6 @@ Chart2D.prototype.renderPassingGates = function renderPassingGates(gates) {
 
             return false;
         });
-
-        if (myEndPoints.length > 0) {
-            debugger;
-        }
-
 
         d3.select(this).selectAll('.passing-gate').data(myEndPoints).enter()
             .append('circle')
