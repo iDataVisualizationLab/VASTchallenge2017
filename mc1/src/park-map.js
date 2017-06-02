@@ -416,6 +416,13 @@ ParkMap.prototype.highLightOneCell = function highLightOneCell(mapPoint, color) 
     ;
 };
 
+ParkMap.prototype.clearRoad = function clearRoad() {
+
+    this.svg.selectAll('.road-cell')
+        .attr('fill', MapPoint.ROAD_COLOR)
+    ;
+};
+
 /**
  * Highlight road point with merge color option if previously the point is filled with other color
  *

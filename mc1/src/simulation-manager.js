@@ -168,7 +168,7 @@ SimulationManager.prototype.simulateCarMovement = function simulateCarMovement (
 
             let pos = carPoint.path[idx];
 
-            self.parkMap.highLightOneCellAtPos(pos, context.color, 0.1, true);
+            self.parkMap.highLightOneCellAtPos(pos, context.color, 0.5, true);
 
             let travelTime = ParkMap.CELL_WIDTH_IN_MILE * 3600000 / carPoint.velocity;
             d3.timeout(function () {

@@ -208,14 +208,26 @@ Chart2D.prototype.renderChart = function renderChart(events) {
 
     this.renderPassingGates();
 
-    self.svg.on("mousemove", function() {
-        self.fisheye.focus(d3.mouse(this));
-        self.myLine.selectAll('.line')
-            .attr("d", function(d) {
-                    return d.valueLine(d.map(self.fisheye));
-                }
-            );
-    });
+    // self.svg.on("mousemove", function() {
+    //     self.fisheye.focus(d3.mouse(this));
+    //     self.myLine.selectAll('.line')
+    //         .attr("d", function(line) {
+    //                 let data = line.data.map(function (carPoint) {
+    //
+    //                     let tmp = carPoint[line.x];
+    //                     let myFish = {x: tmp.getTime(), y: carPoint[line.y]};
+    //                     let afterFish = self.fisheye(myFish);
+    //
+    //                     // carPoint[line.y] = self.fisheye(carPoint[line.y]);
+    //
+    //                     debugger;
+    //                     return carPoint;
+    //                 });
+    //
+    //                 return line.valueLine(data);
+    //             }
+    //         );
+    // });
 };
 
 Chart2D.prototype.renderPassingGates = function renderPassingGates(gates) {

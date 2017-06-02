@@ -77,6 +77,12 @@ mc1.controller.simulateTimeBlock = function(self) {
     mc1.simulationManager.simulateTrafficByTimeBlock(mc1.firstDayDuration.getVisits());
 };
 
+mc1.controller.clearRoad = function(self) {
+
+    console.log('clear road map');
+    mc1.parkMap.clearRoad();
+};
+
 // mc1.controller.changeRoadHitmapTime = function (self) {
 //         console.log(self.value);
 //
