@@ -230,15 +230,14 @@ Chart2D.prototype.renderChart = function renderChart(events) {
     // });
 };
 
-Chart2D.prototype.renderPassingGates = function renderPassingGates(gates) {
+Chart2D.prototype.renderPassingGates = function renderPassingGates() {
     let self = this;
-
-    if (!gates) {
-        // gates = ['gate', 'general', 'entrance', 'camping', 'ranger-stop', 'ranger-base'];
-        gates = ['gate', 'entrance', 'camping', 'ranger-base'];
-    }
+    let gateVisiting = ['gate', 'entrance', 'camping'];
+    let gateInternal = ['camping', 'ranger-stop', 'ranger-base'];
 
     self.myLine.each(function (line) {
+
+        let gates = line.context.carType == '2P' ? gateInternal : gateVisiting;
         let myEndPoints = line.data.filter(function (cp) {
 
             for(let i=0; i< gates.length; i++) {
