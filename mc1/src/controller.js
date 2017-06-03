@@ -83,6 +83,11 @@ mc1.controller.clearRoad = function(self) {
     mc1.parkMap.clearRoad();
 };
 
+mc1.controller.viewRoadHeatMap = function(self) {
+
+    console.log('road heat map');
+};
+
 // mc1.controller.changeRoadHitmapTime = function (self) {
 //         console.log(self.value);
 //

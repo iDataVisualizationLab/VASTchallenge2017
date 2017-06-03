@@ -87,7 +87,10 @@
                 </table>
             </div>
             <div id="firstDaySpan"></div>
-            <div><input type="button" value="Play Time" name="play-time-block" onclick="mc1.controller.simulateTimeBlock(this)"></div>
+            <div>
+                <input type="button" value="Play Time" name="play-time-block" onclick="mc1.controller.simulateTimeBlock(this)" />
+                <input type="button" value="View Road Heat Map" name="road-heat-map" onclick="mc1.controller.viewRoadHeatMap(this)"/>
+            </div>
 
             <div id="visitDuration"></div>
             <div><input type="button" value="Play Full" name="play-full" onclick="mc1.controller.simulateTraffic(this)"></div>
