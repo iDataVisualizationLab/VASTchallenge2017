@@ -97,8 +97,8 @@ VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisits
     if (entranceType == 'multi-entrances') {
         this.visitChart.highLightMultiVisits(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit);
     }
-    else if (entranceType == 'single-entrance') {
-        this.visitChart.highLightSingleVisit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit);
+    else if (entranceType == 'single-entrance-over-night') {
+        this.visitChart.highLightSingleVisitOvernight(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit);
     }
     else if (entranceType == 'no-exit') {
         this.visitChart.highLightNoExit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit);
