@@ -131,3 +131,15 @@ function convertToSimulationTime(actualtime) {
 function getTimeInDayBySeconds (dateTime) {
     return dateTime.getHours()*3600 + dateTime.getMinutes()*60 + dateTime.getSeconds();
 }
+
+function formatDateTime(dateTime, formatTemplate) {
+    var format = d3.timeFormat(!!formatTemplate ? formatTemplate : "%Y-%m-%d %H:%M:%S");
+
+    return format(dateTime);
+}
+
+function formatDate(dateTime, formatTemplate) {
+    var format = d3.timeFormat(!!formatTemplate ? formatTemplate : "%Y-%m-%d");
+
+    return format(dateTime);
+}
