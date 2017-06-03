@@ -47,6 +47,10 @@ var calculateVelocity = function (fromGateTime, toGateTime) {
     return {velocity: velocity.toFixed(2), path: path};
 };
 
+var extractDate = function (isoDateTimeString) {
+    return isoDateTimeString.slice(0,10);
+};
+
 var readExistingSensorData = function() {
     let myCarData = {};
     let myCar = {};
@@ -105,6 +109,9 @@ var readExistingSensorData = function() {
             }
             // add current hop to path
             tmpCar.path.push( tmpGateTime );
+            tmpCar.endTime = time;
+            tmpCar.overnight = extractDate(tmpCar.startTime) != extractDate(tmpCar.endTime);
+
             if (!tmpCar.camping && hasCampingBehavior(tmpCar.path)) {
                 tmpCar.camping = true;
             }
