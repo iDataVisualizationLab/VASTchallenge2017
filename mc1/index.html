@@ -78,12 +78,16 @@
 
                         <td>
                             <select id="velocityBehavior" name="velocityBehavior" onchange="mc1.controller.clickVelocityBehavior(this)">
-                                <option value="all" selected>All Velocity Behaviors</option>
-                                <option value="below-limit">Below 10% extra Limit</option>
-                                <option value="above-limit">Above 10% extra Limit</option>
+                                <option value="below-limit" selected>Below Limit</option>
+                                <option value="above-limit">Above Limit</option>
                             </select>
                         </td>
+                        <td>
+                            <label>Velocity Limit (mph)</label>
+                            <input type="range" id="velocityLimit" name="velocityLimit" min="0" max="50" value="27.5" step="0.5" onchange="document.getElementById('rangeValLabel').innerHTML = this.value; mc1.controller.onVelocityLimitChange(this);"/>
+                            <em id="rangeValLabel" style="font-style: normal;"></em>
 
+                        </td>
                     </tr>
                 </table>
             </div>

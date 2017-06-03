@@ -80,7 +80,7 @@ VisitDuration.prototype.onLineMouseOut = function onLineMouseOver(e) {
 };
 
 
-VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisitsByEntranceType (entranceType, vehicleCategory, campingBehavior, velocityBehavior) {
+VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisitsByEntranceType (entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit) {
 
     if (campingBehavior == 'behavior-camping') {
         campingBehavior =  true;
@@ -88,20 +88,26 @@ VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisits
         campingBehavior = false;
     }
 
+    if (!velocityLimit) {
+        velocityLimit = ParkMap.SPEED_LIMIT_EXTRA_10;
+    }
+
+    velocityLimit = +velocityLimit;
+
     if (entranceType == 'multi-entrances') {
-        this.visitChart.highLightMultiVisits(vehicleCategory, campingBehavior, velocityBehavior);
+        this.visitChart.highLightMultiVisits(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit);
     }
     else if (entranceType == 'single-entrance') {
-        this.visitChart.highLightSingleVisit(vehicleCategory, campingBehavior, velocityBehavior);
+        this.visitChart.highLightSingleVisit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit);
     }
     else if (entranceType == 'no-exit') {
-        this.visitChart.highLightNoExit(vehicleCategory, campingBehavior, velocityBehavior);
+        this.visitChart.highLightNoExit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit);
     }
     else if (entranceType == 'single-entrance-no-over-night') {
-        this.visitChart.highLightSingleEntranceNotOvernightVisit(vehicleCategory, campingBehavior, velocityBehavior);
+        this.visitChart.highLightSingleEntranceNotOvernightVisit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit);
     }
     else {
-        this.visitChart.highLightAllTypesOfVisit(vehicleCategory, campingBehavior, velocityBehavior);
+        this.visitChart.highLightAllTypesOfVisit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit);
 
     }
 };
