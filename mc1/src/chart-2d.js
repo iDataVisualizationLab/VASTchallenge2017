@@ -279,19 +279,20 @@ Chart2D.prototype.getMyLines = function getMyLines() {
 Chart2D.prototype.highlightSingleVisit = function highlightSingleVisit (carId) {
 
     let self = this;
-    self.myLine.selectAll('.line')
+    self.myLine
         .style('opacity', function (l) {
 
             return l.context.carId == carId ? 1 : 0.1;
         })
-
+    ;
 };
 
 Chart2D.prototype.clearSetting = function highlightSingleVisit () {
 
     let self = this;
-    self.myLine.selectAll('.line')
+    self.myLine
         .style('opacity', 1)
+    ;
 
 };
 
