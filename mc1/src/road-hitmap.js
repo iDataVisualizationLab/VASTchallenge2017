@@ -48,53 +48,45 @@ var RoadHeatmap = function RoadHeatmap(partMap, rawData) {
 //     return myVisits;
 // };
 
-RoadHeatmap.prototype.getVisitedRoadCellHeatMap = function getVisitedRoadCellHeatMap (visits) {
+RoadHeatmap.prototype.getVisitedRoadCellHeatMap = function getVisitedRoadCellHeatMap (lines) {
 
-    let visit;
     let visitedRoadCells = {};
-    let self = this;
-    let startGate;
-    let endGate;
-
-    let steps;
-    let cellPos;
     let tmpCell;
 
     let baseColor = hexToRgb(MapPoint.BACKGROUND, 0.1);
-    for(let carId in visits) {
-        if (!visits.hasOwnProperty(carId)) {
-            continue;
-        }
 
-        visit = visits[carId];
-        for(let i=0; i< visit.path.length - 1; i++) {
-            startGate = visit.path[i].gate;
-            endGate = visit.path[i+1].gate;
+    lines.forEach(function (line) {
 
-            steps = self.parkMap.findSinglePathByName(startGate, endGate);
-            steps.pop();
-            steps.shift();
+        let lineColor = line.context.color;
+        line.data.forEach(function (carPoint) {
 
-            steps.forEach(function (cell) {
-                cellPos = cell.getPos();
-                if (!visitedRoadCells.hasOwnProperty(cellPos)) {
-                    visitedRoadCells[cellPos] = {
-                        count: 0
-                    };
-                }
+            if (!carPoint.path) {
+                return;
+            }
 
-                tmpCell = visitedRoadCells[cellPos];
-                tmpCell.count ++;
+            carPoint.path.forEach(function (cellPos, index) {
 
-                if (!!tmpCell.color) {
-                    baseColor = tmpCell.color;
-                }
-                tmpCell.color = mergeTwoRGBs(baseColor, hexToRgb(visit.color, 0.1));
+                 if (index >= carPoint.path.length-1) { // ignore last point because it is sensor position which has color on map already
+                     return;
+                 }
 
+                 if (!visitedRoadCells.hasOwnProperty(cellPos)) {
+                     visitedRoadCells[cellPos] = {
+                         count: 0
+                     };
+                 }
+
+                 tmpCell = visitedRoadCells[cellPos];
+                 tmpCell.count ++;
+
+                 if (!!tmpCell.color) {
+                     baseColor = tmpCell.color;
+                 }
+
+                 tmpCell.color = mergeTwoRGBs(baseColor, hexToRgb(lineColor, 0.1));
             });
-
-        }
-    }
+        });
+    });
 
     return visitedRoadCells;
 };
@@ -109,5 +101,24 @@ RoadHeatmap.prototype.renderHeatMap = function renderHeatMap (lines, endTime, st
         startTime = '2015-05-01 00:00:01';
     }
 
-    let cellColors = this.getVisitedRoadCellHeatMap(lines)
+    let self = this;
+    self.parkMap.clearRoad();
+
+    let cellColors = this.getVisitedRoadCellHeatMap(lines);
+
+    let hexColor;
+    let tmpCellColor;
+
+    for(let pos in cellColors) {
+        if (!cellColors.hasOwnProperty(pos)) {
+            continue;
+        }
+
+        tmpCellColor = cellColors[pos];
+        hexColor = rgbToHex(tmpCellColor.color[0], tmpCellColor.color[1], tmpCellColor.color[2]);
+
+        self.parkMap.highLightOneCellAtPos(pos, hexColor, tmpCellColor.color[3]);
+    }
+
+
 };

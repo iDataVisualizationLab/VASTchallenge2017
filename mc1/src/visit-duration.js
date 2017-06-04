@@ -84,9 +84,6 @@ VisitDuration.prototype.onLineMouseOut = function onLineMouseOver(e) {
 VisitDuration.prototype.viewHeatMap = function viewHeatMap() {
 
     let self = this;
-
-    self.parkMap.clearRoad();
-
     let lines = self.visitChart.getVisibleLines();
 
     self.roadHeatMap.renderHeatMap(lines);
