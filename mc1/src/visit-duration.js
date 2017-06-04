@@ -21,6 +21,8 @@ var VisitDuration = function VisitDuration(visitChart, parkMap, startDate, endDa
     this.visitChart.setEventHandler(this.eventHandler);
     this.simulationManager = simulationManager;
 
+    this.roadHeatMap = new RoadHeatmap(this.parkMap);
+
     this.init();
 
 };
@@ -79,6 +81,17 @@ VisitDuration.prototype.onLineMouseOut = function onLineMouseOver(e) {
 
 };
 
+VisitDuration.prototype.viewHeatMap = function viewHeatMap() {
+
+    let self = this;
+
+    self.parkMap.clearRoad();
+
+    let lines = self.visitChart.getVisibleLines();
+
+    self.roadHeatMap.renderHeatMap(lines);
+
+};
 
 VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisitsByEntranceType (entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit) {
 

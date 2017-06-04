@@ -108,6 +108,19 @@ Chart2D.prototype.setXDomain = function setXDomain(min, max) {
 Chart2D.prototype.setYDomain = function setYDomain(min, max) {
     this.y.domain([min, max]);
 };
+
+
+Chart2D.prototype.getVisibleLines = function getVisibleLines() {
+
+    let myVisits = [];
+    this.myLine.each(function (line) {
+        if (line.visibility == 'visible') {
+            myVisits.push(line);
+        }
+    });
+
+    return myVisits;
+};
 /**
  *
  * Render axis with label for bottom and left axis
