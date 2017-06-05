@@ -400,7 +400,7 @@ Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCateg
 
             }
 
-            if (carCategory == 'all') {
+            if (campingBehavior == 'all') {
                 switch (velocityBehavior) {
                     case 'all':
                         return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory) ? 'visible' : 'hidden';
