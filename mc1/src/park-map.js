@@ -301,6 +301,22 @@ var ParkMap = function ParkMap (byteData, svg) {
         .attr('class', 'car-trace-group')
         .attr('transform', 'translate(620, 15)')
     ;
+
+    this.tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+    ;
+
+    this.tooltipGraph = this.tooltip.append('svg')
+        .attr('class', 'tooltip-diagram')
+        .attr('width', 200)
+        .attr('height', 150)
+    ;
+
+    this.entranceGraph = new EntranceGraph(this.tooltipGraph);
+
 };
 
 ParkMap.CELL_WIDTH = 3;
@@ -554,6 +570,7 @@ ParkMap.prototype.render = function render(showLabel) {
         ;
     }
 
+    let self = this;
    this.svg.selectAll('.grid-row').data(this.mapPoints).enter()
         .append('g')
         .attr("class", "grid-row")
@@ -569,6 +586,11 @@ ParkMap.prototype.render = function render(showLabel) {
                         if (cell.getIsRoad()) {
                             cls += ' road-cell road-cell-' + cell.getPos();
                         }
+
+                        if (cell.hasSensorLocated()) {
+                            cls += ' sensor-cell sensor-cell-' + cell.getPos();
+                        }
+
                         return cls;
                     })
                     .attr("x", function (item) {
@@ -585,5 +607,25 @@ ParkMap.prototype.render = function render(showLabel) {
                 ;
             })
 
+    ;
+
+    this.svg.selectAll('.sensor-cell')
+        .filter(function (d) {
+            return d.isEntrance();
+        })
+        .on("mouseover", function(d) {
+
+            // 1. Generate tree map
+            self.entranceGraph.render(d);
+
+            // 2. Setting position of the visualization
+            self.tooltip.style("top", (event.pageY+10)+"px").style("left",(event.pageX+10)+"px");
+
+            // 3. Set visibility
+            return self.tooltip.style("visibility", "visible");
+        })
+        .on("mouseout", function(d) {
+            return self.tooltip.style("visibility", "hidden");
+        })
     ;
 };
