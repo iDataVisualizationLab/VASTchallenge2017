@@ -124,7 +124,15 @@ mc1.controller.onVelocityLimitChange = function(self) {
 
 mc1.controller.onDurationThresholdChange = function(self) {
 
-    console.log('change velocity limit');
+    console.log('change duration threshold');
+
+    let days = self.value / 24;
+    days = days.toFixed(1);
+
+    document.getElementById('durationRangeValLabel').innerHTML = self.value > 48 ? days : self.value;
+    document.getElementById('durationUnit').innerHTML = self.value > 48 ? "(days)" : "(hrs)";
+
+
 
     let entranceType = document.getElementById('entranceType').value;
     let vehicleCategory = document.getElementById('vehicleCategory').value;
