@@ -87,7 +87,7 @@
                                 <option value="above-limit" selected>Above</option>
                                 <option value="below-limit" >Below</option>
                             </select>
-                            <input type="range" id="durationLimit" name="durationLimit" min="0" max="48" value="25" step="0.25" onchange="document.getElementById('durationLimit').innerHTML = this.value; mc1.controller.onVelocityLimitChange(this);"/>
+                            <input type="range" id="durationLimit" name="durationLimit" min="0" max="48" value="25" step="0.1" onchange="document.getElementById('durationLimit').innerHTML = this.value; mc1.controller.onVelocityLimitChange(this);"/>
                             <em id="durationRangeValLabel" style="font-style: normal;"></em>
                         </td>
                     </tr>
