@@ -52,14 +52,32 @@ mc1.controller.clickVelocityBehavior = function(self) {
     let entranceType = document.getElementById('entranceType').value;
     let vehicleCategory = document.getElementById('vehicleCategory').value;
     let vehicleBehavior = document.getElementById('vehicleBehavior').value;
+    let velocityBehavior =  document.getElementById('velocityBehavior').value;
     let velocityLimit = document.getElementById('velocityLimit').value;
     let durationBehavior =  document.getElementById('durationBehavior').value;
     let durationThreshold = document.getElementById('durationThreshold').value;
     console.log("entranceType: " + entranceType + "; vehicleCategory: " + vehicleCategory + "; vehicleBehavior: " + vehicleBehavior + "; velocityBehavior: " + self.value + "; ");
 
 
-    mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, self.value, velocityLimit, durationBehavior, durationThreshold);
-    mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, self.value, velocityLimit, durationBehavior, durationThreshold);
+    mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+};
+
+mc1.controller.clickDurationBehavior = function(self) {
+    console.log(self.name + "=" + self.value);
+
+    let entranceType = document.getElementById('entranceType').value;
+    let vehicleCategory = document.getElementById('vehicleCategory').value;
+    let vehicleBehavior = document.getElementById('vehicleBehavior').value;
+    let velocityBehavior =  document.getElementById('velocityBehavior').value;
+    let velocityLimit = document.getElementById('velocityLimit').value;
+    let durationBehavior =  document.getElementById('durationBehavior').value;
+    let durationThreshold = document.getElementById('durationThreshold').value;
+    console.log("entranceType: " + entranceType + "; vehicleCategory: " + vehicleCategory + "; vehicleBehavior: " + vehicleBehavior + "; velocityBehavior: " + self.value + "; ");
+
+
+    mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
 };
 
 mc1.controller.simulateTraffic = function(self) {
