@@ -308,7 +308,7 @@ Chart2D.prototype.clearSetting = function highlightSingleVisit () {
 
 };
 
-Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCategory, campingBehavior, velocityBehavior, velocityLimit) {
+Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
@@ -319,112 +319,196 @@ Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCateg
 
     let self = this;
     this.myLine
-        //.selectAll('.line')
-        // .style('opacity', function (line) {
-        //     if (carCategory == 'car-all') {
-        //         return line.context.entranceCount > 2 ? 1 : 0;
-        //     }
-        //     else if (carCategory == 'car-internal') {
-        //         return (line.context.entranceCount > 2 && line.context.carType == '2P') ? 1 : 0;
-        //     }
-        //
-        //     return (line.context.entranceCount > 2 && line.context.carType != '2P') ? 1 : 0;
-        //
-        // })
         .style('visibility', function (line) {
             if (carCategory == 'car-all') {
                 if (campingBehavior == 'all') {
-                    if (velocityBehavior == 'all') {
-                        return line.visibility = line.context.entranceCount > 2 ? 'visible' : 'hidden';
-                    }else if (velocityBehavior == 'below-limit') {
-                        return line.visibility = line.context.entranceCount > 2 && line.context.velocity <= velocityLimit ? 'visible' : 'hidden';
-                    }else {
-                        return line.visibility = line.context.entranceCount > 2 && line.context.velocity > velocityLimit ? 'visible' : 'hidden';
+                    switch (velocityBehavior) {
+                        case 'below-limit':
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.entranceCount > 2 && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = line.context.entranceCount > 2 && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
+                        case 'above-limit':
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.entranceCount > 2 && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = line.context.entranceCount > 2 && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                     }
                 }
                 else {
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = line.context.entranceCount > 2 && line.context.camping == campingBehavior ? 'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = line.context.entranceCount > 2 && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.entranceCount > 2 && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = line.context.entranceCount > 2 && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = line.context.entranceCount > 2 && line.context.camping == campingBehavior && line.context.velocity > velocityLimit ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.entranceCount > 2 && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = line.context.entranceCount > 2 && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                     }
                 }
             }
             else if (carCategory == 'car-internal') {
                 if (campingBehavior == 'all') {
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = (line.context.entranceCount > 2 && line.context.carType == '2P') ? 'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.velocity <= velocityLimit ) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ) ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ) ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.velocity > velocityLimit ) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ) ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ) ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                     }
                 }
                 else {
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit ) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit ) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                     }
                 }
             }
             else if (carCategory == 'car-visiting') {
                 if (campingBehavior == 'all') {
-
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = (line.context.entranceCount > 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.velocity <= velocityLimit ) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = (line.context.entranceCount > 2 && line.context.carType != '2P') && line.context.velocity > velocityLimit ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType != '2P') && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType != '2P') && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                     }
 
                 }
 
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold)  ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount > 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                 }
 
             }
 
             if (campingBehavior == 'all') {
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory) ? 'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                 }
 
             }
 
             switch (velocityBehavior) {
-                case 'all':
-                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
                 case 'below-limit':
-                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                    switch (durationBehavior) {
+                        case 'below':
+                            return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                        case 'above':
+                            return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                        default:
+                            throw new Error('Invalid duration behavior: ' + durationBehavior);
+                    }
                 case 'above-limit':
-                    return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                    switch (durationBehavior) {
+                        case 'below':
+                            return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                        case 'above':
+                            return line.visibility = (line.context.entranceCount > 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                        default:
+                            throw new Error('Invalid duration behavior: ' + durationBehavior);
+                    }
             }
         })
     ;
 };
 
-Chart2D.prototype.highLightSingleVisitOvernight = function highLightSingleVisitOvernight (carCategory, campingBehavior,  velocityBehavior, velocityLimit) {
+Chart2D.prototype.highLightSingleVisitOvernight = function highLightSingleVisitOvernight (carCategory, campingBehavior,  velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
@@ -434,112 +518,196 @@ Chart2D.prototype.highLightSingleVisitOvernight = function highLightSingleVisitO
     }
 
     this.myLine
-        // .selectAll('.line')
-        // .style('opacity', function (line) {
-        //
-        //     if (carCategory == 'car-all') {
-        //         return line.context.entranceCount < 3 ?  1 : 0.01;
-        //     }
-        //     else if (carCategory == 'car-internal') {
-        //         return (line.context.entranceCount < 3 && line.context.carType == '2P') ?  1 : 0.01;
-        //     }
-        //
-        //     return (line.context.entranceCount < 3 && line.context.carType != '2P') ? 1 : 0.01;
-        // })
         .style('visibility', function (line) {
 
             if (carCategory == 'car-all') {
                 if (campingBehavior == 'all') {
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = line.context.entranceCount == 2 && line.context.overnight == true ?  'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = line.context.entranceCount == 2 && line.context.overnight == true && line.context.velocity <= velocityLimit ?  'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.entranceCount == 2 && line.context.overnight == true && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ?  'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = line.context.entranceCount == 2 && line.context.overnight == true && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ?  'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = line.context.entranceCount == 2 && line.context.overnight == true && line.context.velocity > velocityLimit ?  'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.entranceCount == 2 && line.context.overnight == true && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ?  'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = line.context.entranceCount == 2 && line.context.overnight == true && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ?  'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                     }
                 }
 
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = line.context.entranceCount == 2 && line.context.overnight == true && line.context.camping == campingBehavior ?  'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = line.context.entranceCount == 2 && line.context.overnight == true && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit ?  'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = line.context.entranceCount == 2 && line.context.overnight == true && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ?  'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = line.context.entranceCount == 2 && line.context.overnight == true && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ?  'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = line.context.entranceCount == 2 && line.context.overnight == true && line.context.camping == campingBehavior && line.context.velocity > velocityLimit ?  'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = line.context.entranceCount == 2 && line.context.overnight == true && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ?  'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = line.context.entranceCount == 2 && line.context.overnight == true && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ?  'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                 }
             }
             else if (carCategory == 'car-internal') {
                 if (campingBehavior == 'all') {
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == '2P') ? 'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == '2P' && line.context.velocity <= velocityLimit ) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ) ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ) ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == '2P'&& line.context.velocity > velocityLimit ) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == '2P'&& line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == '2P'&& line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                     }
 
                 }
 
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                 }
 
             }
             else if (carCategory == 'car-visiting') {
                 if (campingBehavior == 'all') {
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType != '2P') ? 'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType != '2P' && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType != '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType != '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType != '2P' && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType != '2P' && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType != '2P' && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                     }
 
                 }
 
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType != '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                 }
 
             }
 
             if (campingBehavior == 'all') {
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == carCategory) ? 'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == carCategory && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == carCategory && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == carCategory && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == carCategory && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == carCategory && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == carCategory && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                 }
             }
 
             switch (velocityBehavior) {
-                case 'all':
-                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == carCategory && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
                 case 'below-limit':
-                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                    switch (durationBehavior) {
+                        case 'below':
+                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                        case 'above':
+                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                        default:
+                            throw new Error('Invalid duration behavior: ' + durationBehavior);
+                    }
                 case 'above-limit':
-                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                    switch (durationBehavior) {
+                        case 'below':
+                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                        case 'above':
+                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == true && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                        default:
+                            throw new Error('Invalid duration behavior: ' + durationBehavior);
+                    }
             }
         })
     ;
 };
 
-Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory, campingBehavior, velocityBehavior, velocityLimit) {
+Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
@@ -549,110 +717,193 @@ Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory, campin
     }
 
     this.myLine
-        //.selectAll('.line')
-        // .style('opacity', function (line) {
-        //
-        //     if (carCategory == 'car-all') {
-        //         return line.context.entranceCount < 2 ?  1 : 0.01;
-        //     }
-        //     else if (carCategory == 'car-internal') {
-        //         return (line.context.entranceCount < 2 && line.context.carType == '2P') ?  1 : 0.01;
-        //     }
-        //
-        //     return (line.context.entranceCount < 2 && line.context.carType != '2P') ? 1 : 0.01;
-        // })
         .style('visibility', function (line) {
 
             if (carCategory == 'car-all') {
                 if (campingBehavior == 'all') {
-
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = line.context.entranceCount < 2 ?  'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = line.context.entranceCount < 2 && line.context.velocity <= velocityLimit ?  'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.entranceCount < 2 && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = line.context.entranceCount < 2 && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = line.context.entranceCount < 2 && line.context.velocity > velocityLimit ?  'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.entranceCount < 2 && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = line.context.entranceCount < 2 && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                     }
                 }
 
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = line.context.entranceCount < 2 && line.context.camping == campingBehavior ?  'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = line.context.entranceCount < 2 && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit ?  'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = line.context.entranceCount < 2 && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ?  'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = line.context.entranceCount < 2 && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ?  'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = line.context.entranceCount < 2 && line.context.camping == campingBehavior && line.context.velocity > velocityLimit ?  'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = line.context.entranceCount < 2 && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ?  'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = line.context.entranceCount < 2 && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ?  'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                 }
             }
             else if (carCategory == 'car-internal') {
                 if (campingBehavior == 'all') {
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = (line.context.entranceCount < 2 && line.context.carType == '2P') ? 'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.velocity <= velocityLimit ) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.velocity > velocityLimit ) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                     }
                 }
 
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount < 2 && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                 }
             }
             else if (carCategory == 'car-visiting') {
                 if (campingBehavior == 'all') {
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = (line.context.entranceCount < 2 && line.context.carType != '2P') ? 'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                     }
 
                 }
 
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount < 2 && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                 }
             }
 
             if (campingBehavior == 'all') {
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = (line.context.entranceCount < 2 && line.context.carType == carCategory) ? 'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                 }
             }
 
             switch (velocityBehavior) {
-                case 'all':
-                    return line.visibility = (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
                 case 'below-limit':
-                    return line.visibility = (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                    switch (durationBehavior) {
+                        case 'below':
+                            return line.visibility = (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                        case 'above':
+                            return line.visibility = (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                        default:
+                            throw new Error('Invalid duration behavior: ' + durationBehavior);
+                    }
                 case 'above-limit':
-                    return line.visibility = (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                    switch (durationBehavior) {
+                        case 'below':
+                            return line.visibility = (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+                        case 'above':
+                            return line.visibility = (line.context.entranceCount < 2 && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+                        default:
+                            throw new Error('Invalid duration behavior: ' + durationBehavior);
+                    }
             }
         })
     ;
 };
 
-Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (carCategory, campingBehavior, velocityBehavior, velocityLimit) {
+Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (carCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
@@ -662,41 +913,53 @@ Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (
     }
 
     this.myLine
-        //.selectAll('.line')
-        // .style('opacity', function (line) {
-        //     if (carCategory == 'car-all') {
-        //         return 1;
-        //     }
-        //     else if (carCategory == 'car-internal') {
-        //         return line.context.carType == '2P' ? 1 : 0.01;
-        //     }
-        //
-        //     return  line.context.carType != '2P' ? 1 : 0.01;
-        // })
         .style('visibility', function (line) {
             if (carCategory == 'car-all') {
 
                 if (campingBehavior == 'all') {
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = 'visible';
                         case 'below-limit':
-                            return line.visibility = line.context.velocity <= velocityLimit ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = line.context.velocity > velocityLimit ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold  ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                     }
                 }
 
                 let myVisibility = 'visible';
                 switch (velocityBehavior) {
-                    case 'all':
-                        myVisibility = line.context.camping == campingBehavior ? 'visible' : 'hidden';
-                        break;
                     case 'below-limit':
-                        myVisibility = line.context.camping == campingBehavior && line.context.velocity <= velocityLimit ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                myVisibility = line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                break;
+                            case 'above':
+                                myVisibility = line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                                break;
+                        }
                         break;
                     case 'above-limit':
-                        myVisibility = line.context.camping == campingBehavior && line.context.velocity > velocityLimit ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                myVisibility = line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                break;
+                            case 'above':
+                                myVisibility = line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                                break;
+                        }
                         break;
                 }
 
@@ -705,73 +968,141 @@ Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (
             else if (carCategory == 'car-internal') {
                 if (campingBehavior == 'all') {
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = line.context.carType == '2P' ? 'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = line.context.carType == '2P' && line.context.velocity <= velocityLimit ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.carType == '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = line.context.carType == '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = line.context.carType == '2P' && line.context.velocity > velocityLimit ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.carType == '2P' && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = line.context.carType == '2P' && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                            }
                     }
                 }
 
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = line.context.carType == '2P' && line.context.camping == campingBehavior ? 'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                        }
                 }
             }
             else if (carCategory == 'car-visiting') {
-
                 if (campingBehavior == 'all') {
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = line.context.carType != '2P' ? 'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = line.context.carType != '2P' && line.context.velocity <= velocityLimit ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.carType != '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = line.context.carType != '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                                default:
+                                    throw new Error('Invalid duration behavior:' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = line.context.carType != '2P' && line.context.velocity > velocityLimit ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.carType != '2P' && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                                case 'above':
+                                    return line.visibility = line.context.carType != '2P' && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                            }
                     }
 
                 }
 
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = line.context.carType != '2P' && line.context.camping == campingBehavior ? 'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold  ? 'visible' : 'hidden';
+
+                            case 'above':
+                                return line.visibility = line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold  ? 'visible' : 'hidden';
+
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                            case 'above':
+                                return line.visibility = line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                        }
                 }
             }
 
             if (campingBehavior == 'all') {
                 switch (velocityBehavior) {
-                    case 'all':
-                        return  line.visibility = line.context.carType == carCategory ? 'visible' : 'hidden';
                     case 'below-limit':
-                        return  line.visibility = line.context.carType == carCategory && line.context.velocity <= velocityLimit ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return  line.visibility = line.context.carType == carCategory && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                            case 'above':
+                                return  line.visibility = line.context.carType == carCategory && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return  line.visibility = line.context.carType == carCategory && line.context.velocity > velocityLimit ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return  line.visibility = line.context.carType == carCategory && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+
+                            case 'above':
+                                return  line.visibility = line.context.carType == carCategory && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+
+                        }
                 }
 
             }
 
             switch (velocityBehavior) {
-                case 'all':
-                    return  line.visibility = line.context.carType == carCategory && line.context.camping == campingBehavior ? 'visible' : 'hidden';
                 case 'below-limit':
-                    return  line.visibility = line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit ? 'visible' : 'hidden';
+                    switch (durationBehavior) {
+                        case 'below':
+                            return  line.visibility = line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+
+                        case 'above':
+                            return  line.visibility = line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+
+                        default:
+                            throw new Error('Invalid duration behavior: ' + durationBehavior);
+                    }
                 case 'above-limit':
-                    return  line.visibility = line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit ? 'visible' : 'hidden';
+                    switch (durationBehavior) {
+                        case 'below':
+                            return  line.visibility = line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ? 'visible' : 'hidden';
+                        case 'above':
+                            return  line.visibility = line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ? 'visible' : 'hidden';
+                    }
             }
         })
     ;
 };
 
-Chart2D.prototype.highLightSingleEntranceNotOvernightVisit = function highLightSingleEntranceNotOvernightVisit (carCategory, campingBehavior, velocityBehavior, velocityLimit) {
+Chart2D.prototype.highLightSingleEntranceNotOvernightVisit = function highLightSingleEntranceNotOvernightVisit (carCategory, campingBehavior, velocityBehavior, velocityLimit,  durationBehavior, durationThreshold) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
@@ -779,104 +1110,220 @@ Chart2D.prototype.highLightSingleEntranceNotOvernightVisit = function highLightS
     if (!velocityLimit) {
         velocityLimit = ParkMap.SPEED_LIMIT_EXTRA_10;
     }
+
     this.myLine
-    //.selectAll('.line')
-    // .style('opacity', function (line) {
-    //
-    //     if (carCategory == 'car-all') {
-    //         return line.context.entranceCount < 2 ?  1 : 0.01;
-    //     }
-    //     else if (carCategory == 'car-internal') {
-    //         return (line.context.entranceCount < 2 && line.context.carType == '2P') ?  1 : 0.01;
-    //     }
-    //
-    //     return (line.context.entranceCount < 2 && line.context.carType != '2P') ? 1 : 0.01;
-    // })
         .style('visibility', function (line) {
 
             if (carCategory == 'car-all') {
                 if (campingBehavior == 'all') {
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = line.context.entranceCount == 2 && line.context.overnight == false ?  'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = line.context.entranceCount == 2 && line.context.overnight == false && line.context.velocity <= velocityLimit ?  'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.entranceCount == 2 && line.context.overnight == false && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold ?  'visible' : 'hidden';
+
+                                case 'above':
+                                    return line.visibility = line.context.entranceCount == 2 && line.context.overnight == false && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold ?  'visible' : 'hidden';
+
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = line.context.entranceCount == 2 && line.context.overnight == false && line.context.velocity > velocityLimit ?  'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = line.context.entranceCount == 2 && line.context.overnight == false && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ?  'visible' : 'hidden';
+
+                                case 'above':
+                                    return line.visibility = line.context.entranceCount == 2 && line.context.overnight == false && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ?  'visible' : 'hidden';
+
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                     }
                 }
 
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = line.context.entranceCount == 2 && line.context.overnight == false && line.context.camping == campingBehavior ?  'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = line.context.entranceCount == 2 && line.context.overnight == false && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit ?  'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = line.context.entranceCount == 2 && line.context.overnight == false && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold  ?  'visible' : 'hidden';
+
+                            case 'above':
+                                return line.visibility = line.context.entranceCount == 2 && line.context.overnight == false && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold  ?  'visible' : 'hidden';
+
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = line.context.entranceCount == 2 && line.context.overnight == false && line.context.camping == campingBehavior && line.context.velocity > velocityLimit ?  'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = line.context.entranceCount == 2 && line.context.overnight == false && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold ?  'visible' : 'hidden';
+
+                            case 'above':
+                                return line.visibility = line.context.entranceCount == 2 && line.context.overnight == false && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold ?  'visible' : 'hidden';
+
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                 }
             }
             else if (carCategory == 'car-internal') {
                 if (campingBehavior == 'all') {
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == '2P') ? 'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == '2P' && line.context.velocity <= velocityLimit ) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                         case 'above-limit':
-                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == '2P' && line.context.velocity > velocityLimit ) ? 'visible' : 'hidden';
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == '2P' && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == '2P' && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
                     }
                 }
 
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                 }
             }
             else if (carCategory == 'car-visiting') {
                 if (campingBehavior == 'all') {
                     switch (velocityBehavior) {
-                        case 'all':
-                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType != '2P') ? 'visible' : 'hidden';
                         case 'below-limit':
-                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType != '2P' && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
-                        case 'above-limit':
-                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType != '2P' && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
-                    }
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType != '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
 
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType != '2P' && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
+                        case 'above-limit':
+                            switch (durationBehavior) {
+                                case 'below':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType != '2P' && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+
+                                case 'above':
+                                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType != '2P' && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+
+                                default:
+                                    throw new Error('Invalid duration behavior: ' + durationBehavior);
+                            }
+                    }
                 }
 
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType != '2P' && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType != '2P' && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                 }
             }
 
             if (campingBehavior == 'all') {
                 switch (velocityBehavior) {
-                    case 'all':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == carCategory) ? 'visible' : 'hidden';
                     case 'below-limit':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == carCategory && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == carCategory && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == carCategory && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                     case 'above-limit':
-                        return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == carCategory && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                        switch (durationBehavior) {
+                            case 'below':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == carCategory && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+
+                            case 'above':
+                                return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == carCategory && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+
+                            default:
+                                throw new Error('Invalid duration behavior: ' + durationBehavior);
+                        }
                 }
             }
 
             switch (velocityBehavior) {
-                case 'all':
-                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == carCategory && line.context.camping == campingBehavior) ? 'visible' : 'hidden';
                 case 'below-limit':
-                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit) ? 'visible' : 'hidden';
+                    switch (durationBehavior) {
+                        case 'below':
+                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+
+                        case 'above':
+                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity <= velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+
+                        default:
+                            throw new Error('Invalid duration behavior: ' + durationBehavior);
+                    }
                 case 'above-limit':
-                    return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit) ? 'visible' : 'hidden';
+                    switch (durationBehavior) {
+                        case 'below':
+                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration <= durationThreshold) ? 'visible' : 'hidden';
+
+                        case 'above':
+                            return line.visibility = (line.context.entranceCount == 2 && line.context.overnight == false && line.context.carType == carCategory && line.context.camping == campingBehavior && line.context.velocity > velocityLimit && line.context.visitDuration > durationThreshold) ? 'visible' : 'hidden';
+
+                        default:
+                            throw new Error('Invalid duration behavior: ' + durationBehavior);
+                    }
             }
         })
     ;

@@ -112,6 +112,13 @@ var readExistingSensorData = function() {
             tmpCar.endTime = time;
             tmpCar.overnight = extractDate(tmpCar.startTime) != extractDate(tmpCar.endTime);
 
+            let start = moment(tmpCar.startTime, 'YYYY-MM-DD HH:mm:ss').toDate();
+            let end = moment(tmpCar.endTime , 'YYYY-MM-DD HH:mm:ss').toDate();
+
+            let timeDurationInMiliSecond = end.getTime() - start.getTime();
+            tmpCar.visitDuration = timeDurationInMiliSecond / 3600000;
+            tmpCar.visitDuration = tmpCar.visitDuration.toFixed(2);
+
             if (!tmpCar.camping && hasCampingBehavior(tmpCar.path)) {
                 tmpCar.camping = true;
             }

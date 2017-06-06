@@ -13,6 +13,7 @@ VisitParser.prototype.parse = function (visits) {
         let colorIdx = line.carType;
         line.color = line.carType == '2P' ? '#000000' : colorFunction(colorIdx);
         line.velocity = +line.velocity;
+        line.visitDuration = +line.visitDuration;
         line.startTime = self.parseTime(line.startTime);
 
         let path = line.path.map(function (timeGate) {
