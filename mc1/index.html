@@ -52,9 +52,6 @@
                                 <option value="no-exit">No Exit</option>
                                 <option value="multi-entrances">Multiple Entrances</option>
                             </select>
-                        </td>
-
-                        <td>
                             <select id="vehicleCategory" name="vehicleCategory" onchange="mc1.controller.clickVehicleCategory(this)">
                                 <option value="car-all" selected>All Types of Vehicle</option>
                                 <option value="car-internal">Internal Vehicles</option>
@@ -66,9 +63,6 @@
                                 <option value="5">2 Axle bus</option>
                                 <option value="6">3 Axle bus</option>
                             </select>
-                        </td>
-
-                        <td>
                             <select id="vehicleBehavior" name="vehicleBehavior" onchange="mc1.controller.clickVehicleBehavior(this)">
                                 <option value="all" selected>All Camping Behaviors</option>
                                 <option value="behavior-camping" >Camping Vehicles</option>
@@ -76,17 +70,25 @@
                             </select>
                         </td>
 
+                    </tr>
+                    <tr>
                         <td>
+                            <label>Velocity Limit (mph)</label>
                             <select id="velocityBehavior" name="velocityBehavior" onchange="mc1.controller.clickVelocityBehavior(this)">
                                 <option value="above-limit" selected>Above Limit</option>
                                 <option value="below-limit" >Below Limit</option>
                             </select>
-                        </td>
-                        <td>
-                            <label>Velocity Limit (mph)</label>
                             <input type="range" id="velocityLimit" name="velocityLimit" min="0" max="50" value="25" step="0.5" onchange="document.getElementById('rangeValLabel').innerHTML = this.value; mc1.controller.onVelocityLimitChange(this);"/>
                             <em id="rangeValLabel" style="font-style: normal;"></em>
 
+
+                            <label>Duration Limit (hrs)</label>
+                            <select id="durationBehavior" name="durationBehavior" onchange="mc1.controller.clickVelocityBehavior(this)">
+                                <option value="above-limit" selected>Above</option>
+                                <option value="below-limit" >Below</option>
+                            </select>
+                            <input type="range" id="durationLimit" name="durationLimit" min="0" max="48" value="25" step="0.25" onchange="document.getElementById('durationLimit').innerHTML = this.value; mc1.controller.onVelocityLimitChange(this);"/>
+                            <em id="durationRangeValLabel" style="font-style: normal;"></em>
                         </td>
                     </tr>
                 </table>
