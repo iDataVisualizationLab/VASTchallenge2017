@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script data-require="d3@4.0.0" data-semver="4.0.0" src="https://d3js.org/d3.v4.js"></script>
+</head>
+
+<body>
+<div id="chart"></div>
+<script>
+    var width = 500,
+        height = 500,
+        start = 0,
+        end = 120,
+        numSpirals = 1;
+
+    var lastRadius = 20;
+
+    var theta = function(r) {
+        return  Math.PI * r / 12;
+    };
+
+    function createSpiralGenerator(start, end) {
+        var roundCount = end / 24;
+        var radius = d3.scaleLinear()
+            .domain([start, end])
+            .range([lastRadius, lastRadius + roundCount*5]);
+
+        var ra = function (r) {
+            return radius(r);
+        };
+
+
+        var spiral = d3.radialLine()
+            .curve(d3.curveCardinal)
+            .angle(theta)
+            .radius(ra);
+
+        lastRadius = lastRadius + (roundCount+1)*5;
+
+        return spiral;
+
+    }
+
+
+    var svg = d3.select("#chart").append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    // create the spiral, borrowed from http://bl.ocks.org/syntagmatic/3543186
+    var points = d3.range(start, end + 0.001, (end - start) / 1000);
+
+    var path = svg.append("path")
+        .datum(points)
+        .attr("id", "spiral")
+        .attr("d", createSpiralGenerator(start, end))
+        .style("fill", "none")
+        .style("stroke", "steelblue");
+
+
+
+    start = 6;
+    end = 36;
+    points = d3.range(start, end + 0.001, (end - start) / 1000);
+
+
+    svg.append("path")
+        .datum(points)
+        .attr("id", "spiral")
+        .attr("d", createSpiralGenerator(start, end))
+        .style("fill", "none")
+        .style("stroke", "#FF0000");
+
+</script>
+</body>
+
+</html>
