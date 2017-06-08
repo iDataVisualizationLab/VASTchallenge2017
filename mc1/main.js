@@ -28,35 +28,25 @@ mc1.visitDurationSvg = d3.select('body').select('#visitDuration').append('svg')
             "translate(" + margin.left + "," + margin.top + ")")
     ;
 
-mc1.firstDaySpanSvg = d3.select('body').select('#firstDaySpan').append('svg')
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")")
-;
+// mc1.firstDaySpanSvg = d3.select('body').select('#firstDaySpan').append('svg')
+//     .attr("width", width + margin.left + margin.right)
+//     .attr("height", height + margin.top + margin.bottom)
+//     .append("g")
+//     .attr("transform",
+//         "translate(" + margin.left + "," + margin.top + ")")
+// ;
 
 d3.json("data/all-car-path.json", function(error, lines) {
     let visitParser = new VisitParser(mc1.parkMap);
     mc1.visitParser = visitParser;
 
-    let parsedVisits = visitParser.parse(lines);
-    let eventHandler = new EventHandler();
-
-    // parsedVisits = parsedVisits.slice(0, 10);
-
-   let visitChart = new Chart2D(mc1.visitDurationSvg, width, height, {id: 1, margin: margin, timeChart: true});
-
-    let firstDaySpanChart = new Chart2D(mc1.firstDaySpanSvg, width, height, {id: 2, margin: margin, timeChart: true});
-
+    mc1.parsedVisits = visitParser.parse(lines);
+    mc1.eventHandler = new EventHandler();
     mc1.simulationManager = new SimulationManager(mc1.parkMap);
 
-    mc1.firstDayDuration = new VisitTimeBlock(firstDaySpanChart, mc1.parkMap, null, null, eventHandler, mc1.simulationManager);
-    mc1.firstDayDuration.setVisits(parsedVisits);
-    mc1.firstDayDuration.render();
+    mc1.controller.changeGraphType('one-year');
     //
-    mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap, null, null, eventHandler, mc1.simulationManager);
-    mc1.visitDuration.render(parsedVisits);
+
 
     // d3.csv('data/Lekagul Sensor Data.csv', function (err, rawData) {
     //

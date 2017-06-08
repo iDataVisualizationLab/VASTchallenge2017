@@ -1,5 +1,10 @@
 var Chart2D = function Chart2D(svg, width, height, options) {
     this.svg = svg;
+
+
+    this.svg.selectAll('*').remove();
+
+
     this.width = width;
     this.height = height;
 

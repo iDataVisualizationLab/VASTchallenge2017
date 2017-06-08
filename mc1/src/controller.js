@@ -59,8 +59,13 @@ mc1.controller.clickVelocityBehavior = function(self) {
     console.log("entranceType: " + entranceType + "; vehicleCategory: " + vehicleCategory + "; vehicleBehavior: " + vehicleBehavior + "; velocityBehavior: " + self.value + "; ");
 
 
-    mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    if (!!mc1.visitDuration) {
+        mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
+
+    if (!!mc1.firstDayDuration) {
+        mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
 };
 
 mc1.controller.clickDurationBehavior = function(self) {
@@ -76,8 +81,13 @@ mc1.controller.clickDurationBehavior = function(self) {
     console.log("entranceType: " + entranceType + "; vehicleCategory: " + vehicleCategory + "; vehicleBehavior: " + vehicleBehavior + "; velocityBehavior: " + self.value + "; ");
 
 
-    mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    if (!!mc1.visitDuration) {
+        mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
+
+    if (!!mc1.firstDayDuration) {
+        mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
 };
 
 mc1.controller.simulateTraffic = function(self) {
@@ -118,8 +128,13 @@ mc1.controller.onVelocityLimitChange = function(self) {
     let durationThreshold = document.getElementById('durationThreshold').value;
 
 
-    mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    if (!!mc1.visitDuration) {
+        mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
+
+    if (!!mc1.firstDayDuration) {
+        mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
 };
 
 mc1.controller.onDurationThresholdChange = function(self) {
@@ -144,8 +159,13 @@ mc1.controller.onDurationThresholdChange = function(self) {
     let durationThreshold = document.getElementById('durationThreshold').value;
 
 
-    mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    if (!!mc1.visitDuration) {
+        mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
+
+    if (!!mc1.firstDayDuration) {
+        mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
 };
 
 mc1.controller.clearRoad = function(self) {
@@ -161,8 +181,24 @@ mc1.controller.viewRoadHeatMap = function(self) {
     mc1.visitDuration.viewHeatMap();
 };
 
-// mc1.controller.changeRoadHitmapTime = function (self) {
-//         console.log(self.value);
-//
-//         mc1.roadHitmap.renderVisits();
-// };
+mc1.controller.changeGraphType = function(graphType) {
+    switch (graphType) {
+        case 'hour':
+            let firstDaySpanChart = new Chart2D(mc1.visitDurationSvg, width, height, {id: 2, margin: margin, timeChart: true});
+            mc1.firstDayDuration = new VisitTimeBlock(firstDaySpanChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager);
+            mc1.firstDayDuration.setVisits(mc1.parsedVisits);
+            mc1.firstDayDuration.render();
+            break;
+        case 'week-day':
+            break;
+        case 'on-year':
+        default:
+            let visitChart = new Chart2D(mc1.visitDurationSvg, width, height, {id: 1, margin: margin, timeChart: true});
+            mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager);
+            mc1.visitDuration.render(mc1.parsedVisits);
+
+    }
+
+};
+
+

@@ -36,9 +36,10 @@
         </td>
         <td>
             <div>
-                <select id="graphType" name="graphType">
+                <select id="graphType" name="graphType" onchange="mc1.controller.changeGraphType(this.value);">
+                    <option value="hour" >By hour block</option>
+                    <option value="week-day" >By week day</option>
                     <option value="one-year" selected>Entire year</option>
-                    <option value="first-day">24 hours after arrival</option>
                 </select>
             </div>
             <div>
@@ -95,14 +96,17 @@
                     </tr>
                 </table>
             </div>
-            <div id="firstDaySpan"></div>
-            <div>
-                <input type="button" value="Play Time" name="play-time-block" onclick="mc1.controller.simulateTimeBlock(this)" />
-                <input type="button" value="View Road Heat Map" name="road-heat-map" onclick="mc1.controller.viewRoadHeatMap(this)"/>
-            </div>
+            <!--<div id="firstDaySpan"></div>-->
+            <!--<div>-->
+                <!--<input type="button" value="Play Time" name="play-time-block" onclick="mc1.controller.simulateTimeBlock(this)" />-->
+                <!--<input type="button" value="View Road Heat Map" name="road-heat-map" onclick="mc1.controller.viewRoadHeatMap(this)"/>-->
+            <!--</div>-->
 
             <div id="visitDuration"></div>
-            <div><input type="button" value="Play Full" name="play-full" onclick="mc1.controller.simulateTraffic(this)"></div>
+            <div>
+                <input type="button" value="Simulate Traffic" name="play-full" onclick="mc1.controller.simulateTraffic(this)"/>
+                <input type="button" value="View Road Heat Map" name="road-heat-map" onclick="mc1.controller.viewRoadHeatMap(this)"/>
+            </div>
         </td>
     </tr>
 </table>
