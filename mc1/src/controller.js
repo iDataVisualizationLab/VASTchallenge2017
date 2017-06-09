@@ -189,6 +189,11 @@ mc1.controller.changeGraphType = function(graphType) {
             mc1.firstDayDuration.setVisits(mc1.parsedVisits);
             mc1.firstDayDuration.render();
             break;
+        case 'hour-spiral':
+            mc1.spiral = new SpiralGraph(mc1.visitDurationSvg);
+            mc1.spiral.setVisits(mc1.parsedVisits);
+            mc1.spiral.render();
+            break;
         case 'week-day':
             break;
         case 'on-year':

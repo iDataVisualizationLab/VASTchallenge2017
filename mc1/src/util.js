@@ -132,6 +132,14 @@ function getTimeInDayBySeconds (dateTime) {
     return dateTime.getHours()*3600 + dateTime.getMinutes()*60 + dateTime.getSeconds();
 }
 
+function getTimeInDayByMinutes (dateTime) {
+    return dateTime.getHours()*60 + dateTime.getMinutes() +  dateTime.getSeconds()/ 60;
+}
+
+function getTimeInDayByHours (dateTime) {
+    return dateTime.getHours() + dateTime.getMinutes()/60 +  dateTime.getSeconds()/ 3600;
+}
+
 function formatDateTime(dateTime, formatTemplate) {
     var format = d3.timeFormat(!!formatTemplate ? formatTemplate : "%Y-%m-%d %H:%M:%S");
 

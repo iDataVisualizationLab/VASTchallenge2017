@@ -15,6 +15,7 @@ VisitParser.prototype.parse = function (visits) {
         line.velocity = +line.velocity;
         line.visitDuration = +line.visitDuration;
         line.startTime = self.parseTime(line.startTime);
+        line.endTime = self.parseTime(line.endTime);
 
         let path = line.path.map(function (timeGate) {
             let carPoint;

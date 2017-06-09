@@ -11,7 +11,7 @@
     var width = 500,
         height = 500,
         start = 0,
-        end = 120,
+        end = 60,
         numSpirals = 1;
 
     var lastRadius = 20;
@@ -21,10 +21,12 @@
     };
 
     function createSpiralGenerator(start, end) {
-        var roundCount = end / 24;
+        var roundCount = Math.ceil((end - start) / 24);
+        var endRadius = lastRadius + roundCount*3;
+
         var radius = d3.scaleLinear()
             .domain([start, end])
-            .range([lastRadius, lastRadius + roundCount*5]);
+            .range([lastRadius, endRadius]);
 
         var ra = function (r) {
             return radius(r);
@@ -36,7 +38,7 @@
             .angle(theta)
             .radius(ra);
 
-        lastRadius = lastRadius + (roundCount+1)*5;
+        lastRadius = endRadius + 3;
 
         return spiral;
 
@@ -49,8 +51,10 @@
         .append("g")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
+    var roundCount = Math.ceil((end - start) / 24);
+
     // create the spiral, borrowed from http://bl.ocks.org/syntagmatic/3543186
-    var points = d3.range(start, end + 0.001, (end - start) / 1000);
+    var points = d3.range(start, end + 1, 1);
 
     var path = svg.append("path")
         .datum(points)
@@ -61,9 +65,11 @@
 
 
 
-    start = 6;
+    start = 30;
     end = 36;
-    points = d3.range(start, end + 0.001, (end - start) / 1000);
+    roundCount = Math.ceil((end - start) / 24);
+
+    points = d3.range(start, end + 1, 1);
 
 
     svg.append("path")
