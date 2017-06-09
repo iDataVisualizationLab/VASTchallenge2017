@@ -60,8 +60,12 @@ VisitTimeBlock.prototype.render = function render() {
     let self = this;
     let lines = this.lines;
 
+    let count = 0;
     lines.forEach(function(line, index) {
 
+        // if (line.overnight == false || count > 3) {
+        //     return;
+        // }
         let tmpPath = [];
         let carPoint;
         let firstDayInMilliseconds;
@@ -96,8 +100,22 @@ VisitTimeBlock.prototype.render = function render() {
             }
         }
 
+        // lengthen the line to tell overnight cars
+        //
+        // if (tmpPath.length < line.path.length) {
+        //
+        //     let lastCarPoint = tmpPath[tmpPath.length-1];
+        //     let carPoint = new CarPoint(null, maxEndDate, lastCarPoint.velocity, null);
+        //     let d = carPoint.getTimeInDayAsString();
+        //     carPoint.x = self.parseTime(d);
+        //     carPoint.y = lastCarPoint.y;
+        //
+        //     tmpPath.push(carPoint);
+        // }
+
         self.visitChart.addData(line, tmpPath);
 
+        // count ++;
     });
 
     this.visitChart.renderChart(this.events);

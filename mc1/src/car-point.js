@@ -14,7 +14,12 @@ CarPoint.prototype.getTime = function getTime() {
 };
 
 CarPoint.prototype.getGate = function getGate() {
-    return this.mapPoint.getName();
+
+    if (!!this.mapPoint) {
+        return this.mapPoint.getName();
+    }
+
+    return '';
 };
 
 CarPoint.prototype.getVelocity = function getVelocity() {
@@ -27,7 +32,11 @@ CarPoint.prototype.getPath = function getPath() {
 
 
 CarPoint.prototype.getColor = function getColor() {
-    return this.mapPoint.getColor();
+    if (!!this.mapPoint) {
+        return this.mapPoint.getColor();
+    }
+
+    return '#000';
 };
 
 CarPoint.prototype.getTimeInMiliseconds = function getTimeInMiliseconds() {

@@ -151,3 +151,7 @@ function formatDate(dateTime, formatTemplate) {
 
     return format(dateTime);
 }
+
+function getTimeInDayAsString (dateTime) {
+    return dateTime.getHours() + ':' + dateTime.getMinutes() + ':' + dateTime.getSeconds();
+};
