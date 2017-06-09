@@ -198,11 +198,12 @@ Chart2D.prototype.renderChart = function renderChart(events) {
         .attr("d", function (line) {
             return line.valueLine(line.data);
         })
-        .style('stroke-width', 0.5)
-        .style('stroke', function (line) {
-
-            return line.context.color;
-        })
+        .style('stroke-width', 0.2)
+        .style('stroke', '#000000')
+        // .style('stroke', function (line) {
+        //
+        //     return line.context.color;
+        // })
         .style('fill', 'none')
 
     ;
@@ -270,7 +271,7 @@ Chart2D.prototype.renderPassingGates = function renderPassingGates() {
         d3.select(this).selectAll('.passing-gate').data(myEndPoints).enter()
             .append('circle')
             .attr('class', 'passing-gate gate-car-id-' + line.context.carId)
-            .attr('r', 1)
+            .attr('r', 0.5)
             .attr('cx', function (d) {
                 let xKey = line.x;
                 return self.x(d[xKey]);
