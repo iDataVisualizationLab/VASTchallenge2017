@@ -14,7 +14,7 @@ var SpiralGraph = function (svg, periodValue, options) {
     if (!options) {
         options = {
             radius: 10,
-            step: 0.1,
+            step: 2,
             svgWidth: 600,
             svgHeight: 440
         };
@@ -54,20 +54,19 @@ SpiralGraph.prototype.setVisits = function setVisits (visits) {
         return getTimeInDayBySeconds(l1.startTime) - getTimeInDayBySeconds(l2.startTime);
     });
 
-    let self = this;
-    let totalRound = 0;
-    lines.forEach(function (l) {
-        if (l.visitDuration > 24 && totalRound < 1113) {
-
-            self.addSpiral(getTimeInDayByHours(l.startTime), l.visitDuration);
-            totalRound = totalRound + l.visitDuration / 24;
-        }
-    });
-
-    if (totalRound > 0) {
-        this.options.step = 220 / totalRound;
-        // this.options.step = 1;
+    if (lines.length > 0) {
+        this.options.step =  120 / lines.length;
     }
+
+
+
+    let self = this;
+    let totalLine = 0;
+    lines.forEach(function (l) {
+        console.log('duration: ' + l.visitDuration + '; start: ' + formatDateTime(l.startTime) + '; end:' + formatDateTime(l.endTime));
+        self.addSpiral(getTimeInDayByHours(l.startTime), l.visitDuration);
+        // totalLine ++;
+    });
 
     this.lines = lines;
 };
@@ -81,25 +80,33 @@ SpiralGraph.prototype.addSpiral = function addSpiral(start, duration) {
 
     let self = this;
     let step = self.options.step;
-    let end = start + duration;
+    let myRadius = self.radius + step;
 
-    let roundCount = Math.ceil(duration / self.periodValue);
-    let endRadius = self.radius + roundCount * step;
-
-    let radiusFunc = d3.scaleLinear()
-        .domain([start, end])
-        .range([self.radius, endRadius]);
 
     let spiral = d3.radialLine()
         .curve(d3.curveCardinal)
         .angle(self.theta)
-        .radius(radiusFunc);
+        .radius(myRadius);
 
-    let points = d3.range(start, start + duration + 1, 1);
+    let nextStart;
+    let currentStart = start;
+    let points;
+    let end = start + duration;
 
-    this.spiralData.push({spiral: spiral, data: points});
+    do {
+        nextStart = currentStart + 24;
+        points = nextStart >= end ? d3.range(currentStart, end, 1) : d3.range(currentStart, nextStart + 1, 1);
+        this.spiralData.push({spiral: spiral, data: points});
+        currentStart = nextStart;
 
-    self.radius = endRadius + step;
+        if (currentStart >= end) {
+            break;
+        }
+
+    }
+    while(true);
+
+    self.radius = myRadius + step;
 };
 
 SpiralGraph.prototype.render = function render() {
@@ -118,5 +125,6 @@ SpiralGraph.prototype.render = function render() {
         .style("fill", "none")
         .style("stroke", "steelblue")
         .style("stroke-width", 0.1)
+        .style("opacity", 0.2)
     ;
 };
