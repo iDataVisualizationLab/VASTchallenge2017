@@ -197,29 +197,17 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
     let xdm = self.x.domain();
     let ydm = self.y.domain();
 
-    let myLowerBoundTimeSelector = [
+    self.myLowerBoundTimeSelector = [
         [
             {x: xdm[0], y: ydm[0]},
             {x: xdm[0], y: ydm[1]}
         ]
     ];
     // create two vertical lines
-    this.svg.selectAll('.left-time-selector').data(myLowerBoundTimeSelector).enter()
-        .append('path')
-        .attr('class', 'left-time-selector')
-        .attr("d", function (line) {
-
-            return valueLine(line);
-        })
-        .style('stroke-width', 1)
-        .style('stroke', '#FF0000')
-        .call(
-            d3.drag()
-            .on("drag", handleBoundaryDrag)
-        );
+    createTimeSelector('left-time-selector', self.myLowerBoundTimeSelector);
 
 
-    let myUpperBoundTimeSelector = [
+    self.myUpperBoundTimeSelector = [
         [
             {x: xdm[1], y: ydm[0]},
             {x: xdm[1], y: ydm[1]}
@@ -227,20 +215,25 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
     ];
 
     // create two vertical lines
-    this.svg.selectAll('.right-time-selector').data(myUpperBoundTimeSelector).enter()
-        .append('path')
-        .attr('class', 'right-time-selector')
-        .attr("d", function (line) {
+    createTimeSelector('right-time-selector', self.myUpperBoundTimeSelector);
 
-            return valueLine(line);
-        })
-        .style('stroke-width', 1)
-        .style('stroke', '#FF0000')
-        .call(
-            d3.drag()
-                .on("drag", handleBoundaryDrag)
-        )
-    ;
+
+    function createTimeSelector(cssClass, selectorData) {
+        self.svg.selectAll('.' + cssClass).data(selectorData).enter()
+            .append('path')
+            .attr('class', cssClass)
+            .attr("d", function (line) {
+
+                return valueLine(line);
+            })
+            .style('stroke-width', 1)
+            .style('stroke', '#FF0000')
+            .call(
+                d3.drag()
+                    .on("drag", handleBoundaryDrag)
+            )
+        ;
+    }
 
     function handleBoundaryDrag(d) {
         d3.select(this)
