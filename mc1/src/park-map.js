@@ -302,8 +302,7 @@ var ParkMap = function ParkMap (byteData, svg) {
         .attr('transform', 'translate(620, 15)')
     ;
 
-    this.tooltip = d3.select("body")
-        .append("div")
+    this.tooltip = d3.select("#tooltip")
         .style("position", "absolute")
         .style("z-index", "10")
         .style("visibility", "hidden")

@@ -21,6 +21,8 @@ var Chart2D = function Chart2D(svg, width, height, options) {
     this.fisheye = d3.fisheye.circular()
         .radius(200)
         .distortion(2);
+
+    this.options.defaultLineWidth = 0.2;
 };
 
 Chart2D.prototype.setEventHandler = function setEventHandler(eventHandler) {
@@ -198,7 +200,7 @@ Chart2D.prototype.renderChart = function renderChart(events) {
         .attr("d", function (line) {
             return line.valueLine(line.data);
         })
-        .style('stroke-width', 0.2)
+        .style('stroke-width', self.options.defaultLineWidth)
         .style('stroke', '#000000')
         // .style('stroke', function (line) {
         //
@@ -302,6 +304,13 @@ Chart2D.prototype.highlightSingleVisit = function highlightSingleVisit (carId) {
 
             return l.context.carId == carId ? 1 : 0.1;
         })
+        .style('stroke-width', function (l) {
+            return l.context.carId == carId ? 1 : self.options.defaultLineWidth;
+        })
+    ;
+
+    self.svg.selectAll('.gate-car-id-' + carId)
+        .attr('r', 2)
     ;
 };
 
@@ -310,8 +319,12 @@ Chart2D.prototype.clearSetting = function highlightSingleVisit () {
     let self = this;
     self.myLine
         .style('opacity', 1)
+        .style('stroke-width', self.options.defaultLineWidth)
     ;
 
+    self.svg.selectAll('.passing-gate')
+        .attr('r', 0.5)
+    ;
 };
 
 Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {

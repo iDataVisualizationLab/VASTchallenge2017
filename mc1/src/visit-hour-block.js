@@ -30,6 +30,13 @@ var VisitTimeBlock = function VisitTimeBlock(visitChart, parkMap, fromHour, toHo
     this.visitChart.setEventHandler(this.eventHandler);
     this.simulationManager = simulationManager;
 
+    this.tooltip = d3.select('body').select("#tooltip")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+    ;
+
+
     this.init();
 
 };
@@ -102,16 +109,16 @@ VisitTimeBlock.prototype.render = function render() {
 
         // lengthen the line to tell overnight cars
         //
-        // if (tmpPath.length < line.path.length) {
-        //
-        //     let lastCarPoint = tmpPath[tmpPath.length-1];
-        //     let carPoint = new CarPoint(null, maxEndDate, lastCarPoint.velocity, null);
-        //     let d = carPoint.getTimeInDayAsString();
-        //     carPoint.x = self.parseTime(d);
-        //     carPoint.y = lastCarPoint.y;
-        //
-        //     tmpPath.push(carPoint);
-        // }
+        if (tmpPath.length < line.path.length) {
+
+            let lastCarPoint = tmpPath[tmpPath.length-1];
+            let carPoint = new CarPoint(null, maxEndDate, lastCarPoint.velocity, null);
+            let d = carPoint.getTimeInDayAsString();
+            carPoint.x = self.parseTime(d);
+            carPoint.y = lastCarPoint.y;
+
+            tmpPath.push(carPoint);
+        }
 
         self.visitChart.addData(line, tmpPath);
 
