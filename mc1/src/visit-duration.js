@@ -27,6 +27,14 @@ var VisitDuration = function VisitDuration(visitChart, parkMap, startDate, endDa
         .style("position", "absolute")
         .style("z-index", "10")
         .style("visibility", "hidden")
+        .on('mouseover', function () {
+            d3.select(this)
+                .style('visibility', 'visible')
+        })
+        .on('mouseout', function () {
+            d3.select(this)
+                .style('visibility', 'hidden')
+        })
     ;
 
     this.init();
@@ -77,7 +85,9 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(e) {
 
     let carPoints = line.context.path;
 
-    let tableRows = '<tr><th>Time</th><th>Gate</th></tr>';
+    let tableRows = '<tr><td colspan="2"> Car: ' + line.context.carId +
+        '</td></tr>' +
+        '<tr><th>Time</th><th>Gate</th></tr>';
     carPoints.forEach(function (carPoint) {
         tableRows += '<tr>' +
             '<td>' + carPoint.getFormattedTime() +
