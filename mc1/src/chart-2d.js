@@ -262,7 +262,7 @@ Chart2D.prototype.renderPassingGates = function renderPassingGates() {
         let myEndPoints = line.data.filter(function (cp) {
 
             for(let i=0; i< gates.length; i++) {
-                if (cp.getGate().startsWith(gates[i])) {
+                if (cp.getVirtual() == false && cp.getGate().startsWith(gates[i])) {
                     return true;
                 }
             }

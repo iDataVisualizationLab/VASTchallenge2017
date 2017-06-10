@@ -3,6 +3,18 @@ var CarPoint = function (mapPoint, time, velocity, path) {
   this.time = time;
   this.velocity = +velocity;
   this.path = path;
+  this.virtual = false;
+};
+
+
+CarPoint.prototype.getVirtual = function getVirtual() {
+    return this.virtual;
+};
+
+CarPoint.prototype.setVirtual = function setVirtual(v) {
+    this.virtual = v;
+
+    return this;
 };
 
 CarPoint.prototype.getMapPoint = function getMapPoint() {

@@ -112,7 +112,10 @@ VisitTimeBlock.prototype.render = function render() {
         if (tmpPath.length < line.path.length) {
 
             let lastCarPoint = tmpPath[tmpPath.length-1];
-            let carPoint = new CarPoint(null, maxEndDate, lastCarPoint.velocity, null);
+            let nextCarPoint = line.path[tmpPath.length];
+            let carPoint = new CarPoint(nextCarPoint, maxEndDate, lastCarPoint.velocity, null);
+            carPoint.setVirtual(true);
+
             let d = carPoint.getTimeInDayAsString();
             carPoint.x = self.parseTime(d);
             carPoint.y = lastCarPoint.y;
@@ -120,7 +123,37 @@ VisitTimeBlock.prototype.render = function render() {
             tmpPath.push(carPoint);
         }
 
+        // split paths
         self.visitChart.addData(line, tmpPath);
+        let preCPoint;
+        let nextCPoint;
+        let i=0;
+        let smallPaths = [tmpPath[0]];
+
+
+        // do {
+        //
+        //     i++;
+        //     if (i >= tmpPath.length) {
+        //         break;
+        //     }
+        //
+        //     preCPoint = smallPaths[smallPaths.length-1];
+        //     nextCPoint = tmpPath[i];
+        //
+        //     if (preCPoint.getGate() == nextCPoint.getGate()) {
+        //         self.visitChart.addData(line, smallPaths);
+        //         self.visitChart.addData(line, [preCPoint, nextCPoint]);
+        //         smallPaths = [nextCPoint];
+        //     }
+        //     else {
+        //         smallPaths.push(nextCPoint);
+        //     }
+        //
+        //
+        // }
+        // while (true);
+
 
         // count ++;
     });
