@@ -3,6 +3,7 @@ var mc1 = mc1 || {};
 mc1.controller = mc1.controller || {};
 
 mc1.controller.clickEntranceType = function(self) {
+    let entranceType = document.getElementById('entranceType').value;
     let vehicleCategory = document.getElementById('vehicleCategory').value;
     let vehicleBehavior =  document.getElementById('vehicleBehavior').value;
     let velocityBehavior =  document.getElementById('velocityBehavior').value;
@@ -10,13 +11,20 @@ mc1.controller.clickEntranceType = function(self) {
     let durationBehavior =  document.getElementById('durationBehavior').value;
     let durationThreshold = document.getElementById('durationThreshold').value;
 
-    mc1.visitDuration.highlightVisitsByEntranceType(self.value, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    mc1.firstDayDuration.highlightVisitsByEntranceType(self.value, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+
+    if (!!mc1.visitDuration) {
+        mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
+
+    if (!!mc1.firstDayDuration) {
+        mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
 };
 
 mc1.controller.clickVehicleCategory = function(self) {
 
     let entranceType = document.getElementById('entranceType').value;
+    let vehicleCategory = document.getElementById('vehicleCategory').value;
     let vehicleBehavior = document.getElementById('vehicleBehavior').value;
     let velocityBehavior =  document.getElementById('velocityBehavior').value;
     let velocityLimit = document.getElementById('velocityLimit').value;
@@ -25,8 +33,13 @@ mc1.controller.clickVehicleCategory = function(self) {
     console.log("entranceType: " + entranceType + "; vehicleCategory: " + self.value + "; vehicleBehavior" + vehicleBehavior + "; velocityBehavior: " + velocityBehavior + "; ");
 
 
-    mc1.visitDuration.highlightVisitsByEntranceType(entranceType, self.value, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, self.value, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    if (!!mc1.visitDuration) {
+        mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
+
+    if (!!mc1.firstDayDuration) {
+        mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
 };
 
 
@@ -35,15 +48,22 @@ mc1.controller.clickVehicleBehavior = function(self) {
 
     let entranceType = document.getElementById('entranceType').value;
     let vehicleCategory = document.getElementById('vehicleCategory').value;
+    let vehicleBehavior = document.getElementById('vehicleBehavior').value;
     let velocityBehavior =  document.getElementById('velocityBehavior').value;
     let velocityLimit = document.getElementById('velocityLimit').value;
     let durationBehavior =  document.getElementById('durationBehavior').value;
     let durationThreshold = document.getElementById('durationThreshold').value;
+
     console.log("entranceType: " + entranceType + "; vehicleCategory: " + vehicleCategory + "; vehicleBehavior: " + self.value + "; velocityBehavior: " + velocityBehavior + "; ");
 
 
-    mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, self.value, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, self.value, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    if (!!mc1.visitDuration) {
+        mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
+
+    if (!!mc1.firstDayDuration) {
+        mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, vehicleBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
 };
 
 mc1.controller.clickVelocityBehavior = function(self) {
