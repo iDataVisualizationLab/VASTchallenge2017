@@ -187,10 +187,10 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
     let self = this;
     let valueLine = d3.line()
             .x(function(d) {
-                return self.x(d.x);
+                return d.x = self.x(d.x);
             })
             .y(function(d) {
-                return self.y(d.y); })
+                return d.y = self.y(d.y); })
         ;
 
 
@@ -215,17 +215,8 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
         .style('stroke', '#FF0000')
         .call(
             d3.drag()
-            // .on("start", dragstarted)
-            .on("drag", function (d) {
-                d3.select(this)
-                    .attr('transform', function(d) {
-                        return 'translate(' + d3.event.x + ', 0)'; }
-                    );
-            }))
-            .on("end", function (d) {
-
-            })
-    ;
+            .on("drag", handleBoundaryDrag)
+        );
 
 
     let myUpperBoundTimeSelector = [
@@ -247,14 +238,22 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
         .style('stroke', '#FF0000')
         .call(
             d3.drag()
-                .on("drag", function (d) {
-                    d3.select(this)
-                        .attr('transform', function(d) {
-                            return 'translate(' + d3.event.x + ', 0)';
-                        });
-                })
+                .on("drag", handleBoundaryDrag)
         )
     ;
+
+    function handleBoundaryDrag(d) {
+        d3.select(this)
+            .attr('transform', function(d) {
+                if (!d.x) {
+                    d.x = d[0].x;
+                }
+
+                d.x = d.x + d3.event.dx;
+                return 'translate(' + (d.x - d[0].x) +  ', 0)';
+            })
+        ;
+    }
 
 };
 
