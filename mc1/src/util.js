@@ -154,4 +154,4 @@ function formatDate(dateTime, formatTemplate) {
 
 function getTimeInDayAsString (dateTime) {
     return dateTime.getHours() + ':' + dateTime.getMinutes() + ':' + dateTime.getSeconds();
-};
+}

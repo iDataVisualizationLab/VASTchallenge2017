@@ -75,8 +75,19 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(e) {
         .style("visibility", 'visible')
         .style("opacity", .9);
 
+    let carPoints = line.context.path;
 
-    self.tooltip.html('Hello world')
+    let tableRows = '<tr><th>Time</th><th>Gate</th></tr>';
+    carPoints.forEach(function (carPoint) {
+        tableRows += '<tr>' +
+            '<td>' + carPoint.getFormattedTime() +
+            '</td>' +
+            '<td>' + carPoint.getGate() +
+            '</td>' +
+            '</tr>'
+    });
+
+    self.tooltip.html('<table>' + tableRows + '</table>')
         .style("left", (d3.event.pageX) + "px")
         .style("top", (d3.event.pageY - 28) + "px");
 
@@ -92,7 +103,12 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(e) {
 
 VisitDuration.prototype.onLineMouseOut = function onLineMouseOver(e) {
 
+    console.log('mouse out: ' + e.line.context.carId);
+
     let self = this;
+    self.tooltip
+        .style('visibility', 'hidden')
+    ;
     self.visitChart.clearSetting();
 
 };
