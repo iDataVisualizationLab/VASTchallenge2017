@@ -71,6 +71,8 @@ VisitDuration.prototype.render = function render(lines) {
 
     this.visitChart.renderChart(this.events);
     this.visitChart.renderAxis('Time', 'Visits');
+
+    this.visitChart.renderTimeRangeSelector();
 };
 
 VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(e) {

@@ -171,4 +171,7 @@ VisitTimeBlock.prototype.render = function render() {
 
     this.visitChart.renderChart(this.events);
     this.visitChart.renderAxis('Hours', 'Visits', "%H:%M");
+
+    this.visitChart.renderTimeRangeSelector();
+
 };
