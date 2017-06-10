@@ -119,7 +119,8 @@ mc1.controller.simulateTraffic = function(self) {
 
     console.log("entranceType: " + entranceType + "; vehicleCategory: " + vehicleCategory + "; vehicleBehavior: " + vehicleBehavior + "; velocityBehavior: " + self.value + "; ");
 
-    mc1.simulationManager.simulateTraffic(mc1.visitParser.getVisits());
+    let visibleLines = mc1.visitDuration.getVisibleLines();
+    mc1.simulationManager.simulateTraffic(visibleLines);
 };
 
 mc1.controller.simulateTimeBlock = function(self) {

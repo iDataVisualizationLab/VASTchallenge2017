@@ -3,11 +3,11 @@ var SimulationManager = function (parkMap) {
     this.simulatingCars = {};
 };
 
-SimulationManager.prototype.simulateTraffic = function reset() {
+SimulationManager.prototype.reset = function reset() {
     this.simulatingCars = {};
 };
 
-SimulationManager.prototype.simulateTraffic = function simulateCarMovement (visits) {
+SimulationManager.prototype.simulateTraffic = function simulateCarMovement (lines) {
 
     let i =0;
 
@@ -24,11 +24,11 @@ SimulationManager.prototype.simulateTraffic = function simulateCarMovement (visi
 
         console.log("time: " + elapsed);
         myCars = [];
-        for(i=startIndex; i< visits.length; i++) {
-            line = visits[i];
+        for(i=startIndex; i< lines.length; i++) {
+            line = lines[i].context;
 
             if (startIndex == i) {
-                firstCar = visits[i];
+                firstCar = lines[i].context;
             }
 
             if (line.startTime.getTime() >  elapsed * TIME_RATIO + firstCar.startTime.getTime()) {

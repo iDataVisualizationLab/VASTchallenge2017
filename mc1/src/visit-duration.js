@@ -53,6 +53,10 @@ VisitDuration.prototype.init = function init() {
 
 };
 
+VisitDuration.prototype.getVisibleLines = function getVisibleLines() {
+    return this.visitChart.getVisibleLines();
+};
+
 VisitDuration.prototype.render = function render(lines) {
     // parse the date / time
     let self = this;

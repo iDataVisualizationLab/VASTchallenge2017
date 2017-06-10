@@ -287,6 +287,9 @@ Chart2D.prototype.renderChart = function renderChart(events) {
         //     return line.context.color;
         // })
         .style('fill', 'none')
+        .style('visibility',  function (line) {
+            return line.visibility = 'visible';
+        })
 
     ;
 
