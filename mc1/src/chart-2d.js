@@ -202,6 +202,10 @@ Chart2D.prototype.renderChart = function renderChart(events) {
         })
         .style('stroke-width', self.options.defaultLineWidth)
         .style('stroke', '#000000')
+        .style("stroke-dasharray", function (line) {
+            return !!line.data.sameLocation ? ("3, 3") : null;
+        })
+
         // .style('stroke', function (line) {
         //
         //     return line.context.color;
@@ -302,7 +306,7 @@ Chart2D.prototype.highlightSingleVisit = function highlightSingleVisit (carId) {
     self.myLine
         .style('opacity', function (l) {
 
-            return l.context.carId == carId ? 1 : 0.1;
+            return l.context.carId == carId ? 1 : 0.01;
         })
         .style('stroke-width', function (l) {
             return l.context.carId == carId ? 1 : self.options.defaultLineWidth;

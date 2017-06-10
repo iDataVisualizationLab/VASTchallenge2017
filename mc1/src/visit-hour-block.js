@@ -113,7 +113,7 @@ VisitTimeBlock.prototype.render = function render() {
 
             let lastCarPoint = tmpPath[tmpPath.length-1];
             let nextCarPoint = line.path[tmpPath.length];
-            let carPoint = new CarPoint(nextCarPoint, maxEndDate, lastCarPoint.velocity, null);
+            let carPoint = new CarPoint(nextCarPoint.getMapPoint(), maxEndDate, lastCarPoint.velocity, null);
             carPoint.setVirtual(true);
 
             let d = carPoint.getTimeInDayAsString();
@@ -131,28 +131,39 @@ VisitTimeBlock.prototype.render = function render() {
         let smallPaths = [tmpPath[0]];
 
 
-        // do {
-        //
-        //     i++;
-        //     if (i >= tmpPath.length) {
-        //         break;
-        //     }
-        //
-        //     preCPoint = smallPaths[smallPaths.length-1];
-        //     nextCPoint = tmpPath[i];
-        //
-        //     if (preCPoint.getGate() == nextCPoint.getGate()) {
-        //         self.visitChart.addData(line, smallPaths);
-        //         self.visitChart.addData(line, [preCPoint, nextCPoint]);
-        //         smallPaths = [nextCPoint];
-        //     }
-        //     else {
-        //         smallPaths.push(nextCPoint);
-        //     }
-        //
-        //
-        // }
-        // while (true);
+        do {
+
+            i++;
+            if (i >= tmpPath.length) {
+                if (smallPaths.length > 0) {
+                    self.visitChart.addData(line, smallPaths);
+                }
+                break;
+            }
+
+            preCPoint = smallPaths[smallPaths.length-1];
+            nextCPoint = tmpPath[i];
+
+            if (preCPoint.getGate() == nextCPoint.getGate()) {
+                self.visitChart.addData(line, smallPaths);
+
+                let delayPeriod = [preCPoint, nextCPoint];
+                delayPeriod.sameLocation = true;
+                self.visitChart.addData(line, delayPeriod);
+
+                if (i >= tmpPath.length-1) {
+                    break;
+                }
+
+                smallPaths = [nextCPoint];
+            }
+            else {
+                smallPaths.push(nextCPoint);
+            }
+
+
+        }
+        while (true);
 
 
         // count ++;
