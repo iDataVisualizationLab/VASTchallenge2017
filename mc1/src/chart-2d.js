@@ -196,6 +196,7 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
 
     let xdm = self.x.domain();
     let ydm = self.y.domain();
+    let xRange = self.x.range();
 
     self.myLowerBoundTimeSelector = [
         [
@@ -243,6 +244,13 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
                 }
 
                 d.x = d.x + d3.event.dx;
+                if (d.x < xRange[0]) {
+                    d.x = xRange[0];
+                }
+                if (d.x > xRange[1]) {
+                    d.x = xRange[1];
+                }
+
                 return 'translate(' + (d.x - d[0].x) +  ', 0)';
             })
         ;
