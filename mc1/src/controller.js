@@ -205,6 +205,14 @@ mc1.controller.viewRoadHeatMap = function(self) {
     myChart.viewHeatMap();
 };
 
+mc1.controller.stopSimulation = function() {
+
+    console.log('Stop simulation');
+
+    mc1.simulationManager.reset();
+
+};
+
 mc1.controller.changeGraphType = function(graphType) {
     switch (graphType) {
         case 'hour':

@@ -148,6 +148,7 @@ Chart2D.prototype.getVisibleLines = function getVisibleLines() {
         }
     });
 
+    console.log('visible lines: ' + myVisits.length);
     return myVisits;
 };
 /**

@@ -1,10 +1,20 @@
 var SimulationManager = function (parkMap) {
     this.parkMap = parkMap;
     this.simulatingCars = {};
+    this.subTimers = [];
 };
 
 SimulationManager.prototype.reset = function reset() {
     this.simulatingCars = {};
+    if (!!this.timer) {
+        this.timer.stop();
+    }
+
+    this.subTimers.forEach(function (t) {
+        t.stop();
+    });
+
+    this.subTimers = [];
 };
 
 SimulationManager.prototype.simulateTraffic = function simulateCarMovement (lines) {
@@ -20,7 +30,7 @@ SimulationManager.prototype.simulateTraffic = function simulateCarMovement (line
 
     let self = this;
 
-    let timer = d3.interval(function (elapsed) {
+    self.timer = d3.interval(function (elapsed) {
 
         // console.log("time: " + elapsed);
         myCars = [];
@@ -48,7 +58,7 @@ SimulationManager.prototype.simulateTraffic = function simulateCarMovement (line
 
         if (startIndex >= lines.length) {
             console.log('finish timer interval');
-            timer.stop();
+            self.timer.stop();
         }
 
     }, 30);
@@ -140,12 +150,14 @@ SimulationManager.prototype.simulateCarMovement = function simulateCarMovement (
                 let relaxTime = convertToSimulationTime(nextGate.getTimeInMiliseconds() - carPoint.getTimeInMiliseconds());
                 console.log('arrive gate for relaxing: ' + carPoint.getGate() + ": duration: " + relaxTime + "(ms)");
 
-                d3.timeout(
+                let t = d3.timeout(
                     function () {
                         doSimulation(index + 1);
                     },
                     relaxTime
                 );
+
+                self.subTimers.push(t);
             }
             else {
                 console.log('arrive last gate: ' + carPoint.getGate() + ": at: " + carPoint.getFormattedTime());
@@ -178,13 +190,16 @@ SimulationManager.prototype.simulateCarMovement = function simulateCarMovement (
             self.parkMap.highLightOneCellAtPos(pos, context.color, 0.3, true);
 
             let travelTime = ParkMap.CELL_WIDTH_IN_MILE * 3600000 / carPoint.velocity; // in milliseconds
-            d3.timeout(function () {
+            let t = d3.timeout(function () {
                     idx ++;
                     doJumping(idx);
                 },
 
                 convertToSimulationTime(travelTime)
             );
+
+            self.subTimers.push(t);
+
         };
 
         doJumping();
