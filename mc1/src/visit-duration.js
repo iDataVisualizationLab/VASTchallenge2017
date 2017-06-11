@@ -60,14 +60,18 @@ VisitDuration.prototype.getVisibleLines = function getVisibleLines() {
 VisitDuration.prototype.render = function render(lines) {
     // parse the date / time
     let self = this;
-
-    // this.visitChart.setYDomain(0, Math.round(lines.length + lines.length / 10));
-
     lines.forEach(function(line, index) {
 
         line.path.forEach(function (carPoint) {
             carPoint.y = 50 + index; // the same y coordinate for the same car 'index' (individual car). So we have horizontal line
         });
+
+        let timeContext = d3.extent(line.path, function (carPoint) {
+            return carPoint.time;
+        });
+
+        line.contextStartTime = timeContext[0];
+        line.contextEndTime = timeContext[1];
 
         self.visitChart.addData(line, line.path, 'time', 'y');
 

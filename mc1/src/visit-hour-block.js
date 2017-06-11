@@ -124,7 +124,15 @@ VisitTimeBlock.prototype.render = function render() {
         }
 
         // split paths
-        self.visitChart.addData(line, tmpPath);
+        // self.visitChart.addData(line, tmpPath);
+        let timeContext = d3.extent(tmpPath, function (cp) {
+            return cp.x;
+        });
+
+        line.contextStartTime = timeContext[0];
+        line.contextEndTime = timeContext[1];
+
+
         let preCPoint;
         let nextCPoint;
         let i=0;

@@ -730,7 +730,7 @@ Chart2D.prototype.highLightSingleVisitOvernight = function highLightSingleVisitO
 
     this.myLine
         .style('visibility', function (line) {
-            if (line.context.startTime.getTime() >= endTime.getTime() || line.context.endTime.getTime() <= startTime.getTime()) {
+            if (line.context.contextStartTime.getTime() >= endTime.getTime() || line.context.contextEndTime.getTime() <= startTime.getTime()) {
                 return line.visibility = 'hidden';
             }
             if (carCategory == 'car-all') {
@@ -935,7 +935,7 @@ Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory, campin
 
     this.myLine
         .style('visibility', function (line) {
-            if (line.context.startTime.getTime() >= endTime.getTime() || line.context.endTime.getTime() <= startTime.getTime()) {
+            if (line.context.contextStartTime.getTime() >= endTime.getTime() || line.context.contextEndTime.getTime() <= startTime.getTime()) {
                 return line.visibility = 'hidden';
             }
 
@@ -1138,7 +1138,7 @@ Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (
 
     this.myLine
         .style('visibility', function (line) {
-            if (line.context.startTime.getTime() >= endTime.getTime() || line.context.endTime.getTime() <= startTime.getTime()) {
+            if (line.context.contextStartTime.getTime() >= endTime.getTime() || line.context.contextEndTime.getTime() <= startTime.getTime()) {
                 return line.visibility = 'hidden';
             }
 
@@ -1345,7 +1345,7 @@ Chart2D.prototype.highLightSingleEntranceNotOvernightVisit = function highLightS
 
     this.myLine
         .style('visibility', function (line) {
-            if (line.context.startTime.getTime() >= endTime.getTime() || line.context.endTime.getTime() <= startTime.getTime()) {
+            if (line.context.contextStartTime.getTime() >= endTime.getTime() || line.context.contextEndTime.getTime() <= startTime.getTime()) {
                 return line.visibility = 'hidden';
             }
 
