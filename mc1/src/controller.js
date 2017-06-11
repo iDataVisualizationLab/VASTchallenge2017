@@ -199,7 +199,8 @@ mc1.controller.viewRoadHeatMap = function(self) {
 
     console.log('road heat map');
 
-    mc1.visitDuration.viewHeatMap();
+    let myChart = mc1.visitDuration || mc1.firstDayDuration;
+    myChart.viewHeatMap();
 };
 
 mc1.controller.changeGraphType = function(graphType) {
@@ -209,6 +210,9 @@ mc1.controller.changeGraphType = function(graphType) {
             mc1.firstDayDuration = new VisitTimeBlock(firstDaySpanChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager);
             mc1.firstDayDuration.setVisits(mc1.parsedVisits);
             mc1.firstDayDuration.render();
+
+            delete mc1.visitDuration;
+
             break;
         case 'hour-spiral':
             mc1.spiral = new SpiralGraph(mc1.visitDurationSvg);
@@ -222,6 +226,8 @@ mc1.controller.changeGraphType = function(graphType) {
             let visitChart = new Chart2D(mc1.visitDurationSvg, width, height, {id: 1, margin: margin, timeChart: true});
             mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager);
             mc1.visitDuration.render(mc1.parsedVisits);
+
+            delete mc1.firstDayDuration;
 
     }
 

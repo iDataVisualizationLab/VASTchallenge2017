@@ -30,6 +30,8 @@ var VisitTimeBlock = function VisitTimeBlock(visitChart, parkMap, fromHour, toHo
     this.visitChart.setEventHandler(this.eventHandler);
     this.simulationManager = simulationManager;
 
+    this.roadHeatMap = new RoadHeatmap(this.parkMap);
+
     this.tooltip = d3.select('body').select("#tooltip")
         .style("position", "absolute")
         .style("z-index", "10")
