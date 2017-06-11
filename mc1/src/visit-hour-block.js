@@ -32,13 +32,6 @@ var VisitTimeBlock = function VisitTimeBlock(visitChart, parkMap, fromHour, toHo
 
     this.roadHeatMap = new RoadHeatmap(this.parkMap);
 
-    this.tooltip = d3.select('body').select("#tooltip")
-        .style("position", "absolute")
-        .style("z-index", "10")
-        .style("visibility", "hidden")
-    ;
-
-
     this.init();
 
 };

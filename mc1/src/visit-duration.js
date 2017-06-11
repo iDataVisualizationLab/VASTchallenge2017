@@ -23,6 +23,22 @@ var VisitDuration = function VisitDuration(visitChart, parkMap, startDate, endDa
 
     this.roadHeatMap = new RoadHeatmap(this.parkMap);
 
+    this.init();
+
+};
+
+
+VisitDuration.prototype.init = function init() {
+    this.events = [
+        {name: 'mouseover'},
+        // {name: 'mouseout'}
+    ];
+
+    this.eventHandler.addEvent('mouseover', this.onLineMouseOver, this);
+    // this.eventHandler.addEvent('mouseout', this.onLineMouseOut, this);
+
+
+    let self = this;
     this.tooltip = d3.select('body').select("#tooltip")
         .style("position", "absolute")
         .style("z-index", "10")
@@ -34,23 +50,11 @@ var VisitDuration = function VisitDuration(visitChart, parkMap, startDate, endDa
         .on('mouseout', function () {
             d3.select(this)
                 .style('visibility', 'hidden')
+            ;
+
+            self.visitChart.clearSetting();
         })
     ;
-
-    this.init();
-
-};
-
-
-VisitDuration.prototype.init = function init() {
-    this.events = [
-        {name: 'mouseover'},
-        {name: 'mouseout'}
-    ];
-
-    this.eventHandler.addEvent('mouseover', this.onLineMouseOver, this);
-    this.eventHandler.addEvent('mouseout', this.onLineMouseOut, this);
-
 };
 
 VisitDuration.prototype.getVisibleLines = function getVisibleLines() {

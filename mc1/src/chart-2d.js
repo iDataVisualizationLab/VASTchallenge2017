@@ -400,13 +400,27 @@ Chart2D.prototype.getMyLines = function getMyLines() {
 Chart2D.prototype.highlightSingleVisit = function highlightSingleVisit (carId) {
 
     let self = this;
-    self.myLine
-        .style('opacity', function (l) {
 
-            return l.context.carId == carId ? 1 : 0.01;
+    // reduce opacity first
+    self.myLine
+        .style('opacity', 0.01)
+        .each(function (d) {
+            d3.select(this)
+                .select('path')
+                .style('stroke-width', self.options.defaultLineWidth)
+            ;
         })
-        .style('stroke-width', function (l) {
-            return l.context.carId == carId ? 1 : self.options.defaultLineWidth;
+
+    ;
+
+    // increase opacity for ones we want to highlight
+    self.svg.selectAll('.car-id-' + carId)
+        .style('opacity', 1)
+        .each(function (d) {
+            d3.select(this)
+                .select('path')
+                .style('stroke-width', 1.5)
+            ;
         })
     ;
 
@@ -418,9 +432,15 @@ Chart2D.prototype.highlightSingleVisit = function highlightSingleVisit (carId) {
 Chart2D.prototype.clearSetting = function highlightSingleVisit () {
 
     let self = this;
+
     self.myLine
         .style('opacity', 1)
-        .style('stroke-width', self.options.defaultLineWidth)
+        .each(function (d) {
+            d3.select(this)
+                .selectAll('path')
+                .style('stroke-width', self.options.defaultLineWidth)
+            ;
+        })
     ;
 
     self.svg.selectAll('.passing-gate')
