@@ -204,6 +204,8 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
             {x: xdm[0], y: ydm[1]}
         ]
     ];
+
+    self.myLowerBoundTimeSelector.x = self.x(xdm[0]);
     // create two vertical lines
     createTimeSelector('left-time-selector', self.myLowerBoundTimeSelector);
 
@@ -214,7 +216,7 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
             {x: xdm[1], y: ydm[1]}
         ]
     ];
-
+    self.myUpperBoundTimeSelector.x = self.x(xdm[1]);
     // create two vertical lines
     createTimeSelector('right-time-selector', self.myUpperBoundTimeSelector);
 
@@ -410,6 +412,50 @@ Chart2D.prototype.clearSetting = function highlightSingleVisit () {
     ;
 };
 
+/**
+ * This will highlight only visits that interfere with the time range specified. Out of this range will be hidden.
+ */
+Chart2D.prototype.showVisits = function showVisits() {
+    let self = this;
+    let campingBehavior = self.filters['campingBehavior'];
+    let velocityLimit = self.filters['velocityLimit'];
+    let durationThreshold = self.filters['durationThreshold'];
+    let entranceType = self.filters['entranceType'];
+    let vehicleCategory = self.filters['vehicleCategory'];
+    let velocityBehavior = self.filters['velocityBehavior'];
+    let durationBehavior = self.filters['durationBehavior'];
+
+    if (campingBehavior == 'behavior-camping') {
+        campingBehavior =  true;
+    }else if ( campingBehavior == 'behavior-no-camping') {
+        campingBehavior = false;
+    }
+
+    if (!velocityLimit) {
+        velocityLimit = ParkMap.SPEED_LIMIT_EXTRA_10;
+    }
+
+    velocityLimit = +velocityLimit;
+    durationThreshold = +durationThreshold;
+
+    if (entranceType == 'multi-entrances') {
+        this.highLightMultiVisits(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
+    else if (entranceType == 'single-entrance-over-night') {
+        this.highLightSingleVisitOvernight(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
+    else if (entranceType == 'no-exit') {
+        this.highLightNoExit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
+    else if (entranceType == 'single-entrance-no-over-night') {
+        this.highLightSingleEntranceNotOvernightVisit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    }
+    else {
+        this.highLightAllTypesOfVisit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+
+    }
+};
+
 Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
     if (!carCategory) {
         carCategory = 'car-all';
@@ -420,6 +466,9 @@ Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCateg
     }
 
     let self = this;
+    let startTime = self.x.invert(self.myLowerBoundTimeSelector.x);
+    let endTime = self.x.invert(self.myUpperBoundTimeSelector.x);
+
     this.myLine
         .style('visibility', function (line) {
             if (carCategory == 'car-all') {
@@ -618,6 +667,10 @@ Chart2D.prototype.highLightSingleVisitOvernight = function highLightSingleVisitO
     if (!velocityLimit) {
         velocityLimit = ParkMap.SPEED_LIMIT_EXTRA_10;
     }
+
+    let self = this;
+    let startTime = self.x.invert(self.myLowerBoundTimeSelector.x);
+    let endTime = self.x.invert(self.myUpperBoundTimeSelector.x);
 
     this.myLine
         .style('visibility', function (line) {
@@ -818,6 +871,10 @@ Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory, campin
         velocityLimit = ParkMap.SPEED_LIMIT_EXTRA_10;
     }
 
+    let self = this;
+    let startTime = self.x.invert(self.myLowerBoundTimeSelector.x);
+    let endTime = self.x.invert(self.myUpperBoundTimeSelector.x);
+
     this.myLine
         .style('visibility', function (line) {
 
@@ -1014,8 +1071,16 @@ Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (
         velocityLimit = ParkMap.SPEED_LIMIT_EXTRA_10;
     }
 
+    let self = this;
+    let startTime = self.x.invert(self.myLowerBoundTimeSelector.x);
+    let endTime = self.x.invert(self.myUpperBoundTimeSelector.x);
+
     this.myLine
         .style('visibility', function (line) {
+            if (line.context.startTime.getTime() >= endTime.getTime() || line.context.endTime.getTime() <= startTime.getTime()) {
+                return line.visibility = 'hidden';
+            }
+
             if (carCategory == 'car-all') {
 
                 if (campingBehavior == 'all') {
@@ -1212,6 +1277,10 @@ Chart2D.prototype.highLightSingleEntranceNotOvernightVisit = function highLightS
     if (!velocityLimit) {
         velocityLimit = ParkMap.SPEED_LIMIT_EXTRA_10;
     }
+
+    let self = this;
+    let startTime = self.x.invert(self.myLowerBoundTimeSelector.x);
+    let endTime = self.x.invert(self.myUpperBoundTimeSelector.x);
 
     this.myLine
         .style('visibility', function (line) {
