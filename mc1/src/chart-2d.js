@@ -234,6 +234,14 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
             })
             .style('stroke-width', 1)
             .style('stroke', '#FF0000')
+            .on('mouseover', function (d) {
+                d3.select(this)
+                    .style('stroke-width', 3);
+            })
+            .on('mouseout', function (d) {
+                d3.select(this)
+                    .style('stroke-width', 1);
+            })
             .call(
                 d3.drag()
                     .on("drag", handleBoundaryDrag)
