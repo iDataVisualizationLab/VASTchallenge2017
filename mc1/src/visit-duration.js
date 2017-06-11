@@ -156,7 +156,7 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(e) {
             '</tr>'
     });
 
-    self.tooltip.html('<table>' + tableRows + '</table>')
+    self.tooltip.html('<table style="background: #000000; color: #FFFFFF; opacity: 0.5">' + tableRows + '</table>')
         .style("left", (d3.event.pageX) + "px")
         .style("top", (d3.event.pageY - 28) + "px");
 
