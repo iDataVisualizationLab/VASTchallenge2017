@@ -276,6 +276,9 @@ Chart2D.prototype.renderChart = function renderChart(events) {
         .attr('class', function (l) {
             return 'line-graph car-id-' + l.context.carId;
         })
+        .style('visibility', function (line) {
+            return line.visibility = 'visible';
+        })
     ;
 
     self.myLine
@@ -297,10 +300,6 @@ Chart2D.prototype.renderChart = function renderChart(events) {
         //     return line.context.color;
         // })
         .style('fill', 'none')
-        .style('visibility',  function (line) {
-            return line.visibility = 'visible';
-        })
-
     ;
 
     if (!!events && events.length > 0) {
