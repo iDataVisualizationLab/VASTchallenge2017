@@ -20,10 +20,11 @@ SimulationManager.prototype.simulateTraffic = function simulateCarMovement (line
 
     let self = this;
 
-    d3.interval(function (elapsed) {
+    let timer = d3.interval(function (elapsed) {
 
-        console.log("time: " + elapsed);
+        // console.log("time: " + elapsed);
         myCars = [];
+        // get cars to be executed
         for(i=startIndex; i< lines.length; i++) {
             line = lines[i].context;
 
@@ -31,7 +32,7 @@ SimulationManager.prototype.simulateTraffic = function simulateCarMovement (line
                 firstCar = lines[i].context;
             }
 
-            if (line.startTime.getTime() >  elapsed * TIME_RATIO + firstCar.startTime.getTime()) {
+            if (line.contextStartTime.getTime() >  elapsed * TIME_RATIO + firstCar.contextStartTime.getTime()) {
                 break;
             }
 
@@ -40,9 +41,15 @@ SimulationManager.prototype.simulateTraffic = function simulateCarMovement (line
         }
 
         startIndex = myNextStartIndex + 1;
+        // execute the cars
         myCars.forEach(function (l) {
             self.simulateCarMovement(l);
         });
+
+        if (startIndex >= lines.length) {
+            console.log('finish timer interval');
+            timer.stop();
+        }
 
     }, 30);
 };
@@ -100,20 +107,20 @@ SimulationManager.prototype.simulateCarMovement = function simulateCarMovement (
     let gateSensorDataArray = line.data || line.path;
 
     if (this.simulatingCars.hasOwnProperty(context.carId)) {
-        return;
+        return; // not simulating the car has been simulated
     }
 
     this.simulatingCars[context.carId] = line;
 
     // show car tace
-    let carTrace = self.parkMap.getCarTraceContainer();
-    carTrace.append('text')
-        .text('Car: ' + context.carId)
-        .attr('x', 13)
-        .attr('y', 1)
-        .style("font-size", "10px")
-
-    ;
+    // let carTrace = self.parkMap.getCarTraceContainer();
+    // carTrace.append('text')
+    //     .text('Car: ' + context.carId)
+    //     .attr('x', 13)
+    //     .attr('y', 1)
+    //     .style("font-size", "10px")
+    //
+    // ;
 
     var doSimulation = function (index) {
         if (!index && index !=0) {
