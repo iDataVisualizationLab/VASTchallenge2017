@@ -137,14 +137,14 @@ SimulationManager.prototype.simulateCarMovement = function simulateCarMovement (
 
             if (index < gateSensorDataArray.length-1) {
                 let nextGate = gateSensorDataArray[index + 1];
-                let relaxTime = nextGate.getTimeInMiliseconds() - carPoint.getTimeInMiliseconds();
+                let relaxTime = convertToSimulationTime(nextGate.getTimeInMiliseconds() - carPoint.getTimeInMiliseconds());
                 console.log('arrive gate for relaxing: ' + carPoint.getGate() + ": duration: " + relaxTime + "(ms)");
 
                 d3.timeout(
                     function () {
                         doSimulation(index + 1);
                     },
-                    convertToSimulationTime(relaxTime)
+                    relaxTime
                 );
             }
             else {
@@ -175,9 +175,9 @@ SimulationManager.prototype.simulateCarMovement = function simulateCarMovement (
 
             let pos = carPoint.path[idx];
 
-            self.parkMap.highLightOneCellAtPos(pos, context.color, 0.5, true);
+            self.parkMap.highLightOneCellAtPos(pos, context.color, 0.3, true);
 
-            let travelTime = ParkMap.CELL_WIDTH_IN_MILE * 3600000 / carPoint.velocity;
+            let travelTime = ParkMap.CELL_WIDTH_IN_MILE * 3600000 / carPoint.velocity; // in milliseconds
             d3.timeout(function () {
                     idx ++;
                     doJumping(idx);
