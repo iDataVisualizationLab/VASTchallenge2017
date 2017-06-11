@@ -73,6 +73,8 @@ VisitDuration.prototype.render = function render(lines) {
 
     });
 
+    this.visitChart.setFilters();
+
     this.visitChart.renderChart(this.events);
     this.visitChart.renderAxis('Time', 'Visits');
 
@@ -152,6 +154,8 @@ VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisits
 
     velocityLimit = +velocityLimit;
     durationThreshold = +durationThreshold;
+
+    this.visitChart.setFilters(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
 
     if (entranceType == 'multi-entrances') {
         this.visitChart.highLightMultiVisits(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);

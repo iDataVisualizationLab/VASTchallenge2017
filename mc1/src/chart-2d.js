@@ -23,6 +23,28 @@ var Chart2D = function Chart2D(svg, width, height, options) {
         .distortion(2);
 
     this.options.defaultLineWidth = 0.2;
+
+    this.filters = {};
+    //
+    // let xdm = this.x.domain();
+    // let ydm = this.y.domain();
+    // let xRange = this.x.range();
+    //
+    // this.myLowerBoundTimeSelector = [
+    //     [
+    //         {x: xdm[0], y: ydm[0]},
+    //         {x: xdm[0], y: ydm[1]}
+    //     ]
+    // ];
+    // this.myLowerBoundTimeSelector.x = this.x(xdm[0]);
+    //
+    // this.myUpperBoundTimeSelector = [
+    //     [
+    //         {x: xdm[1], y: ydm[0]},
+    //         {x: xdm[1], y: ydm[1]}
+    //     ]
+    // ];
+    // this.myUpperBoundTimeSelector.x = this.x(xdm[1]);
 };
 
 Chart2D.prototype.setEventHandler = function setEventHandler(eventHandler) {
@@ -193,36 +215,17 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
                 return d.y = self.y(d.y); })
         ;
 
+    let xRange = this.x.range();
 
-    let xdm = self.x.domain();
-    let ydm = self.y.domain();
-    let xRange = self.x.range();
-
-    self.myLowerBoundTimeSelector = [
-        [
-            {x: xdm[0], y: ydm[0]},
-            {x: xdm[0], y: ydm[1]}
-        ]
-    ];
-
-    self.myLowerBoundTimeSelector.x = self.x(xdm[0]);
     // create two vertical lines
     createTimeSelector('left-time-selector', self.myLowerBoundTimeSelector);
 
-
-    self.myUpperBoundTimeSelector = [
-        [
-            {x: xdm[1], y: ydm[0]},
-            {x: xdm[1], y: ydm[1]}
-        ]
-    ];
-    self.myUpperBoundTimeSelector.x = self.x(xdm[1]);
     // create two vertical lines
     createTimeSelector('right-time-selector', self.myUpperBoundTimeSelector);
 
 
     function createTimeSelector(cssClass, selectorData) {
-        self.svg.selectAll('.' + cssClass).data(selectorData).enter()
+        self.svg.selectAll('.' + cssClass).data([selectorData]).enter()
             .append('path')
             .attr('class', cssClass)
             .attr("d", function (line) {
@@ -234,6 +237,10 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
             .call(
                 d3.drag()
                     .on("drag", handleBoundaryDrag)
+                    .on("end", function () {
+                        self.setFilters();
+                        self.showVisits();
+                    })
             )
         ;
     }
@@ -263,6 +270,7 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
 Chart2D.prototype.renderChart = function renderChart(events) {
 
     let self = this;
+
     self.myLine = this.svg.selectAll('.line-graph').data(this.lineData).enter()
         .append('g')
         .attr('class', function (l) {
@@ -412,6 +420,52 @@ Chart2D.prototype.clearSetting = function highlightSingleVisit () {
     ;
 };
 
+Chart2D.prototype.setFilters = function setFilters (entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
+
+
+    if (!entranceType || !vehicleCategory || !campingBehavior || !velocityBehavior || !velocityLimit || !durationBehavior || !durationThreshold) {
+        entranceType = document.getElementById('entranceType').value;
+        vehicleCategory = document.getElementById('vehicleCategory').value;
+        campingBehavior = document.getElementById('campingBehavior').value;
+        velocityBehavior =  document.getElementById('velocityBehavior').value;
+        velocityLimit = document.getElementById('velocityLimit').value;
+        durationBehavior =  document.getElementById('durationBehavior').value;
+        durationThreshold = document.getElementById('durationThreshold').value;
+    }
+
+    let self = this;
+    self.filters['entranceType'] = entranceType;
+    self.filters['vehicleCategory'] = vehicleCategory;
+    self.filters['campingBehavior'] = campingBehavior;
+    self.filters['velocityBehavior'] = velocityBehavior;
+    self.filters['velocityLimit'] = velocityLimit;
+    self.filters['durationBehavior'] = durationBehavior;
+    self.filters['durationThreshold'] = durationThreshold;
+
+
+    if (!self.myLowerBoundTimeSelector || isNaN(self.myLowerBoundTimeSelector.x)) {
+        let xdm = this.x.domain();
+        let ydm = this.y.domain();
+
+        this.myLowerBoundTimeSelector = [
+                {x: xdm[0], y: ydm[0]},
+                {x: xdm[0], y: ydm[1]}
+        ];
+        this.myLowerBoundTimeSelector.x = this.x(xdm[0]);
+        this.myUpperBoundTimeSelector = [
+                {x: xdm[1], y: ydm[0]},
+                {x: xdm[1], y: ydm[1]}
+        ];
+        this.myUpperBoundTimeSelector.x = this.x(xdm[1]);
+    }
+
+    let startTime = self.x.invert(self.myLowerBoundTimeSelector.x);
+    let endTime = self.x.invert(self.myUpperBoundTimeSelector.x);
+    self.filters['startTime'] = startTime;
+    self.filters['endTime'] = endTime;
+
+};
+
 /**
  * This will highlight only visits that interfere with the time range specified. Out of this range will be hidden.
  */
@@ -471,6 +525,9 @@ Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCateg
 
     this.myLine
         .style('visibility', function (line) {
+            if (line.context.startTime.getTime() >= endTime.getTime() || line.context.endTime.getTime() <= startTime.getTime()) {
+                return line.visibility = 'hidden';
+            }
             if (carCategory == 'car-all') {
                 if (campingBehavior == 'all') {
                     switch (velocityBehavior) {
@@ -674,7 +731,9 @@ Chart2D.prototype.highLightSingleVisitOvernight = function highLightSingleVisitO
 
     this.myLine
         .style('visibility', function (line) {
-
+            if (line.context.startTime.getTime() >= endTime.getTime() || line.context.endTime.getTime() <= startTime.getTime()) {
+                return line.visibility = 'hidden';
+            }
             if (carCategory == 'car-all') {
                 if (campingBehavior == 'all') {
                     switch (velocityBehavior) {
@@ -877,6 +936,9 @@ Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory, campin
 
     this.myLine
         .style('visibility', function (line) {
+            if (line.context.startTime.getTime() >= endTime.getTime() || line.context.endTime.getTime() <= startTime.getTime()) {
+                return line.visibility = 'hidden';
+            }
 
             if (carCategory == 'car-all') {
                 if (campingBehavior == 'all') {
@@ -1284,6 +1346,9 @@ Chart2D.prototype.highLightSingleEntranceNotOvernightVisit = function highLightS
 
     this.myLine
         .style('visibility', function (line) {
+            if (line.context.startTime.getTime() >= endTime.getTime() || line.context.endTime.getTime() <= startTime.getTime()) {
+                return line.visibility = 'hidden';
+            }
 
             if (carCategory == 'car-all') {
                 if (campingBehavior == 'all') {
