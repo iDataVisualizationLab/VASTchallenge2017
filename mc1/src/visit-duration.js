@@ -77,6 +77,48 @@ VisitDuration.prototype.render = function render(lines) {
         line.contextStartTime = timeContext[0];
         line.contextEndTime = timeContext[1];
 
+        // split paths
+
+        // let tmpPath = line.path;
+        // let preCPoint;
+        // let nextCPoint;
+        // let i=0;
+        // let smallPaths = [tmpPath[0]];
+        //
+        //
+        // do {
+        //
+        //     i++;
+        //     if (i >= tmpPath.length) {
+        //         if (smallPaths.length > 0) {
+        //             self.visitChart.addData(line, smallPaths);
+        //         }
+        //         break;
+        //     }
+        //
+        //     preCPoint = smallPaths[smallPaths.length-1];
+        //     nextCPoint = tmpPath[i];
+        //
+        //     if (preCPoint.getGate() == nextCPoint.getGate()) {
+        //         self.visitChart.addData(line, smallPaths);
+        //
+        //         let delayPeriod = [preCPoint, nextCPoint];
+        //         delayPeriod.sameLocation = true;
+        //         self.visitChart.addData(line, delayPeriod, 'time', 'y');
+        //
+        //         if (i >= tmpPath.length-1) {
+        //             break;
+        //         }
+        //
+        //         smallPaths = [nextCPoint];
+        //     }
+        //     else {
+        //         smallPaths.push(nextCPoint);
+        //     }
+        //
+        //
+        // }
+        // while (true);
         self.visitChart.addData(line, line.path, 'time', 'y');
 
     });
@@ -104,6 +146,7 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(e) {
     let tableRows = '<tr><td colspan="2"> Car: ' + line.context.carId +
         '</td></tr>' +
         '<tr><th>Time</th><th>Gate</th></tr>';
+
     carPoints.forEach(function (carPoint) {
         tableRows += '<tr>' +
             '<td>' + carPoint.getFormattedTime() +

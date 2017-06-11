@@ -138,7 +138,7 @@ VisitTimeBlock.prototype.render = function render() {
 
             i++;
             if (i >= tmpPath.length) {
-                if (smallPaths.length > 0) {
+                if (smallPaths.length > 1) {
                     self.visitChart.addData(line, smallPaths);
                 }
                 break;
@@ -148,17 +148,29 @@ VisitTimeBlock.prototype.render = function render() {
             nextCPoint = tmpPath[i];
 
             if (preCPoint.getGate() == nextCPoint.getGate()) {
-                self.visitChart.addData(line, smallPaths);
 
-                let delayPeriod = [preCPoint, nextCPoint];
-                delayPeriod.sameLocation = true;
-                self.visitChart.addData(line, delayPeriod);
+                if (!nextCPoint.getMapPoint().isEntrance()) {
+                    if (smallPaths.length > 1) { // only create line if there are two points or above
+                        self.visitChart.addData(line, smallPaths);
+                    }
 
-                if (i >= tmpPath.length-1) {
-                    break;
+                    let delayPeriod = [preCPoint, nextCPoint];
+                    delayPeriod.sameLocation = true;
+                    self.visitChart.addData(line, delayPeriod);
+
+                    if (i >= tmpPath.length-1) {
+                        break;
+                    }
+
+                    smallPaths = [nextCPoint];
+                }
+                else {
+                    // get out of park (two consecutive entrances
+                    i ++;
+                    smallPaths = [tmpPath[i]]; // reset
                 }
 
-                smallPaths = [nextCPoint];
+
             }
             else {
                 smallPaths.push(nextCPoint);
