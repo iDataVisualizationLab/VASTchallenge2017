@@ -160,7 +160,13 @@
 
     // Returns the path for a given data point.
     function path(d) {
-        return line(dimensions.map(function(p) { return [position(p), y[p](d[p])]; }));
+
+        let xy = dimensions.map(function(p) {
+
+            return [position(p), y[p](d[p])];
+        });
+
+        return line(xy);
     }
 
     function brushstart() {
