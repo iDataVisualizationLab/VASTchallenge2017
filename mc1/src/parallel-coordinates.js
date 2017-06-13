@@ -107,21 +107,24 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
         .attr("class", "dimension")
         .attr("transform", function(d) { return "translate(" + self.x(d) + ")"; })
         .call(d3.drag()
-            .subject(function(d) { return {x: self.x(d)}; })
+            .subject(function(d) {
+                let t = {x: self.x(d)};
+                return {x: self.x(d)};
+            })
             .on("start", function(d) {
                 dragging[d] = x(d);
                 background.attr("visibility", "hidden");
             })
             .on("drag", function(d) {
-                dragging[d] = Math.min(width, Math.max(0, d3.event.x));
+                self.dragging[d] = Math.min(self.width, Math.max(0, d3.event.x));
                 foreground.attr("d", path);
-                dimensions.sort(function(a, b) { return position(a) - position(b); });
-                x.domain(dimensions);
+                self.dimensions.sort(function(a, b) { return position(a) - position(b); });
+                self.x.domain(self.dimensions);
                 g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
             })
             .on("end", function(d) {
-                delete dragging[d];
-                transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
+                delete self.dragging[d];
+                transition(d3.select(this)).attr("transform", "translate(" + self.x(d) + ")");
                 transition(foreground).attr("d", path);
                 background
                     .attr("d", path)
@@ -150,7 +153,24 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
         .attr("class", "brush")
         .each(function(d) {
 //                    d3.select(this).call(y[d].brush = d3.brushY().extent(y[d]).on("start", brushstart).on("brush", brush));
-            d3.select(this).call(self.y[d].brush = d3.brushY().on("start", brushstart).on("brush", brush));
+
+            let brushScale = self.y[d];
+            let bange = brushScale.range();
+
+            // let myBrush = d3.brushY()
+            //     .extent([[0, brushScale.range()[0]], [19, brushScale.range()[1]]])
+            //         .on("start", brushstart)
+            //         .on("brush", brush)
+            //     ;
+            let myBrush = d3.brushY()
+                    .extent([[-10,0], [10, self.height]])
+                    .on("start", brushstart)
+                    .on("brush", brush)
+                ;
+            self.y[d].brush = myBrush;
+
+            d3.select(this).call(self.y[d].brush);
+
         })
         .selectAll("rect")
         .attr("x", -8)
@@ -181,8 +201,22 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
 
     // Handles a brush event, toggling the display of foreground lines.
     function brush() {
-        var actives = self.dimensions.filter(function(p) { return !y[p].brush.empty(); }),
-            extents = actives.map(function(p) { return y[p].brush.extent(); });
+
+        let actives = [];
+        let extents = [];
+        self.svg.selectAll(".brush")
+            .filter(function(d) {
+                return d3.brushSelection(this);
+            })
+            .each(function(d) {
+                // debugger;
+                actives.push(d);
+                extents.push(d3.brushSelection(this))
+            });
+
+        // var actives = self.dimensions.filter(function(p) { return !self.y[p].brush.empty(); }),
+        //     extents = actives.map(function(p) { return self.y[p].brush.extent(); });
+
         foreground.style("display", function(d) {
             return actives.every(function(p, i) {
                 return extents[i][0] <= d[p] && d[p] <= extents[i][1];
