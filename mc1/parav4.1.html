@@ -44,15 +44,23 @@
             width = 960 - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
 
-    var x = d3.scaleOrdinal().range([0, width], 1),
+    var x = d3.scaleBand().range([0, width]).padding(1),
             y = {},
             dragging = {};
 
-    var line = d3.line(),
+    var
             axis = d3.axisLeft(),
             background,
             foreground,
             dimensions
+            ;
+
+    var line = d3.line().x(function (d) {
+                                return d[0];
+                            })
+                    .y(function (d) {
+                        return d[1];
+                    })
             ;
 
     var svg = d3.select("body").append("svg")
@@ -62,7 +70,6 @@
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     d3.csv("cars.csv", function(error, cars) {
-
         var fields =  d3.keys(cars[0]);
         dimensions = fields.filter(function(colName) {
 
@@ -82,21 +89,25 @@
         // Extract the list of dimensions and create a scale for each.
         x.domain(dimensions);
 
-        // Add grey background lines for context.
-        background = svg.append("g")
-                .attr("class", "background")
-                .selectAll("path")
-                .data(cars)
-                .enter().append("path")
-                .attr("d", path);
-
-        // Add blue foreground lines for focus.
-        foreground = svg.append("g")
-                .attr("class", "foreground")
-                .selectAll("path")
-                .data(cars)
-                .enter().append("path")
-                .attr("d", path);
+        dimensions.forEach(function (d) {
+           console.log("x val for dimension: " + d + "; x=" + x(d));
+        });
+//
+//        // Add grey background lines for context.
+//        background = svg.append("g")
+//                .attr("class", "background")
+//                .selectAll("path")
+//                .data(cars)
+//                .enter().append("path")
+//                .attr("d", path);
+//
+//        // Add blue foreground lines for focus.
+//        foreground = svg.append("g")
+//                .attr("class", "foreground")
+//                .selectAll("path")
+//                .data(cars)
+//                .enter().append("path")
+//                .attr("d", path);
 
         // Add a group element for each dimension.
         var g = svg.selectAll(".dimension")
@@ -132,17 +143,21 @@
         // Add an axis and title.
         g.append("g")
                 .attr("class", "axis")
-                .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
+                .each(function(d) {
+                    d3.select(this).call(axis.scale(y[d]));
+                })
                 .append("text")
                 .style("text-anchor", "middle")
                 .attr("y", -9)
-                .text(function(d) { return d; });
+                .text(function(d) { return d; })
+        ;
 
         // Add and store a brush for each axis.
         g.append("g")
                 .attr("class", "brush")
                 .each(function(d) {
-                    d3.select(this).call(y[d].brush = d3.brushY().extent(y[d]).on("start", brushstart).on("brush", brush));
+//                    d3.select(this).call(y[d].brush = d3.brushY().extent(y[d]).on("start", brushstart).on("brush", brush));
+                    d3.select(this).call(y[d].brush = d3.brushY().on("start", brushstart).on("brush", brush));
                 })
                 .selectAll("rect")
                 .attr("x", -8)
@@ -166,6 +181,17 @@
             return [position(p), y[p](d[p])];
         });
 
+        let xData = dimensions.map(function(p) {
+
+            return position(p);
+        });
+
+        let yData = dimensions.map(function(p) {
+
+            return y[p](d[p]);
+        });
+
+//        return line.x(xData).y(yData);
         return line(xy);
     }
 
