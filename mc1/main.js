@@ -56,7 +56,7 @@ d3.json("data/all-car-path.json", function(error, lines) {
     mc1.eventHandler = new EventHandler();
     mc1.simulationManager = new SimulationManager(mc1.parkMap);
 
-    let dimensions = {visitDuration: 'Visit Duration', velocity: 'Velocity'};
+    let dimensions = {visitDuration: 'Visit Duration (hrs)', velocity: 'Velocity (mph)'};
 
     mc1.parallel = new ParallelCoordinate(mc1.paraSvg, PARA_WIDTH, PARA_HEIGHT, mc1.parsedVisits);
     for(let key in dimensions) {
