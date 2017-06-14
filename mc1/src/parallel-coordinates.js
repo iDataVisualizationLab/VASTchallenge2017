@@ -42,7 +42,45 @@ ParallelCoordinate.prototype.init = function init() {
                             return d[1];
                         });
 
-    this.axisLabel = {};
+    this.types = {
+        "Number": {
+            key: "Number",
+            coerce: function(d) { return +d; },
+            extent: function (ds, accessKey) {
+                return d3.extent(ds, function (row) {
+                    return +row[accessKey];
+                })
+            },            within: function(d, extent, dim) { return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1]; },
+            defaultScale: d3.scaleLinear().range([this.height, 0])
+        },
+        "String": {
+            key: "String",
+            coerce: String,
+            extent: function (data, accessKey) {
+                let myData =  data.map(function (d) {
+                    return d[accessKey];
+                });
+
+                myData.sort();
+                return myData.reverse();
+            },
+            within: function(d, extent, dim) { return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1]; },
+            defaultScale: d3.scalePoint().range([0, this.height])
+        },
+        "Date": {
+            key: "Date",
+            coerce: function(d) { return new Date(d); },
+            extent: function (ds, accessKey) {
+                return d3.extent(ds, function (row) {
+                    return +row[accessKey];
+                })
+            },
+            within: function(d, extent, dim) { return extent[0] <= dim.scale(d) && dim.scale(d) <= extent[1]; },
+            defaultScale: d3.scaleTime().range([0, this.height])
+        }
+    };
+
+    this.axisConfig = {};
 };
 
 /**
@@ -50,29 +88,64 @@ ParallelCoordinate.prototype.init = function init() {
  *
  * @param dimension
  * @param accessKey nullable. Default value is the same as dimension
+ * @param type: to decide domain and scale of vertical axis
+
  */
-ParallelCoordinate.prototype.addDimension = function addDimension(dimension, accessKey) {
+ParallelCoordinate.prototype.addDimension = function addDimension(dimension, accessKey, type) {
 
     if (!accessKey) {
         accessKey = dimension;
     }
 
-    let self = this;
-    let domain = d3.extent(
-        self.dataSet,
-        function(row) {
-            return +row[accessKey];
-        }
-    );
+    if (!type) {
+        type = 'Number';
+    }
 
-    self.y[accessKey] = d3.scaleLinear()
-        .domain(domain)
-        .range([self.height, 0])
-    ;
+    let self = this;
+
+    this.axisConfig[accessKey] = {
+        label: dimension,
+        options: self.types[type]
+    };
+
+
+    let options = self.types[type];
+
+    let domain = options.extent(self.dataSet, accessKey);
+
+
+    if (type == 'Number') {
+        self.y[accessKey] = d3.scaleLinear()
+            .domain(domain)
+            .range([self.height, 0])
+        ;
+    }
+    else {
+        let myScale = d3.scalePoint()
+            .domain(domain)
+            .range([0, self.height])
+        ;
+
+        myScale.invert = (function(){
+            let domain = myScale.domain();
+            let range = myScale.range();
+            let scale = d3.scaleQuantize().domain(range).range(domain);
+
+            return function(x){
+
+                let re = scale(x);
+                return re;
+            }
+        })();
+
+        self.y[accessKey] = myScale;
+    }
+
+
 
     self.dimensions.push(accessKey);
 
-    this.axisLabel[accessKey] = dimension;
+
 
     this.setDomain();
 };
@@ -149,7 +222,7 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
         .style("text-anchor", "middle")
         .style('fill', '#000000')
         .attr("y", -9)
-        .text(function(d) { return self.axisLabel[d]; })
+        .text(function(d) { return self.axisConfig[d].label; })
     ;
 
     // Add and store a brush for each axis.
@@ -192,6 +265,12 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
     // Returns the path for a given data point.
     function path(d) {
         let xy = self.dimensions.map(function(p) {
+
+            if (p == 'cylinders') {
+                let myY = self.y[p](d[p]);
+                return [position(p), myY];
+
+            }
             return [position(p), self.y[p](d[p])];
         });
 
@@ -225,10 +304,13 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
 
             let myDp = actives.every(function(dim, i) {
 
-                let max = +extents[i][0];
-                let min = +extents[i][1];
-                let val = +dimensions[dim];
+                let max = extents[i][0];
+                let min = extents[i][1];
+                let val = dimensions[dim];
+
                 let dp = val >= min && val <= max;
+
+                console.log('min: ' + min + "; max: " + max + "; val: " + val + ";visibility:" + dp);
 
                 return !!dp;
             });
