@@ -70,7 +70,7 @@ ParallelCoordinate.prototype.addDimension = function addDimension(dimension, acc
 
     self.dimensions.push(dimension);
 
-    // this.setDomain();
+    this.setDomain();
 };
 
 ParallelCoordinate.prototype.setDomain = function setDomain() {

@@ -20,6 +20,17 @@
             stroke-linejoin: miter;
         }
 
+        .background path {
+            fill: none;
+            stroke: #ddd;
+            shape-rendering: crispEdges;
+        }
+
+        .foreground path {
+            fill: none;
+            stroke: steelblue;
+        }
+
     </style>
 
 
@@ -103,6 +114,7 @@
                 <!--<input type="button" value="View Road Heat Map" name="road-heat-map" onclick="mc1.controller.viewRoadHeatMap(this)"/>-->
             <!--</div>-->
 
+            <div id="parallelCoordinates"></div>
             <div id="visitDuration"></div>
             <div>
                 <input type="button" value="View Road Heat Map" name="road-heat-map" onclick="mc1.controller.viewRoadHeatMap(this)"/>
@@ -128,6 +140,7 @@
 <script type="text/javascript" src="src/controller.js"></script>
 <script type="text/javascript" src="src/park-map.js"></script>
 <script type="text/javascript" src="src/car-point.js"></script>
+<script type="text/javascript" src="src/parallel-coordinates.js"></script>
 <script type="text/javascript" src="src/chart-2d.js"></script>
 <script type="text/javascript" src="src/spiral-graph.js"></script>
 <script type="text/javascript" src="src/simulation-manager.js"></script>

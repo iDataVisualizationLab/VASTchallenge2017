@@ -10,6 +10,13 @@ mc1.mapSvg = d3.select('body').select('#map')
         .attr('height', (MAP_HEIGHT + 1) * ParkMap.CELL_HEIGHT)
     ;
 
+var PARA_WIDTH = 960;
+var PARA_HEIGHT = 500;
+mc1.paraSvg = d3.select('body').select('#parallelCoordinates')
+    .append('svg')
+;
+
+
 
 Util.createMapByteData(MAP_WIDTH, MAP_HEIGHT, mapFile, function (mapByteData) {
     mc1.parkMap = new ParkMap(mapByteData, mc1.mapSvg);
@@ -41,19 +48,28 @@ d3.json("data/all-car-path.json", function(error, lines) {
     mc1.visitParser = visitParser;
 
     mc1.parsedVisits = visitParser.parse(lines);
+    // mc1.parsedVisits = mc1.parsedVisits.slice(0, 100);
+    // mc1.parsedVisits = mc1.parsedVisits.filter(function (visit) {
+    //     return visit.carId == '20150322080300-861';
+    // });
+
     mc1.eventHandler = new EventHandler();
     mc1.simulationManager = new SimulationManager(mc1.parkMap);
 
-    mc1.controller.changeGraphType('one-year');
+    let dimensions = ['visitDuration', 'velocity'];
+    mc1.parallel = new ParallelCoordinate(mc1.paraSvg, PARA_WIDTH, PARA_HEIGHT, mc1.parsedVisits);
+    dimensions.forEach(function (dim) {
+        mc1.parallel.addDimension(dim);
+
+    });
+
+    mc1.parallel.renderGraph();
+
+    // mc1.controller.changeGraphType('one-year');
+    //mc1.controller.changeGraphType('hour');
+    // mc1.controller.changeGraphType('hour-spiral');
     //
 
-
-    // d3.csv('data/Lekagul Sensor Data.csv', function (err, rawData) {
-    //
-    //     mc1.roadHitmap = new RoadHitmap(mc1.parkMap, rawData);
-    //
-    //     mc1.roadHitmap.renderVisits();
-    // });
 
 
 });
