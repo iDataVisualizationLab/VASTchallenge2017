@@ -242,7 +242,8 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
             let myBrush = d3.brushY()
                     .extent([[-10, 0], [10, self.height]])
                     .on("start", brushstart)
-                    .on("brush", brush)
+                    // .on("brush", brush)
+                    .on("end", brush)
                 ;
             self.y[d].brush = myBrush;
 
