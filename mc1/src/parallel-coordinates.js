@@ -155,7 +155,7 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
 //                    d3.select(this).call(y[d].brush = d3.brushY().extent(y[d]).on("start", brushstart).on("brush", brush));
 
             let brushScale = self.y[d];
-            let bange = brushScale.range();
+            let bRange = brushScale.range();
 
             // let myBrush = d3.brushY()
             //     .extent([[0, brushScale.range()[0]], [19, brushScale.range()[1]]])
@@ -163,7 +163,7 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
             //         .on("brush", brush)
             //     ;
             let myBrush = d3.brushY()
-                    .extent([[-10,0], [10, self.height]])
+                    .extent([[-10, 0], [10, self.height]])
                     .on("start", brushstart)
                     .on("brush", brush)
                 ;
@@ -188,7 +188,6 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
     // Returns the path for a given data point.
     function path(d) {
         let xy = self.dimensions.map(function(p) {
-
             return [position(p), self.y[p](d[p])];
         });
 
@@ -209,18 +208,28 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
                 return d3.brushSelection(this);
             })
             .each(function(d) {
-                // debugger;
                 actives.push(d);
-                extents.push(d3.brushSelection(this))
+                let selectionDomain = d3.brushSelection(this);
+                selectionDomain = selectionDomain.map(function (val) {
+                    return self.y[d].invert(val);
+                });
+                extents.push(selectionDomain);
+
             });
 
-        // var actives = self.dimensions.filter(function(p) { return !self.y[p].brush.empty(); }),
-        //     extents = actives.map(function(p) { return self.y[p].brush.extent(); });
+        foreground.style("display", function(dimensions) {
 
-        foreground.style("display", function(d) {
-            return actives.every(function(p, i) {
-                return extents[i][0] <= d[p] && d[p] <= extents[i][1];
-            }) ? null : "none";
+            let myDp = actives.every(function(dim, i) {
+
+                let max = +extents[i][0];
+                let min = +extents[i][1];
+                let val = +dimensions[dim];
+                let dp = val >= min && val <= max;
+
+                return !!dp;
+            });
+
+            return myDp ? null : "none";
         });
     }
 };
