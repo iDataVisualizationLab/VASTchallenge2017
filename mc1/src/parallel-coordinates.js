@@ -41,6 +41,8 @@ ParallelCoordinate.prototype.init = function init() {
                         .y(function (d) {
                             return d[1];
                         });
+
+    this.axisLabel = {};
 };
 
 /**
@@ -63,12 +65,14 @@ ParallelCoordinate.prototype.addDimension = function addDimension(dimension, acc
         }
     );
 
-    self.y[dimension] = d3.scaleLinear()
+    self.y[accessKey] = d3.scaleLinear()
         .domain(domain)
         .range([self.height, 0])
     ;
 
-    self.dimensions.push(dimension);
+    self.dimensions.push(accessKey);
+
+    this.axisLabel[accessKey] = dimension;
 
     this.setDomain();
 };
@@ -145,7 +149,7 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
         .style("text-anchor", "middle")
         .style('fill', '#000000')
         .attr("y", -9)
-        .text(function(d) { return d; })
+        .text(function(d) { return self.axisLabel[d]; })
     ;
 
     // Add and store a brush for each axis.
