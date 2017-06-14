@@ -86,6 +86,7 @@ function renderParallelCoordinate() {
 
         carType:  { label: 'Car Type', type: 'String'},
         camping: {label: 'Camping', type: 'String'},
+        stopCount: {label: 'Stop Count'},
         visitDuration: {label: 'Visit Duration (hrs)' },
         velocity: {label: 'Velocity (mph)'}
     };
