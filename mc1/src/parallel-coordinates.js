@@ -183,33 +183,34 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
         .enter().append("g")
         .attr("class", "dimension")
         .attr("transform", function(d) { return "translate(" + self.x(d) + ")"; })
-        .call(d3.drag()
-            .subject(function(d) {
-                let t = {x: self.x(d)};
-                return {x: self.x(d)};
-            })
-            .on("start", function(d) {
-                dragging[d] = x(d);
-                background.attr("visibility", "hidden");
-            })
-            .on("drag", function(d) {
-                self.dragging[d] = Math.min(self.width, Math.max(0, d3.event.x));
-                foreground.attr("d", path);
-                self.dimensions.sort(function(a, b) { return position(a) - position(b); });
-                self.x.domain(self.dimensions);
-                g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
-            })
-            .on("end", function(d) {
-                delete self.dragging[d];
-                transition(d3.select(this)).attr("transform", "translate(" + self.x(d) + ")");
-                transition(foreground).attr("d", path);
-                background
-                    .attr("d", path)
-                    .transition()
-                    .delay(500)
-                    .duration(0)
-                    .attr("visibility", null);
-            }));
+        // .call(d3.drag()
+        //     .subject(function(d) {
+        //         let t = {x: self.x(d)};
+        //         return {x: self.x(d)};
+        //     })
+        //     .on("start", function(d) {
+        //         dragging[d] = x(d);
+        //         background.attr("visibility", "hidden");
+        //     })
+        //     .on("drag", function(d) {
+        //         self.dragging[d] = Math.min(self.width, Math.max(0, d3.event.x));
+        //         foreground.attr("d", path);
+        //         self.dimensions.sort(function(a, b) { return position(a) - position(b); });
+        //         self.x.domain(self.dimensions);
+        //         g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
+        //     })
+        //     .on("end", function(d) {
+        //         delete self.dragging[d];
+        //         transition(d3.select(this)).attr("transform", "translate(" + self.x(d) + ")");
+        //         transition(foreground).attr("d", path);
+        //         background
+        //             .attr("d", path)
+        //             .transition()
+        //             .delay(500)
+        //             .duration(0)
+        //             .attr("visibility", null);
+        //     }))
+        ;
 
     // Add an axis and title.
     g.append("g")
