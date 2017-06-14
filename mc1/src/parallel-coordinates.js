@@ -2,7 +2,7 @@ var ParallelCoordinate = function ParallelCoordinate(svg, width, height, dataSet
 
     if (!options) {
         options = {
-            margin: {top: 30, right: 10, bottom: 10, left: 10},
+            margin: {top: 30, right: 10, bottom: 10, left: 70},
             width: width,
             height: height
         };
@@ -28,7 +28,7 @@ var ParallelCoordinate = function ParallelCoordinate(svg, width, height, dataSet
 };
 
 ParallelCoordinate.prototype.init = function init() {
-    this.x = d3.scaleBand().range([0, this.width]).padding(1);
+    this.x = d3.scaleBand().range([0, this.width]);
     this.y = {};
     this.dragging = {};
     this.axis = d3.axisLeft();

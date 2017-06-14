@@ -28,7 +28,7 @@
 
         .foreground path {
             fill: none;
-            stroke: steelblue;
+            stroke: #000000;
         }
 
     </style>
@@ -40,10 +40,9 @@
 <table>
     <tr>
         <td>
-            <div><label>Time: </label><input type="range" min="0" max="800" step="1" onchange="mc1.controller.changeRoadHitmapTime(this)"/></div>
             <div><input type="button" name="clear-road" value="Clear Road" onclick="mc1.controller.clearRoad(this)" /></div>
             <div id="map"></div>
-
+            <div id="visitDuration"></div>
         </td>
         <td>
             <div>
@@ -108,14 +107,9 @@
                     </tr>
                 </table>
             </div>
-            <!--<div id="firstDaySpan"></div>-->
-            <!--<div>-->
-                <!--<input type="button" value="Play Time" name="play-time-block" onclick="mc1.controller.simulateTimeBlock(this)" />-->
-                <!--<input type="button" value="View Road Heat Map" name="road-heat-map" onclick="mc1.controller.viewRoadHeatMap(this)"/>-->
-            <!--</div>-->
-
             <div id="parallelCoordinates"></div>
-            <div id="visitDuration"></div>
+            <div id="firstDaySpan"></div>
+
             <div>
                 <input type="button" value="View Road Heat Map" name="road-heat-map" onclick="mc1.controller.viewRoadHeatMap(this)"/>
                 <input type="button" value="Simulate Traffic" name="play-full" onclick="mc1.controller.simulateTraffic(this)"/>

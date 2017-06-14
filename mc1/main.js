@@ -10,7 +10,7 @@ mc1.mapSvg = d3.select('body').select('#map')
         .attr('height', (MAP_HEIGHT + 1) * ParkMap.CELL_HEIGHT)
     ;
 
-var PARA_WIDTH = 960;
+var PARA_WIDTH = 720;
 var PARA_HEIGHT = 500;
 mc1.paraSvg = d3.select('body').select('#parallelCoordinates')
     .append('svg')
@@ -35,13 +35,13 @@ mc1.visitDurationSvg = d3.select('body').select('#visitDuration').append('svg')
             "translate(" + margin.left + "," + margin.top + ")")
     ;
 
-// mc1.firstDaySpanSvg = d3.select('body').select('#firstDaySpan').append('svg')
-//     .attr("width", width + margin.left + margin.right)
-//     .attr("height", height + margin.top + margin.bottom)
-//     .append("g")
-//     .attr("transform",
-//         "translate(" + margin.left + "," + margin.top + ")")
-// ;
+mc1.firstDaySpanSvg = d3.select('body').select('#firstDaySpan').append('svg')
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")")
+;
 
 d3.json("data/all-car-path.json", function(error, lines) {
     let visitParser = new VisitParser(mc1.parkMap);
@@ -56,25 +56,53 @@ d3.json("data/all-car-path.json", function(error, lines) {
     mc1.eventHandler = new EventHandler();
     mc1.simulationManager = new SimulationManager(mc1.parkMap);
 
-    let dimensions = {visitDuration: 'Visit Duration (hrs)', velocity: 'Velocity (mph)'};
+
+    d3.timeout(function () {
+        renderParallelCoordinate();
+    });
+
+    d3.timeout(function () {
+        mc1.controller.changeGraphType('one-year');
+        // mc1.controller.changeGraphType('hour-spiral');
+        //
+    });
+
+    d3.timeout(function () {
+        // mc1.controller.changeGraphType('one-year');
+        mc1.controller.changeGraphType('hour');
+        // mc1.controller.changeGraphType('hour-spiral');
+        //
+    });
+
+
+
+
+
+});
+
+function renderParallelCoordinate() {
+    let dimensions = {
+        // startTime: {label: "Start Time"},
+
+        carType:  { label: 'Car Type', type: 'String'},
+        camping: {label: 'Camping', type: 'String'},
+        visitDuration: {label: 'Visit Duration (hrs)' },
+        velocity: {label: 'Velocity (mph)'}
+    };
 
     mc1.parallel = new ParallelCoordinate(mc1.paraSvg, PARA_WIDTH, PARA_HEIGHT, mc1.parsedVisits);
+
+    let dim;
     for(let key in dimensions) {
         if (!dimensions.hasOwnProperty(key)) {
             continue;
         }
 
-        mc1.parallel.addDimension(dimensions[key], key);
+        dim = dimensions[key];
+
+        mc1.parallel.addDimension(dim.label, key, dim.type);
 
     }
 
     mc1.parallel.renderGraph();
-
-    // mc1.controller.changeGraphType('one-year');
-    //mc1.controller.changeGraphType('hour');
-    // mc1.controller.changeGraphType('hour-spiral');
-    //
-
-
-
-});
+}

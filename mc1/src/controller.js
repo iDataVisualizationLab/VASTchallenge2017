@@ -216,7 +216,7 @@ mc1.controller.stopSimulation = function() {
 mc1.controller.changeGraphType = function(graphType) {
     switch (graphType) {
         case 'hour':
-            let firstDaySpanChart = new Chart2D(mc1.visitDurationSvg, width, height, {id: 2, margin: margin, timeChart: true});
+            let firstDaySpanChart = new Chart2D(mc1.firstDaySpanSvg, width, height, {id: 2, margin: margin, timeChart: true});
             mc1.firstDayDuration = new VisitTimeBlock(firstDaySpanChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager);
             mc1.firstDayDuration.setVisits(mc1.parsedVisits);
             mc1.firstDayDuration.render();
@@ -225,7 +225,7 @@ mc1.controller.changeGraphType = function(graphType) {
 
             break;
         case 'hour-spiral':
-            mc1.spiral = new SpiralGraph(mc1.visitDurationSvg);
+            mc1.spiral = new SpiralGraph(mc1.firstDaySpanSvg);
             mc1.spiral.setVisits(mc1.parsedVisits);
             mc1.spiral.render();
             break;
