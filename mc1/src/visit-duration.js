@@ -31,10 +31,11 @@ var VisitDuration = function VisitDuration(visitChart, parkMap, startDate, endDa
 VisitDuration.prototype.init = function init() {
     this.events = [
         {name: 'mouseover'},
-        // {name: 'mouseout'}
+        {name: 'mouseout'}
     ];
 
     this.eventHandler.addEvent('mouseover', this.onLineMouseOver, this);
+    this.eventHandler.addEvent('mouseout', this.onLineMouseOut, this);
     this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
 
 
