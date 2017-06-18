@@ -308,10 +308,6 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
                     return self.y[d].invert(val);
                 });
 
-                if (self.axisConfig[d].type == 'Number') {
-                    selectionDomain = selectionDomain.reverse();
-                }
-
                 extents.push(selectionDomain);
 
                 params[d] = selectionDomain;

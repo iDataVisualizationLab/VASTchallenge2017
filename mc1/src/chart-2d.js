@@ -557,17 +557,17 @@ Chart2D.prototype.highLightVisits = function highLightVisits() {
         }
 
         // stop count
-        if (!!stopCount && (ctx.stopCount < stopCount[0] || ctx.stopCount > stopCount[1])) {
+        if (!!stopCount && (ctx.stopCount > stopCount[0] || ctx.stopCount < stopCount[1])) {
             return line.visibility = 'hidden';
         }
 
         // visit duration
-        if (!!visitDuration && (ctx.visitDuration < visitDuration[0] || ctx.visitDuration > visitDuration[1])) {
+        if (!!visitDuration && (ctx.visitDuration > visitDuration[0] || ctx.visitDuration < visitDuration[1])) {
             return line.visibility = 'hidden';
         }
 
         // velocity
-        if (!!velocity && (ctx.velocity < velocity[0] || ctx.velocity > velocity[1])) {
+        if (!!velocity && (ctx.velocity > velocity[0] || ctx.velocity < velocity[1])) {
             return line.visibility = 'hidden';
         }
 
