@@ -14,6 +14,7 @@ VisitParser.prototype.parse = function (visits) {
         line.color = line.carType == '2P' ? '#000000' : colorFunction(colorIdx);
         line.velocity = +line.velocity;
         line.visitDuration = +line.visitDuration;
+        line.stopCount = +line.stopCount;
         line.startTime = self.parseTime(line.startTime);
         line.endTime = self.parseTime(line.endTime);
 

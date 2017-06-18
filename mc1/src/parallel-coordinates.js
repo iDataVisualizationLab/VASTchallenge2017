@@ -109,6 +109,7 @@ ParallelCoordinate.prototype.addDimension = function addDimension(dimension, acc
 
     this.axisConfig[accessKey] = {
         label: dimension,
+        type: type,
         options: self.types[type]
     };
 
@@ -122,6 +123,7 @@ ParallelCoordinate.prototype.addDimension = function addDimension(dimension, acc
         self.y[accessKey] = d3.scaleLinear()
             .domain(domain)
             .range([self.height, 0])
+            // .range([0, self.height])
         ;
     }
     else {
@@ -305,6 +307,11 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
                 selectionDomain = selectionDomain.map(function (val) {
                     return self.y[d].invert(val);
                 });
+
+                if (self.axisConfig[d].type == 'Number') {
+                    selectionDomain = selectionDomain.reverse();
+                }
+
                 extents.push(selectionDomain);
 
                 params[d] = selectionDomain;

@@ -448,27 +448,15 @@ Chart2D.prototype.clearSetting = function highlightSingleVisit () {
     ;
 };
 
-Chart2D.prototype.setFilters = function setFilters (entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
-
-
-    if (!entranceType || !vehicleCategory || !campingBehavior || !velocityBehavior || !velocityLimit || !durationBehavior || !durationThreshold) {
-        entranceType = document.getElementById('entranceType').value;
-        vehicleCategory = document.getElementById('vehicleCategory').value;
-        campingBehavior = document.getElementById('campingBehavior').value;
-        velocityBehavior =  document.getElementById('velocityBehavior').value;
-        velocityLimit = document.getElementById('velocityLimit').value;
-        durationBehavior =  document.getElementById('durationBehavior').value;
-        durationThreshold = document.getElementById('durationThreshold').value;
-    }
+Chart2D.prototype.setFilters = function setFilters (entranceType, carType, camping, stopCount, velocity, visitDuration) {
 
     let self = this;
     self.filters['entranceType'] = entranceType;
-    self.filters['vehicleCategory'] = vehicleCategory;
-    self.filters['campingBehavior'] = campingBehavior;
-    self.filters['velocityBehavior'] = velocityBehavior;
-    self.filters['velocityLimit'] = velocityLimit;
-    self.filters['durationBehavior'] = durationBehavior;
-    self.filters['durationThreshold'] = durationThreshold;
+    self.filters['carType'] = carType;
+    self.filters['camping'] = camping;
+    self.filters['stopCount'] = stopCount;
+    self.filters['velocity'] = velocity;
+    self.filters['visitDuration'] = visitDuration;
 
 
     if (!self.myLowerBoundTimeSelector || isNaN(self.myLowerBoundTimeSelector.x)) {
@@ -536,6 +524,58 @@ Chart2D.prototype.showVisits = function showVisits() {
         this.highLightAllTypesOfVisit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
 
     }
+
+
+};
+
+Chart2D.prototype.highLightVisits = function highLightVisits() {
+    let self = this;
+    let carType = self.filters['carType'];
+    let camping = self.filters['camping'];
+    let stopCount = self.filters['stopCount'];
+    let velocity = self.filters['velocity'];
+    let visitDuration = self.filters['visitDuration'];
+
+
+    // Generate visibility expression
+    let ex = function (line) {
+
+        let ctx = line.context;
+
+        // if (ctx.stopCount > 7) {
+        //     debugger;
+        // }
+
+        // car type criteria
+        if (!!carType && carType.indexOf(ctx.carType) < 0) {
+            return line.visibility = 'hidden';
+        }
+
+        // camping
+        if (!!camping && camping.indexOf(ctx.camping) < 0) {
+            return line.visibility = 'hidden';
+        }
+
+        // stop count
+        if (!!stopCount && (ctx.stopCount < stopCount[0] || ctx.stopCount > stopCount[1])) {
+            return line.visibility = 'hidden';
+        }
+
+        // visit duration
+        if (!!visitDuration && (ctx.visitDuration < visitDuration[0] || ctx.visitDuration > visitDuration[1])) {
+            return line.visibility = 'hidden';
+        }
+
+        // velocity
+        if (!!velocity && (ctx.velocity < velocity[0] || ctx.velocity > velocity[1])) {
+            return line.visibility = 'hidden';
+        }
+
+
+        return line.visibility = 'visible';
+    };
+
+    self.myLine.style('visibility', ex);
 };
 
 Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {

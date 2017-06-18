@@ -66,6 +66,18 @@ VisitDuration.prototype.onBrushEnd = function onBrushEnd(e) {
     console.log("Brush end event");
     console.log(e);
 
+    let data = e.data;
+    let entranceTypes = data['entranceType'];
+    let carType = data['carType'];
+    let camping = data['camping'];
+    let stopCount = data['stopCount'];
+    let velocityLimit = data['velocity'];
+    let visitDuration = data['visitDuration'];
+
+    this.visitChart.setFilters([], carType, camping, stopCount, velocityLimit, visitDuration);
+
+    this.visitChart.highLightVisits();
+
 };
 
 VisitDuration.prototype.render = function render(lines) {
