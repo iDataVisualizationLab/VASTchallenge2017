@@ -247,8 +247,8 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
                 d3.drag()
                     .on("drag", handleBoundaryDrag)
                     .on("end", function () {
-                        self.setFilters();
-                        self.showVisits();
+                        self.updateTimeSelectors();
+                        self.highLightVisits();
                     })
             )
         ;
@@ -457,31 +457,31 @@ Chart2D.prototype.setFilters = function setFilters (entranceType, carType, campi
     self.filters['stopCount'] = stopCount;
     self.filters['velocity'] = velocity;
     self.filters['visitDuration'] = visitDuration;
+};
 
+Chart2D.prototype.updateTimeSelectors = function updateTimeSelectors() {
+    let self = this;
 
     if (!self.myLowerBoundTimeSelector || isNaN(self.myLowerBoundTimeSelector.x)) {
         let xdm = this.x.domain();
         let ydm = this.y.domain();
 
         this.myLowerBoundTimeSelector = [
-                {x: xdm[0], y: ydm[0]},
-                {x: xdm[0], y: ydm[1]}
+            {x: xdm[0], y: ydm[0]},
+            {x: xdm[0], y: ydm[1]}
         ];
         this.myLowerBoundTimeSelector.x = this.x(xdm[0]);
         this.myUpperBoundTimeSelector = [
-                {x: xdm[1], y: ydm[0]},
-                {x: xdm[1], y: ydm[1]}
+            {x: xdm[1], y: ydm[0]},
+            {x: xdm[1], y: ydm[1]}
         ];
         this.myUpperBoundTimeSelector.x = this.x(xdm[1]);
     }
 
     let startTime = self.x.invert(self.myLowerBoundTimeSelector.x);
     let endTime = self.x.invert(self.myUpperBoundTimeSelector.x);
-    self.filters['startTime'] = startTime;
-    self.filters['endTime'] = endTime;
-
+    self.filters['time'] = [endTime, startTime];
 };
-
 /**
  * This will highlight only visits that interfere with the time range specified. Out of this range will be hidden.
  */
@@ -535,6 +535,7 @@ Chart2D.prototype.highLightVisits = function highLightVisits() {
     let stopCount = self.filters['stopCount'];
     let velocity = self.filters['velocity'];
     let visitDuration = self.filters['visitDuration'];
+    let time = self.filters['time'];
 
 
     // Generate visibility expression
@@ -542,9 +543,9 @@ Chart2D.prototype.highLightVisits = function highLightVisits() {
 
         let ctx = line.context;
 
-        // if (ctx.stopCount > 7) {
-        //     debugger;
-        // }
+        if (ctx.stopCount > 30) {
+            debugger;
+        }
 
         // car type criteria
         if (!!carType && carType.indexOf(ctx.carType) < 0) {
@@ -568,6 +569,10 @@ Chart2D.prototype.highLightVisits = function highLightVisits() {
 
         // velocity
         if (!!velocity && (ctx.velocity > velocity[0] || ctx.velocity < velocity[1])) {
+            return line.visibility = 'hidden';
+        }
+
+        if (!!time && (ctx.startTime.getTime() > time[0].getTime() || ctx.endTime.getTime() < time[1].getTime())) {
             return line.visibility = 'hidden';
         }
 

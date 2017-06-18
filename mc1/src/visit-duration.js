@@ -142,11 +142,11 @@ VisitDuration.prototype.render = function render(lines) {
 
     });
 
-    this.visitChart.setFilters();
 
     this.visitChart.renderChart(this.events);
     this.visitChart.renderAxis('Time', 'Visits');
 
+    this.visitChart.updateTimeSelectors();
     this.visitChart.renderTimeRangeSelector();
 };
 
@@ -225,22 +225,23 @@ VisitDuration.prototype.highlightVisitsByEntranceType = function highlightVisits
     velocityLimit = +velocityLimit;
     durationThreshold = +durationThreshold;
 
-    this.visitChart.setFilters(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    this.visitChart.updateTimeSelectors();
+    this.visitChart.highLightVisits();
 
-    if (entranceType == 'multi-entrances') {
-        this.visitChart.highLightMultiVisits(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-    else if (entranceType == 'single-entrance-over-night') {
-        this.visitChart.highLightSingleVisitOvernight(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-    else if (entranceType == 'no-exit') {
-        this.visitChart.highLightNoExit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-    else if (entranceType == 'single-entrance-no-over-night') {
-        this.visitChart.highLightSingleEntranceNotOvernightVisit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-    else {
-        this.visitChart.highLightAllTypesOfVisit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-
-    }
+    // if (entranceType == 'multi-entrances') {
+    //     this.visitChart.highLightMultiVisits(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    // }
+    // else if (entranceType == 'single-entrance-over-night') {
+    //     this.visitChart.highLightSingleVisitOvernight(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    // }
+    // else if (entranceType == 'no-exit') {
+    //     this.visitChart.highLightNoExit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    // }
+    // else if (entranceType == 'single-entrance-no-over-night') {
+    //     this.visitChart.highLightSingleEntranceNotOvernightVisit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    // }
+    // else {
+    //     this.visitChart.highLightAllTypesOfVisit(vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
+    //
+    // }
 };

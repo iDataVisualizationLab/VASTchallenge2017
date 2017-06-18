@@ -184,11 +184,11 @@ VisitTimeBlock.prototype.render = function render() {
         // count ++;
     });
 
-    this.visitChart.setFilters();
 
     this.visitChart.renderChart(this.events);
     this.visitChart.renderAxis('Hours', 'Visits', "%H:%M");
 
+    this.visitChart.updateTimeSelectors();
     this.visitChart.renderTimeRangeSelector();
 
 };
