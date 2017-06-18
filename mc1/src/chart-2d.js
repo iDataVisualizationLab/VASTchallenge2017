@@ -538,6 +538,7 @@ Chart2D.prototype.highLightVisits = function highLightVisits() {
     let time = self.filters['time'];
 
 
+
     // Generate visibility expression
     let ex = function (line) {
 
@@ -571,8 +572,11 @@ Chart2D.prototype.highLightVisits = function highLightVisits() {
         if (!!velocity && (ctx.velocity > velocity[0] || ctx.velocity < velocity[1])) {
             return line.visibility = 'hidden';
         }
+        // start time & end time
+        let lineStartTime = line.x == 'time' ? ctx['startTime'] : ctx['contextStartTime'];
+        let lineEndTime = line.x == 'time' ? ctx['endTime'] : ctx['contextEndTime'];
 
-        if (!!time && (ctx.startTime.getTime() > time[0].getTime() || ctx.endTime.getTime() < time[1].getTime())) {
+        if (!!time && (lineStartTime.getTime() > time[0].getTime() || lineEndTime.getTime() < time[1].getTime())) {
             return line.visibility = 'hidden';
         }
 
