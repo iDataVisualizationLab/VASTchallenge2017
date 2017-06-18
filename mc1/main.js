@@ -73,11 +73,6 @@ d3.json("data/all-car-path.json", function(error, lines) {
         // mc1.controller.changeGraphType('hour-spiral');
         //
     });
-
-
-
-
-
 });
 
 function renderParallelCoordinate() {
@@ -92,6 +87,7 @@ function renderParallelCoordinate() {
     };
 
     mc1.parallel = new ParallelCoordinate(mc1.paraSvg, PARA_WIDTH, PARA_HEIGHT, mc1.parsedVisits);
+    mc1.parallel.setEventHandler(mc1.eventHandler);
 
     let dim;
     for(let key in dimensions) {

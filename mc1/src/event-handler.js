@@ -21,7 +21,8 @@ EventHandler.prototype.addEvent = function addEvent (name, handlers, context) {
 };
 
 EventHandler.prototype.fireEvent = function fireEvent (e) {
-    let handlers = this.myEvents[e.name];
+    let name = !!e.name ? e.name : e;
+    let handlers = this.myEvents[name];
     if (!!handlers) {
         handlers.forEach (function (handlerContext) {
 

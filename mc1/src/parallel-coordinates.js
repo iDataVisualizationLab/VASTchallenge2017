@@ -27,6 +27,10 @@ var ParallelCoordinate = function ParallelCoordinate(svg, width, height, dataSet
     this.init();
 };
 
+ParallelCoordinate.prototype.setEventHandler = function setEventHandler(eventHandler) {
+    this.eventHandler = eventHandler;
+};
+
 ParallelCoordinate.prototype.init = function init() {
     this.x = d3.scaleBand().range([0, this.width]);
     this.y = {};
@@ -288,6 +292,9 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
 
         let actives = [];
         let extents = [];
+
+        let params = {};
+
         self.svg.selectAll(".brush")
             .filter(function(d) {
                 return d3.brushSelection(this);
@@ -300,8 +307,11 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
                 });
                 extents.push(selectionDomain);
 
+                params[d] = selectionDomain;
+
             });
 
+        // update display for parallel coordinates
         foreground.style("display", function(dimensions) {
 
             let myDp = actives.every(function(dim, i) {
@@ -312,12 +322,23 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
 
                 let dp = val >= min && val <= max;
 
-                console.log('min: ' + min + "; max: " + max + "; val: " + val + ";visibility:" + dp);
+                // console.log('min: ' + min + "; max: " + max + "; val: " + val + ";visibility:" + dp);
 
                 return !!dp;
             });
 
             return myDp ? null : "none";
         });
+
+        // update display for other graphs via event dispatching
+        if (!!self.eventHandler) {
+            let event = {
+                name: 'brushEnd',
+                data: params
+            };
+
+            self.eventHandler.fireEvent(event);
+        }
+
     }
 };

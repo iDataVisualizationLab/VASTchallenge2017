@@ -35,7 +35,7 @@ VisitDuration.prototype.init = function init() {
     ];
 
     this.eventHandler.addEvent('mouseover', this.onLineMouseOver, this);
-    // this.eventHandler.addEvent('mouseout', this.onLineMouseOut, this);
+    this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
 
 
     let self = this;
@@ -59,6 +59,13 @@ VisitDuration.prototype.init = function init() {
 
 VisitDuration.prototype.getVisibleLines = function getVisibleLines() {
     return this.visitChart.getVisibleLines();
+};
+
+
+VisitDuration.prototype.onBrushEnd = function onBrushEnd(e) {
+    console.log("Brush end event");
+    console.log(e);
+
 };
 
 VisitDuration.prototype.render = function render(lines) {
