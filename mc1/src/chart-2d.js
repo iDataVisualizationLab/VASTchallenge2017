@@ -448,15 +448,24 @@ Chart2D.prototype.clearSetting = function highlightSingleVisit () {
     ;
 };
 
-Chart2D.prototype.setFilters = function setFilters (entranceType, carType, camping, stopCount, velocity, visitDuration) {
+Chart2D.prototype.setFilters = function setFilters (entranceType, data) {
 
     let self = this;
+
+    let carType = data['carType'];
+    let camping = data['camping'];
+    let stopCount = data['stopCount'];
+    let velocity = data['velocity'];
+    let visitDuration = data['visitDuration'];
+    let overnight = data['overnight'];
+
     self.filters['entranceType'] = entranceType;
     self.filters['carType'] = carType;
     self.filters['camping'] = camping;
     self.filters['stopCount'] = stopCount;
     self.filters['velocity'] = velocity;
     self.filters['visitDuration'] = visitDuration;
+    self.filters['overnight'] = overnight;
 };
 
 Chart2D.prototype.updateTimeSelectors = function updateTimeSelectors() {
@@ -535,6 +544,7 @@ Chart2D.prototype.highLightVisits = function highLightVisits() {
     let stopCount = self.filters['stopCount'];
     let velocity = self.filters['velocity'];
     let visitDuration = self.filters['visitDuration'];
+    let overnight = self.filters['overnight'];
     let time = self.filters['time'];
 
 
@@ -543,6 +553,10 @@ Chart2D.prototype.highLightVisits = function highLightVisits() {
     let ex = function (line) {
 
         let ctx = line.context;
+
+        if (line.carId == '20152402052415-950') {
+            debugger;
+        }
 
         if (ctx.stopCount > 30) {
             debugger;
@@ -560,6 +574,11 @@ Chart2D.prototype.highLightVisits = function highLightVisits() {
 
         // stop count
         if (!!stopCount && (ctx.stopCount > stopCount[0] || ctx.stopCount < stopCount[1])) {
+            return line.visibility = 'hidden';
+        }
+
+        // overnight
+        if (!!overnight && overnight.indexOf(ctx.overnight) < 0) {
             return line.visibility = 'hidden';
         }
 
