@@ -3,10 +3,7 @@
 class Chart2D {
     constructor(svg, width, height, options) {
         this.svg = svg;
-
-
         this.svg.selectAll('*').remove();
-
 
         this.width = width;
         this.height = height;
@@ -16,6 +13,15 @@ class Chart2D {
         }
 
         this.options = options;
+        if (!this.options.margin) {
+            this.options.margin = {top: 20, right: 20, bottom: 50, left: 70};
+        }
+
+        let margin = this.options.margin;
+
+        this.svg.attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+        ;
 
         // set the ranges
         this.x = !!this.options.timeChart ? d3.scaleTime().range([0, width]) :  d3.scaleLinear().range([0, width]);
@@ -37,13 +43,13 @@ class Chart2D {
             this.lineData = [];
         }
 
-        if (!xKey) {
-            xKey = 'x';
-        }
-
-        if (!yKey) {
-            yKey = 'y';
-        }
+        // if (!xKey) {
+        //     xKey = 'x';
+        // }
+        //
+        // if (!yKey) {
+        //     yKey = 'y';
+        // }
 
         if (!context) {
             context = {};
@@ -57,11 +63,11 @@ class Chart2D {
         let self = this;
 
         let valueLine = d3.line()
-                .x(function(d) {
-                    return self.x(d[xKey]);
+                .x(function(d, idx) {
+                    return !!xKey ? self.x(d[xKey]) : self.x(idx);
                 })
-                .y(function(d) {
-                    return self.y(d[yKey]); })
+                .y(function(d, idx) {
+                    return !!yKey ? self.y(d[yKey]) : self.y(idx); })
             ;
 
         self.lineData.push( {valueLine: valueLine, data: dataArray, context: context, x: xKey, y: yKey});
