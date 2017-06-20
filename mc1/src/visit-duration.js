@@ -30,8 +30,8 @@ var VisitDuration = function VisitDuration(visitChart, parkMap, startDate, endDa
 
 VisitDuration.prototype.init = function init() {
     this.events = [
-        {name: 'mouseover'},
-        {name: 'mouseout'}
+        {name: 'mouseover'}
+        // {name: 'mouseout'}
     ];
 
     this.eventHandler.addEvent('mouseover', this.onLineMouseOver, this);
@@ -53,7 +53,8 @@ VisitDuration.prototype.init = function init() {
                 .style('visibility', 'hidden')
             ;
 
-            self.visitChart.clearSetting();
+            self.eventHandler.fireEvent('mouseout');
+            // self.visitChart.clearSetting();
         })
     ;
 };
@@ -185,8 +186,6 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(e) {
 };
 
 VisitDuration.prototype.onLineMouseOut = function onLineMouseOver(e) {
-
-    console.log('mouse out: ' + e.line.context.carId);
 
     let self = this;
     self.tooltip
