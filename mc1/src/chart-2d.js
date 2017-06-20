@@ -419,13 +419,13 @@ Chart2D.prototype.highlightSingleVisit = function highlightSingleVisit (carId) {
         .each(function (d) {
             d3.select(this)
                 .select('path')
-                .style('stroke-width', 1.5)
+                .style('stroke-width', 3)
             ;
         })
     ;
 
     self.svg.selectAll('.gate-car-id-' + carId)
-        .attr('r', 2)
+        .attr('r', 3)
     ;
 };
 

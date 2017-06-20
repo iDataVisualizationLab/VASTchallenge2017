@@ -173,7 +173,9 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
         .selectAll("path")
         .data(self.dataSet)
         .enter().append("path")
-        .attr("d", path);
+        .attr("d", path)
+        .style('stroke-width', 0.2)
+    ;
 
     // Add blue foreground lines for focus.
     let foreground = self.svg.append("g")
@@ -181,7 +183,10 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
         .selectAll("path")
         .data(self.dataSet)
         .enter().append("path")
-        .attr("d", path);
+        .attr("d", path)
+        .style('stroke-width', 0.2)
+
+    ;
 
     // Add a group element for each dimension.
     var g = self.svg.selectAll(".dimension")
