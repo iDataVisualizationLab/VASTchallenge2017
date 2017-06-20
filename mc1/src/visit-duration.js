@@ -39,24 +39,7 @@ VisitDuration.prototype.init = function init() {
     this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
 
 
-    let self = this;
-    this.tooltip = d3.select('body').select("#tooltip")
-        .style("position", "absolute")
-        .style("z-index", "10")
-        .style("visibility", "hidden")
-        .on('mouseover', function () {
-            d3.select(this)
-                .style('visibility', 'visible')
-        })
-        .on('mouseout', function () {
-            d3.select(this)
-                .style('visibility', 'hidden')
-            ;
-
-            self.eventHandler.fireEvent('mouseout');
-            // self.visitChart.clearSetting();
-        })
-    ;
+    this.tooltip = new Tooltip('tooltip',this.eventHandler);
 };
 
 VisitDuration.prototype.getVisibleLines = function getVisibleLines() {
@@ -151,46 +134,18 @@ VisitDuration.prototype.onLineMouseOver = function onLineMouseOver(e) {
     let self = this;
     let line = e.line;
 
-    self.tooltip.transition()
-        .duration(200)
-        .style("visibility", 'visible')
-        .style("opacity", .9);
-
-    let carPoints = line.context.path;
-
-    let tableRows = '<tr><td colspan="2"> Car: ' + line.context.carId +
-        '</td></tr>' +
-        '<tr><th>Time</th><th>Gate</th></tr>';
-
-    carPoints.forEach(function (carPoint) {
-        tableRows += '<tr>' +
-            '<td>' + carPoint.getFormattedTime() +
-            '</td>' +
-            '<td>' + carPoint.getGate() +
-            '</td>' +
-            '</tr>'
-    });
-
-    self.tooltip.html('<table style="background: #000000; color: #FFFFFF; opacity: 0.5">' + tableRows + '</table>')
-        .style("left", (d3.event.pageX) + "px")
-        .style("top", (d3.event.pageY - 28) + "px");
-
+    self.tooltip.render(line);
 
     self.visitChart.highlightSingleVisit(line.context.carId);
 
     console.log('event mouse over. Simulating: ' + line.context.carId);
-
-
-    //self.simulationManager.simulateCarMovement(line);
 
 };
 
 VisitDuration.prototype.onLineMouseOut = function onLineMouseOver(e) {
 
     let self = this;
-    self.tooltip
-        .style('visibility', 'hidden')
-    ;
+    self.tooltip.hide();
     self.visitChart.clearSetting();
 
 };
