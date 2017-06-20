@@ -216,7 +216,7 @@ mc1.controller.stopSimulation = function() {
 mc1.controller.changeGraphType = function(graphType) {
     switch (graphType) {
         case 'hour':
-            let firstDaySpanChart = new Chart2D(mc1.firstDaySpanSvg, width, height, {id: 2, margin: margin, timeChart: true});
+            let firstDaySpanChart = new VisitChart2D(mc1.firstDaySpanSvg, width, height, {id: 2, margin: margin, timeChart: true});
             mc1.firstDayDuration = new VisitTimeBlock(firstDaySpanChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager);
             mc1.firstDayDuration.setVisits(mc1.parsedVisits);
             mc1.firstDayDuration.render();
@@ -233,7 +233,7 @@ mc1.controller.changeGraphType = function(graphType) {
             break;
         case 'on-year':
         default:
-            let visitChart = new Chart2D(mc1.visitDurationSvg, width, height, {id: 1, margin: margin, timeChart: true});
+            let visitChart = new VisitChart2D(mc1.visitDurationSvg, width, height, {id: 1, margin: margin, timeChart: true});
             mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager);
             mc1.visitDuration.render(mc1.parsedVisits);
 

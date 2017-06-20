@@ -1,4 +1,4 @@
-var Chart2D = function Chart2D(svg, width, height, options) {
+var VisitChart2D = function VisitChart2D(svg, width, height, options) {
     this.svg = svg;
 
 
@@ -47,12 +47,12 @@ var Chart2D = function Chart2D(svg, width, height, options) {
     // this.myUpperBoundTimeSelector.x = this.x(xdm[1]);
 };
 
-Chart2D.prototype.setEventHandler = function setEventHandler(eventHandler) {
+VisitChart2D.prototype.setEventHandler = function setEventHandler(eventHandler) {
     this.eventHandler = eventHandler;
 };
 
 
-Chart2D.prototype.getSvg = function getSvg() {
+VisitChart2D.prototype.getSvg = function getSvg() {
     return this.svg;
 };
 
@@ -65,7 +65,7 @@ Chart2D.prototype.getSvg = function getSvg() {
  * @param xKey: key to get data for x axis. Default is x
  * @param yKey: key to get data for y axis. Default is y
  */
-Chart2D.prototype.addData = function addData(context, dataArray, xKey, yKey) {
+VisitChart2D.prototype.addData = function addData(context, dataArray, xKey, yKey) {
 
     if (!this.lineData) {
         this.lineData = [];
@@ -130,16 +130,16 @@ Chart2D.prototype.addData = function addData(context, dataArray, xKey, yKey) {
     // });
 };
 
-Chart2D.prototype.setXDomain = function setXDomain(min, max) {
+VisitChart2D.prototype.setXDomain = function setXDomain(min, max) {
     this.x.domain([min, max]);
 };
 
-Chart2D.prototype.setYDomain = function setYDomain(min, max) {
+VisitChart2D.prototype.setYDomain = function setYDomain(min, max) {
     this.y.domain([min, max]);
 };
 
 
-Chart2D.prototype.getVisibleLines = function getVisibleLines() {
+VisitChart2D.prototype.getVisibleLines = function getVisibleLines() {
 
     let myVisits = [];
     this.myLine.each(function (line) {
@@ -159,7 +159,7 @@ Chart2D.prototype.getVisibleLines = function getVisibleLines() {
  * @param leftLabel
  * @param format (time for mat if time chart
  */
-Chart2D.prototype.renderAxis = function renderAxis(bottomLabel, leftLabel, format) {
+VisitChart2D.prototype.renderAxis = function renderAxis(bottomLabel, leftLabel, format) {
 
     let height = this.height;
     let width = this.width;
@@ -205,7 +205,7 @@ Chart2D.prototype.renderAxis = function renderAxis(bottomLabel, leftLabel, forma
     }
 };
 
-Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
+VisitChart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
 
     let self = this;
     let valueLine = d3.line()
@@ -276,7 +276,7 @@ Chart2D.prototype.renderTimeRangeSelector = function renderTimeRangeSelector() {
 
 };
 
-Chart2D.prototype.renderChart = function renderChart(events) {
+VisitChart2D.prototype.renderChart = function renderChart(events) {
 
     let self = this;
 
@@ -352,7 +352,7 @@ Chart2D.prototype.renderChart = function renderChart(events) {
     // });
 };
 
-Chart2D.prototype.renderPassingGates = function renderPassingGates() {
+VisitChart2D.prototype.renderPassingGates = function renderPassingGates() {
     let self = this;
     let gateVisiting = ['gate', 'entrance', 'camping'];
     let gateInternal = ['camping', 'ranger-stop', 'ranger-base'];
@@ -391,13 +391,13 @@ Chart2D.prototype.renderPassingGates = function renderPassingGates() {
 };
 
 
-Chart2D.prototype.getMyLines = function getMyLines() {
+VisitChart2D.prototype.getMyLines = function getMyLines() {
   return this.myLine;
 };
 
 
 
-Chart2D.prototype.highlightSingleVisit = function highlightSingleVisit (carId) {
+VisitChart2D.prototype.highlightSingleVisit = function highlightSingleVisit (carId) {
 
     let self = this;
 
@@ -429,7 +429,7 @@ Chart2D.prototype.highlightSingleVisit = function highlightSingleVisit (carId) {
     ;
 };
 
-Chart2D.prototype.clearSetting = function highlightSingleVisit () {
+VisitChart2D.prototype.clearSetting = function highlightSingleVisit () {
 
     let self = this;
 
@@ -448,7 +448,7 @@ Chart2D.prototype.clearSetting = function highlightSingleVisit () {
     ;
 };
 
-Chart2D.prototype.setFilters = function setFilters (entranceType, data) {
+VisitChart2D.prototype.setFilters = function setFilters (entranceType, data) {
 
     let self = this;
 
@@ -468,7 +468,7 @@ Chart2D.prototype.setFilters = function setFilters (entranceType, data) {
     self.filters['overnight'] = overnight;
 };
 
-Chart2D.prototype.updateTimeSelectors = function updateTimeSelectors() {
+VisitChart2D.prototype.updateTimeSelectors = function updateTimeSelectors() {
     let self = this;
 
     if (!self.myLowerBoundTimeSelector || isNaN(self.myLowerBoundTimeSelector.x)) {
@@ -494,7 +494,7 @@ Chart2D.prototype.updateTimeSelectors = function updateTimeSelectors() {
 /**
  * This will highlight only visits that interfere with the time range specified. Out of this range will be hidden.
  */
-Chart2D.prototype.showVisits = function showVisits() {
+VisitChart2D.prototype.showVisits = function showVisits() {
     let self = this;
     let campingBehavior = self.filters['campingBehavior'];
     let velocityLimit = self.filters['velocityLimit'];
@@ -537,7 +537,7 @@ Chart2D.prototype.showVisits = function showVisits() {
 
 };
 
-Chart2D.prototype.highLightVisits = function highLightVisits() {
+VisitChart2D.prototype.highLightVisits = function highLightVisits() {
     let self = this;
     let carType = self.filters['carType'];
     let camping = self.filters['camping'];
@@ -606,7 +606,7 @@ Chart2D.prototype.highLightVisits = function highLightVisits() {
     self.myLine.style('visibility', ex);
 };
 
-Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
+VisitChart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
@@ -812,7 +812,7 @@ Chart2D.prototype.highLightMultiVisits = function highLightMultiVisits (carCateg
     ;
 };
 
-Chart2D.prototype.highLightSingleVisitOvernight = function highLightSingleVisitOvernight (carCategory, campingBehavior,  velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
+VisitChart2D.prototype.highLightSingleVisitOvernight = function highLightSingleVisitOvernight (carCategory, campingBehavior,  velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
@@ -1017,7 +1017,7 @@ Chart2D.prototype.highLightSingleVisitOvernight = function highLightSingleVisitO
     ;
 };
 
-Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
+VisitChart2D.prototype.highLightNoExit = function highLightNoExit(carCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
@@ -1220,7 +1220,7 @@ Chart2D.prototype.highLightNoExit = function highLightNoExit(carCategory, campin
     ;
 };
 
-Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (carCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
+VisitChart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (carCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
@@ -1427,7 +1427,7 @@ Chart2D.prototype.highLightAllTypesOfVisit = function highLightAllTypesOfVisit (
     ;
 };
 
-Chart2D.prototype.highLightSingleEntranceNotOvernightVisit = function highLightSingleEntranceNotOvernightVisit (carCategory, campingBehavior, velocityBehavior, velocityLimit,  durationBehavior, durationThreshold) {
+VisitChart2D.prototype.highLightSingleEntranceNotOvernightVisit = function highLightSingleEntranceNotOvernightVisit (carCategory, campingBehavior, velocityBehavior, velocityLimit,  durationBehavior, durationThreshold) {
     if (!carCategory) {
         carCategory = 'car-all';
     }
