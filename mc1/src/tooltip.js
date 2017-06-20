@@ -1,71 +1,72 @@
-var Tooltip = function Tooltip(divId, eventHandler) {
-    this.tooltip = d3.select('body').select('#' + divId)
-        .style("position", "absolute")
-        .style("z-index", "10")
-        .style("visibility", "hidden")
-    ;
+'use strict';
+class Tooltip {
+    constructor(divId, eventHandler) {
+        this.tooltip = d3.select('body').select('#' + divId)
+            .style("position", "absolute")
+            .style("z-index", "10")
+            .style("visibility", "hidden")
+        ;
 
-    this.eventHandler = eventHandler;
+        this.eventHandler = eventHandler;
 
-    this.init();
+        this.init();
+    }
 
-};
+    init() {
 
-Tooltip.prototype.init = function init() {
+        let self = this;
+        this.tooltip
+            .on('mouseover', function () {
+                d3.select(this)
+                    .style('visibility', 'visible')
+            })
+            .on('mouseout', function () {
+                d3.select(this)
+                    .style('visibility', 'hidden')
+                ;
 
-    let self = this;
-    this.tooltip
-        .on('mouseover', function () {
-            d3.select(this)
-                .style('visibility', 'visible')
-        })
-        .on('mouseout', function () {
-            d3.select(this)
-                .style('visibility', 'hidden')
-            ;
+                self.eventHandler.fireEvent('mouseout');
+            })
+        ;
+    }
 
-            self.eventHandler.fireEvent('mouseout');
-        })
-    ;
-};
+    render(line) {
 
-Tooltip.prototype.render = function render(line) {
+        let self = this;
 
-    let self = this;
+        this.show();
 
-    this.show();
+        let carPoints = line.context.path;
 
-    let carPoints = line.context.path;
+        let tableRows = '<tr><td colspan="2"> Car: ' + line.context.carId +
+            '</td></tr>' +
+            '<tr><th>Time</th><th>Gate</th></tr>';
 
-    let tableRows = '<tr><td colspan="2"> Car: ' + line.context.carId +
-        '</td></tr>' +
-        '<tr><th>Time</th><th>Gate</th></tr>';
+        carPoints.forEach(function (carPoint) {
+            tableRows += '<tr>' +
+                '<td>' + carPoint.getFormattedTime() +
+                '</td>' +
+                '<td>' + carPoint.getGate() +
+                '</td>' +
+                '</tr>'
+        });
 
-    carPoints.forEach(function (carPoint) {
-        tableRows += '<tr>' +
-            '<td>' + carPoint.getFormattedTime() +
-            '</td>' +
-            '<td>' + carPoint.getGate() +
-            '</td>' +
-            '</tr>'
-    });
+        self.tooltip.html('<table style="background: #000000; color: #FFFFFF; opacity: 0.5">' + tableRows + '</table>')
+            .style("left", (d3.event.pageX) + "px")
+            .style("top", (d3.event.pageY - 28) + "px")
+        ;
+    }
 
-    self.tooltip.html('<table style="background: #000000; color: #FFFFFF; opacity: 0.5">' + tableRows + '</table>')
-        .style("left", (d3.event.pageX) + "px")
-        .style("top", (d3.event.pageY - 28) + "px")
-    ;
-};
+    hide() {
+        this.tooltip
+            .style('visibility', 'hidden')
+        ;
+    }
 
-
-Tooltip.prototype.hide = function hide() {
-    this.tooltip
-        .style('visibility', 'hidden')
-    ;
-};
-
-Tooltip.prototype.show = function show() {
-    this.tooltip.transition()
-        .duration(200)
-        .style("visibility", 'visible')
-        .style("opacity", .9);
-};
+    show() {
+        this.tooltip.transition()
+            .duration(200)
+            .style("visibility", 'visible')
+            .style("opacity", .9);
+    }
+}
