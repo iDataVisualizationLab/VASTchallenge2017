@@ -33,7 +33,6 @@ class VisitDuration {
             // {name: 'mouseout'}
         ];
 
-        this.eventHandler.addEvent('mouseover', this.onLineMouseOver, this);
         this.eventHandler.addEvent('mouseout', this.onLineMouseOut, this);
         this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
 

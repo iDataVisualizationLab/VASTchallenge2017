@@ -22,6 +22,14 @@ class VisitTimeBlock extends VisitDuration {
         this.visitChart.setYDomain(0, 20000);
     }
 
+    init() {
+
+        super.init();
+        this.eventHandler.addEvent('mouseover', this.onLineMouseOver, this);
+
+    }
+
+
     setVisits (visits) {
         let lines = visits.map(function (l) {
             return l;
