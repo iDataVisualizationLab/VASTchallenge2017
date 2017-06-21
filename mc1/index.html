@@ -40,11 +40,6 @@
 <table>
     <tr>
         <td>
-            <div><input type="button" name="clear-road" value="Clear Road" onclick="mc1.controller.clearRoad(this)" /></div>
-            <div id="map"></div>
-            <div id="visitDuration"></div>
-        </td>
-        <td>
             <div>
                 <select id="graphType" name="graphType" onchange="mc1.controller.changeGraphType(this.value);">
                     <option value="hour" >By hour block</option>
@@ -53,63 +48,35 @@
                     <option value="one-year" selected>Entire year</option>
                 </select>
             </div>
-            <div>
-                <table>
-                    <tr>
-                        <td>
-                            <select id="entranceType" name="entranceType" onchange="mc1.controller.clickEntranceType(this)">
-                                <option value="all" selected>All Types of Visit</option>
-                                <option value="single-entrance-over-night">Single entrance overnight</option>
-                                <option value="single-entrance-no-over-night">Single entrance no overnight</option>
-                                <option value="no-exit">No Exit</option>
-                                <option value="multi-entrances">Multiple Entrances</option>
-                            </select>
-                            <select id="vehicleCategory" name="vehicleCategory" onchange="mc1.controller.clickVehicleCategory(this)">
-                                <option value="car-all" selected>All Types of Vehicle</option>
-                                <option value="car-internal">Internal Vehicles</option>
-                                <option value="car-visiting">Visiting Vehicles</option>
-                                <option value="1">2 Axle car</option>
-                                <option value="2">2 axle truck</option>
-                                <option value="3">3 Axle truck</option>
-                                <option value="4">4 Axle or above truck</option>
-                                <option value="5">2 Axle bus</option>
-                                <option value="6">3 Axle bus</option>
-                            </select>
-                            <select id="campingBehavior" name="campingBehavior" onchange="mc1.controller.clickCampingBehavior(this)">
-                                <option value="all" selected>All Camping Behaviors</option>
-                                <option value="behavior-camping" >Camping Vehicles</option>
-                                <option value="behavior-no-camping" >No Camping Vehicles</option>
-                            </select>
-                        </td>
+        </td>
+        <td>
+            <div><input type="button" name="clear-road" value="Clear Road" onclick="mc1.controller.clearRoad(this)" /></div>
 
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Velocity Limit:</label>
-                            <select id="velocityBehavior" name="velocityBehavior" onchange="mc1.controller.clickVelocityBehavior(this)">
-                                <option value="above-limit" selected>Above</option>
-                                <option value="below-limit" >Below</option>
-                            </select>
-                            <input type="range" id="velocityLimit" name="velocityLimit" min="0" max="50" value="0" step="0.5" onchange="document.getElementById('rangeValLabel').innerHTML = this.value; mc1.controller.onVelocityLimitChange(this);"/>
-                            <em id="rangeValLabel" style="font-style: normal;">0</em><em>&nbsp;(mph)</em>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Duration Threshold:</label>
-                            <select id="durationBehavior" name="durationBehavior" onchange="mc1.controller.clickDurationBehavior(this)">
-                                <option value="above" selected>Above</option>
-                                <option value="below" >Below</option>
-                            </select>
-                            <input type="range" id="durationThreshold" name="durationThreshold" min="0" max="720" value="0" step="0.1" onchange="mc1.controller.onDurationThresholdChange(this);"/>
-                            <em id="durationRangeValLabel" style="font-style: normal;">0</em><em id="durationUnit">&nbsp;(hrs)</em>
-                        </td>
-                    </tr>
-                </table>
-            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+
+
             <div id="parallelCoordinates"></div>
+
+        </td>
+
+        <td>
+            <div id="map"></div>
+        </td>
+    </tr>
+    <tr>
+        <td>
             <div id="firstDaySpan"></div>
 
+        </td>
+        <td>
+            <div id="visitDuration"></div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
             <div>
                 <input type="button" value="View Road Heat Map" name="road-heat-map" onclick="mc1.controller.viewRoadHeatMap(this)"/>
                 <input type="button" value="Simulate Traffic" name="play-full" onclick="mc1.controller.simulateTraffic(this)"/>
