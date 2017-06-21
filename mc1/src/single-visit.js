@@ -78,6 +78,9 @@ class SingleVisit {
 
         this.visitChart.setXDomain(minDate, maxDate);
         let maxY = 2 * line.context.path[0].y;
+        if (maxY > 20000) {
+            maxY = 20000;
+        }
         this.visitChart.setYDomain(0, maxY);
 
         self.visitChart.addData(line.context, line.context.path, 'time', 'y');
