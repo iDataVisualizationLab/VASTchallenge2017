@@ -98,6 +98,43 @@ class SingleVisit {
         this.visitChart.renderChart(events);
         this.visitChart.renderAxis('Time', 'Visits');
 
+        // render legends
+        this.visitSvg.selectAll('.legend').remove();
+
+        let lg = this.visitSvg.selectAll('.legend').data([line]).enter()
+            .append('g')
+                .style('class', 'legend')
+        ;
+
+        let margin = self.options.margin;
+        let offsetX = (self.width - 300);
+        lg.append('text')
+            .text(function (l) {
+
+                let d = l.context.path[0];
+                return "From Gate: " + d.getGate() + ' (' + d.getFormattedTime() + ')';
+            })
+            .attr("transform", "translate(" + offsetX + "," + (margin.top + 10) + ")")
+        ;
+
+        lg.append('text')
+            .text(function (l) {
+                let p = l.context.path;
+                let d = p[p.length-1];
+
+                return "To Gate: " + d.getGate() + ' (' + d.getFormattedTime() + ')';
+            })
+            .attr("transform", "translate(" + offsetX + "," + (margin.top + 30) + ")")
+        ;
+
+        lg.append('text')
+            .text(function (l) {
+
+                return "Duration: " + l.context.visitDuration + ' (hrs)';
+            })
+            .attr("transform", "translate(" + offsetX + "," + (margin.top + 50) + ")")
+        ;
+
         this.show();
     }
 
