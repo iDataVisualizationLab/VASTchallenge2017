@@ -11,6 +11,8 @@ class VisitChart2D extends Chart2D {
             op.defaultGateRadius = 0.5;
         }
 
+        this.tooltip = new TooltipHelper('tooltip');
+
     }
 
     renderTimeRangeSelector() {
@@ -131,6 +133,12 @@ class VisitChart2D extends Chart2D {
                 })
                 .style('fill', function (d) {
                     return d.mapPoint.getColor();
+                })
+                .on('mouseover', function (cp) {
+                    self.tooltip.render(createGateTooltipHtml(cp));
+                })
+                .on('mouseout', function (d) {
+                    self.tooltip.hide();
                 })
             ;
         });

@@ -221,3 +221,18 @@ function splitPathWithStopByGate(line, path) {
 
     return resultPaths;
 }
+
+/**
+ * Create tooltip for car point
+ * @param carPoint
+ * @return {string}
+ */
+function createGateTooltipHtml(carPoint) {
+    let tb = "<table>" +
+        "<tr><td>Gate</td><td>:</td><td><b>" + carPoint.getGate() + "</b></td></tr>" +
+        "<tr><td>Time</td><td>:</td><td>" + carPoint.getFormattedTime() + "</td></tr>" +
+        "</table>"
+        ;
+
+    return tb;
+}
