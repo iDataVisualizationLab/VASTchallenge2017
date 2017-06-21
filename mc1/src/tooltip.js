@@ -72,26 +72,7 @@ class Tooltip {
         this.visitChart.renderAxis('Time', 'Car Number');
 
         this.show();
-        //
-        // let carPoints = line.context.path;
-        //
-        // let tableRows = '<tr><td colspan="2"> Car: ' + line.context.carId +
-        //     '</td></tr>' +
-        //     '<tr><th>Time</th><th>Gate</th></tr>';
-        //
-        // carPoints.forEach(function (carPoint) {
-        //     tableRows += '<tr>' +
-        //         '<td>' + carPoint.getFormattedTime() +
-        //         '</td>' +
-        //         '<td>' + carPoint.getGate() +
-        //         '</td>' +
-        //         '</tr>'
-        // });
-        //
-        // self.tooltip.html('<table style="background: #000000; color: #FFFFFF; opacity: 0.5">' + tableRows + '</table>')
-        //     .style("left", (d3.event.pageX) + "px")
-        //     .style("top", (d3.event.pageY - 28) + "px")
-        // ;
+
     }
 
     handleMouseOver(e) {
