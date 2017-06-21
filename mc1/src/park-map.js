@@ -302,14 +302,14 @@ var ParkMap = function ParkMap (byteData, svg) {
         .attr('transform', 'translate(620, 15)')
     ;
 
-    this.tooltip = d3.select("#tooltip")
+    this.singleVisit = d3.select("#singleVisit")
         .style("position", "absolute")
         .style("z-index", "10")
         .style("visibility", "hidden")
     ;
 
-    this.tooltipGraph = this.tooltip.append('svg')
-        .attr('class', 'tooltip-diagram')
+    this.tooltipGraph = this.singleVisit.append('svg')
+        .attr('class', 'singleVisit-diagram')
         .attr('width', 200)
         .attr('height', 150)
     ;
@@ -618,13 +618,13 @@ ParkMap.prototype.render = function render(showLabel) {
             self.entranceGraph.render(d);
 
             // 2. Setting position of the visualization
-            self.tooltip.style("top", (event.pageY+10)+"px").style("left",(event.pageX+10)+"px");
+            self.singleVisit.style("top", (event.pageY+10)+"px").style("left",(event.pageX+10)+"px");
 
             // 3. Set visibility
-            return self.tooltip.style("visibility", "visible");
+            return self.singleVisit.style("visibility", "visible");
         })
         .on("mouseout", function(d) {
-            return self.tooltip.style("visibility", "hidden");
+            return self.singleVisit.style("visibility", "hidden");
         })
     ;
 };

@@ -37,7 +37,7 @@ class VisitDuration {
         this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
 
 
-        this.tooltip = new Tooltip('tooltip',this.eventHandler);
+        this.singleVisit = new SingleVisit('singleVisit', this.eventHandler);
     }
 
     getVisibleLines() {
@@ -131,7 +131,8 @@ class VisitDuration {
         let self = this;
         let line = e.line;
 
-        self.tooltip.render(line);
+        debugger;
+        self.singleVisit.render(line);
 
         self.visitChart.highlightSingleVisit(line.context.carId);
 
@@ -142,7 +143,7 @@ class VisitDuration {
     onLineMouseOut(e) {
 
         let self = this;
-        self.tooltip.hide();
+        self.singleVisit.hide();
         self.visitChart.clearSetting();
 
     }
@@ -201,7 +202,7 @@ class VisitDuration {
 //     this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
 //
 //
-//     this.tooltip = new Tooltip('tooltip',this.eventHandler);
+//     this.singleVisit = new Tooltip('singleVisit',this.eventHandler);
 // };
 //
 // VisitDuration.prototype.getVisibleLines = function getVisibleLines() {
@@ -296,7 +297,7 @@ class VisitDuration {
 //     let self = this;
 //     let line = e.line;
 //
-//     self.tooltip.render(line);
+//     self.singleVisit.render(line);
 //
 //     self.visitChart.highlightSingleVisit(line.context.carId);
 //
@@ -307,7 +308,7 @@ class VisitDuration {
 // VisitDuration.prototype.onLineMouseOut = function onLineMouseOut(e) {
 //
 //     let self = this;
-//     self.tooltip.hide();
+//     self.singleVisit.hide();
 //     self.visitChart.clearSetting();
 //
 // };

@@ -61,11 +61,11 @@ d3.json("data/all-car-path.json", function(error, lines) {
         renderParallelCoordinate();
     });
 
-    d3.timeout(function () {
-        mc1.controller.changeGraphType('one-year');
-        // mc1.controller.changeGraphType('hour-spiral');
-        //
-    });
+    // d3.timeout(function () {
+    //     mc1.controller.changeGraphType('one-year');
+    //     // mc1.controller.changeGraphType('hour-spiral');
+    //     //
+    // });
 
     d3.timeout(function () {
         // mc1.controller.changeGraphType('one-year');

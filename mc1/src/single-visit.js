@@ -1,23 +1,40 @@
 'use strict';
-class Tooltip {
-    constructor(divId, eventHandler) {
-        this.tooltip = d3.select('body').select('#' + divId)
+class SingleVisit {
+    constructor(divId, eventHandler, options) {
+
+
+        this.singleVisit = d3.select('body').select('#' + divId)
             .style("position", "absolute")
             .style("z-index", "10")
             .style("visibility", "hidden")
         ;
 
+        if (!options) {
+            options = {};
+        }
         let margin = {top: 20, right: 20, bottom: 50, left: 70};
-        this.width = 400;
-        this.height = 300;
+        if (!options.margin) {
+            options.margin = margin;
+        }
 
-        this.tooltip.selectAll('*').remove();
-        this.tooltipSvg = this.tooltip.append('svg')
-                    .attr("width", this.width + margin.left + margin.right)
-            .attr("height", this.height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")")
+        if (!options.width) {
+            options.width = 720 - margin.left - margin.right;
+        }
+
+        if (!options.height) {
+            options.height = 500 - margin.top - margin.bottom;
+        }
+
+        this.width = options.width;
+        this.height = options.height;
+
+        this.options = options;
+
+        this.singleVisit.selectAll('*').remove();
+        this.visitSvg = this.singleVisit.append('svg').attr("width", options.width + options.margin.left + options.margin.right)
+                        .attr("height", options.height + options.margin.top + options.margin.bottom)
+                        .append("g")
+                        .attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")")
         ;
 
         this.eventHandler = eventHandler;
@@ -28,7 +45,7 @@ class Tooltip {
     init() {
 
         let self = this;
-        this.tooltipSvg
+        this.visitSvg
             .on('mouseover', function () {
                 d3.select(this)
                     .style('visibility', 'visible')
@@ -45,7 +62,7 @@ class Tooltip {
     }
 
     clear() {
-        this.tooltipSvg.selectAll('*').remove();
+        this.visitSvg.selectAll('*').remove();
     }
 
     render(line) {
@@ -54,7 +71,7 @@ class Tooltip {
 
         this.clear();
 
-        this.visitChart = new VisitChart2D(this.tooltipSvg, this.width, this.height, {timeChart: true, defaultLineWidth: 1, defaultGateRadius: 1.5});
+        this.visitChart = new VisitChart2D(this.visitSvg, this.width, this.height, {timeChart: true, defaultLineWidth: 1, defaultGateRadius: 1.5});
 
         let minDate = line.context['startTime'];
         let maxDate = line.context['endTime'];
@@ -68,11 +85,11 @@ class Tooltip {
         let events = [
             {name: 'mouseover', handler: this.handleMouseOver, context: this}
         ];
+
         this.visitChart.renderChart(events);
-        this.visitChart.renderAxis('Time', 'Car Number');
+        this.visitChart.renderAxis('Time', 'Visits');
 
         this.show();
-
     }
 
     handleMouseOver(e) {
@@ -80,13 +97,13 @@ class Tooltip {
     }
 
     hide() {
-        // this.tooltip
+        // this.singleVisit
         //     .style('visibility', 'hidden')
         // ;
     }
 
     show() {
-        this.tooltip.transition()
+        this.singleVisit.transition()
             .duration(200)
             .style("visibility", 'visible')
             .style("opacity", .9);
