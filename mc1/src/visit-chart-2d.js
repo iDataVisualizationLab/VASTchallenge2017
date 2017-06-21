@@ -5,6 +5,12 @@ class VisitChart2D extends Chart2D {
 
         this.filters = {};
 
+        let op = this.options;
+
+        if (!op.defaultGateRadius) {
+            op.defaultGateRadius = 0.5;
+        }
+
     }
 
     renderTimeRangeSelector() {
@@ -108,7 +114,7 @@ class VisitChart2D extends Chart2D {
             d3.select(this).selectAll('.passing-gate').data(myEndPoints).enter()
                 .append('circle')
                 .attr('class', 'passing-gate gate-car-id-' + line.context.carId)
-                .attr('r', 0.5)
+                .attr('r', self.options.defaultGateRadius)
                 .attr('cx', function (d) {
                     let xKey = line.x;
                     return self.x(d[xKey]);

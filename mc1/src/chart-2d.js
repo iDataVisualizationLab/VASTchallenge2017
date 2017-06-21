@@ -17,17 +17,19 @@ class Chart2D {
             this.options.margin = {top: 20, right: 20, bottom: 50, left: 70};
         }
 
-        let margin = this.options.margin;
+        // let margin = this.options.margin;
 
-        this.svg.attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-        ;
+        // this.svg.attr("width", width + margin.left + margin.right)
+        //     .attr("height", height + margin.top + margin.bottom)
+        // ;
 
         // set the ranges
         this.x = !!this.options.timeChart ? d3.scaleTime().range([0, width]) :  d3.scaleLinear().range([0, width]);
         this.y = d3.scaleLinear().range([height, 0]);
 
-        this.options.defaultLineWidth = 0.2;
+        if (!this.options.defaultLineWidth) {
+            this.options.defaultLineWidth = 0.2;
+        }
 
         this.filters = {};
 
@@ -109,6 +111,10 @@ class Chart2D {
                         name: e.name,
                         line: l
                     };
+
+                    if (!!e.handler && typeof e.handler === 'function') {
+                        e.handler.apply(e.context, [event]);
+                    }
 
                     if (!!self.eventHandler) {
                         self.eventHandler.fireEvent(event);
