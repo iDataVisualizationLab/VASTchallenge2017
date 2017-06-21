@@ -108,13 +108,23 @@ class SingleVisit {
 
         let margin = self.options.margin;
         let offsetX = (self.width - 300);
+        let step = 20;
+        lg.append('text')
+            .text(function (l) {
+
+                let d = l.context.path[0];
+                return "Car: " + l.context.carId + ' (' + l.context.carType + ')';
+            })
+            .attr("transform", "translate(" + offsetX + "," + (margin.top) + ")")
+        ;
+
         lg.append('text')
             .text(function (l) {
 
                 let d = l.context.path[0];
                 return "From Gate: " + d.getGate() + ' (' + d.getFormattedTime() + ')';
             })
-            .attr("transform", "translate(" + offsetX + "," + (margin.top + 10) + ")")
+            .attr("transform", "translate(" + offsetX + "," + (margin.top + step) + ")")
         ;
 
         lg.append('text')
@@ -124,7 +134,7 @@ class SingleVisit {
 
                 return "To Gate: " + d.getGate() + ' (' + d.getFormattedTime() + ')';
             })
-            .attr("transform", "translate(" + offsetX + "," + (margin.top + 30) + ")")
+            .attr("transform", "translate(" + offsetX + "," + (margin.top + 2*step) + ")")
         ;
 
         lg.append('text')
@@ -132,7 +142,7 @@ class SingleVisit {
 
                 return "Duration: " + l.context.visitDuration + ' (hrs)';
             })
-            .attr("transform", "translate(" + offsetX + "," + (margin.top + 50) + ")")
+            .attr("transform", "translate(" + offsetX + "," + (margin.top + 3*step) + ")")
         ;
 
         this.show();
