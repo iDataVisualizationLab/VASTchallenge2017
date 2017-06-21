@@ -33,8 +33,8 @@ class SingleVisit {
         this.singleVisit.selectAll('*').remove();
         this.visitSvg = this.singleVisit.append('svg').attr("width", options.width + options.margin.left + options.margin.right)
                         .attr("height", options.height + options.margin.top + options.margin.bottom)
-                        .append("g")
-                        .attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")")
+                        // .append("g")
+                        // .attr("transform", "translate(" + options.margin.left + "," + options.margin.top + ")")
         ;
 
         this.eventHandler = eventHandler;
@@ -86,7 +86,7 @@ class SingleVisit {
         let detailLines = splitPathWithStopByGate(line, line.context.path);
         if (detailLines.length > 0) {
             detailLines.forEach(function (l) {
-                self.visitChart.addData(l.context, l.path, 'time', 'y');
+                self.visitChart.addData(line.context, l.path, 'time', 'y');
 
             });
         }
@@ -139,7 +139,7 @@ class SingleVisit {
     }
 
     handleMouseOver(e) {
-        debugger;
+        // debugger;
     }
 
     hide() {

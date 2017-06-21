@@ -121,7 +121,8 @@ class VisitTimeBlock extends VisitDuration {
             let detailLines = splitPathWithStopByGate(line, tmpPath);
             if (detailLines.length > 0) {
                 detailLines.forEach(function (l) {
-                    self.visitChart.addData(l.context, l.path, 'x', 'y');
+
+                    self.visitChart.addData(line, l.path, 'x', 'y');
 
                 });
             }
