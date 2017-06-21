@@ -149,9 +149,11 @@ class VisitChart2D extends Chart2D {
         let self = this;
 
         // reduce opacity first
-        self.myLine
+        self.myLine.filter(function (d) {
+            return d.visibility == 'visible';
+        })
             .style('opacity', function (d) {
-                return d.opacity = 0.01;
+                return d.opacity = 0.8;
             })
             .each(function (d) {
                 d3.select(this)
@@ -160,6 +162,10 @@ class VisitChart2D extends Chart2D {
                 ;
             })
 
+        ;
+
+        self.svg.selectAll('.passing-gate')
+            .attr('r', 0.5)
         ;
 
         // increase opacity for ones we want to highlight
@@ -259,14 +265,6 @@ class VisitChart2D extends Chart2D {
         let ex = function (line) {
 
             let ctx = line.context;
-
-            if (line.carId == '20152402052415-950') {
-                debugger;
-            }
-
-            if (ctx.stopCount > 30) {
-                debugger;
-            }
 
             // car type criteria
             if (!!carType && carType.indexOf(ctx.carType) < 0) {

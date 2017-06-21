@@ -213,6 +213,13 @@ mc1.controller.stopSimulation = function() {
 
 };
 
+mc1.controller.reset = function() {
+
+    let chart = mc1.firstDayDuration || mc1.visitDuration;
+    chart.clearSetting();
+
+};
+
 mc1.controller.changeGraphType = function(graphType) {
     switch (graphType) {
         case 'hour':

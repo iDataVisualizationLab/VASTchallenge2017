@@ -33,11 +33,13 @@ class VisitDuration {
             // {name: 'mouseout'}
         ];
 
-        this.eventHandler.addEvent('mouseout', this.onLineMouseOut, this);
+        // this.eventHandler.addEvent('mouseout', this.onLineMouseOut, this);
         this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
 
 
         this.singleVisit = new SingleVisit('singleVisit', this.eventHandler);
+
+
     }
 
     getVisibleLines() {
@@ -154,6 +156,10 @@ class VisitDuration {
 
         self.roadHeatMap.renderHeatMap(lines);
 
+    }
+
+    clearSetting() {
+        this.visitChart.clearSetting();
     }
 }
 

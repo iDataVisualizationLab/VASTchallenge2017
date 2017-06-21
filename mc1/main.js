@@ -38,9 +38,9 @@ mc1.visitDurationSvg = d3.select('body').select('#visitDuration').append('svg')
 mc1.firstDaySpanSvg = d3.select('body').select('#firstDaySpan').append('svg')
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")")
+    // .append("g")
+    // .attr("transform",
+    //     "translate(" + margin.left + "," + margin.top + ")")
 ;
 
 d3.json("data/all-car-path.json", function(error, lines) {

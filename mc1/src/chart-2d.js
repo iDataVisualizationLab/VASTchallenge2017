@@ -2,8 +2,7 @@
 
 class Chart2D {
     constructor(svg, width, height, options) {
-        this.svg = svg;
-        this.svg.selectAll('*').remove();
+
 
         this.width = width;
         this.height = height;
@@ -12,10 +11,27 @@ class Chart2D {
             options = {};
         }
 
-        this.options = options;
-        if (!this.options.margin) {
-            this.options.margin = {top: 20, right: 20, bottom: 50, left: 70};
+        if (!options) {
+            options = {};
         }
+        let margin = {top: 20, right: 20, bottom: 50, left: 70};
+        if (!options.margin) {
+            options.margin = margin;
+        }
+
+        if (!options.width) {
+            options.width = 720 - margin.left - margin.right;
+        }
+
+        if (!options.height) {
+            options.height = 500 - margin.top - margin.bottom;
+        }
+
+        this.width = options.width;
+        this.height = options.height;
+
+
+        this.options = options;
 
         // let margin = this.options.margin;
 
@@ -33,6 +49,18 @@ class Chart2D {
 
         this.filters = {};
 
+        this.nativeSvg = svg;
+        this.nativeSvg.selectAll('*').remove();
+
+        let self = this;
+        this.nativeSvg.on('click', function (d) {
+            self.clearSetting();
+        });
+
+        this.svg = this.nativeSvg.append("g")
+            .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")")
+        ;
     }
 
     setEventHandler(eventHandler) {
