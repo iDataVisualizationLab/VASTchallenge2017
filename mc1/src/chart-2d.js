@@ -182,7 +182,7 @@ class Chart2D {
 
         let myVisits = [];
         this.myLine.each(function (line) {
-            if (line.visibility == 'visible') {
+            if (line.visibility == 'visible' && line.opacity == 1) {
                 myVisits.push(line);
             }
         });

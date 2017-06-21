@@ -131,7 +131,6 @@ class VisitDuration {
         let self = this;
         let line = e.line;
 
-        debugger;
         self.singleVisit.render(line);
 
         self.visitChart.highlightSingleVisit(line.context.carId);

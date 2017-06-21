@@ -136,7 +136,9 @@ class VisitChart2D extends Chart2D {
 
         // reduce opacity first
         self.myLine
-            .style('opacity', 0.01)
+            .style('opacity', function (d) {
+                return d.opacity = 0.01;
+            })
             .each(function (d) {
                 d3.select(this)
                     .select('path')
@@ -148,7 +150,9 @@ class VisitChart2D extends Chart2D {
 
         // increase opacity for ones we want to highlight
         self.svg.selectAll('.car-id-' + carId)
-            .style('opacity', 1)
+            .style('opacity', function (d) {
+                return d.opacity = 1;
+            })
             .each(function (d) {
                 d3.select(this)
                     .select('path')

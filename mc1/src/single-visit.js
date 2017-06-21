@@ -71,7 +71,7 @@ class SingleVisit {
 
         this.clear();
 
-        this.visitChart = new VisitChart2D(this.visitSvg, this.width, this.height, {timeChart: true, defaultLineWidth: 1, defaultGateRadius: 1.5});
+        this.visitChart = new VisitChart2D(this.visitSvg, this.width, this.height, {timeChart: true, defaultLineWidth: 3, defaultGateRadius: 3});
 
         let minDate = line.context['startTime'];
         let maxDate = line.context['endTime'];

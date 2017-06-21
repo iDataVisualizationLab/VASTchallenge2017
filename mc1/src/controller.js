@@ -201,7 +201,7 @@ mc1.controller.viewRoadHeatMap = function(self) {
 
     console.log('road heat map');
 
-    let myChart = mc1.visitDuration || mc1.firstDayDuration;
+    let myChart = mc1.firstDayDuration || mc1.visitDuration;
     myChart.viewHeatMap();
 };
 
