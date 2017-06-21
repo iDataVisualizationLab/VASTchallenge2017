@@ -118,61 +118,13 @@ class VisitTimeBlock extends VisitDuration {
             line.contextStartTime = timeContext[0];
             line.contextEndTime = timeContext[1];
 
+            let detailLines = splitPathWithStopByGate(line, tmpPath);
+            if (detailLines.length > 0) {
+                detailLines.forEach(function (l) {
+                    self.visitChart.addData(l.context, l.path, 'x', 'y');
 
-            let preCPoint;
-            let nextCPoint;
-            let i=0;
-            let smallPaths = [tmpPath[0]];
-
-
-            do {
-
-                i++;
-                if (i >= tmpPath.length) {
-                    if (smallPaths.length > 1) {
-                        self.visitChart.addData(line, smallPaths, 'x', 'y');
-                    }
-                    break;
-                }
-
-                preCPoint = smallPaths[smallPaths.length-1];
-                nextCPoint = tmpPath[i];
-
-                if (preCPoint.getGate() == nextCPoint.getGate()) {
-
-                    if (!nextCPoint.getMapPoint().isEntrance()) {
-                        if (smallPaths.length > 1) { // only create line if there are two points or above
-                            self.visitChart.addData(line, smallPaths, 'x', 'y');
-                        }
-
-                        let delayPeriod = [preCPoint, nextCPoint];
-                        delayPeriod.sameLocation = true;
-                        self.visitChart.addData(line, delayPeriod, 'x', 'y');
-
-                        if (i >= tmpPath.length-1) {
-                            break;
-                        }
-
-                        smallPaths = [nextCPoint];
-                    }
-                    else {
-                        // get out of park (two consecutive entrances
-                        i ++;
-                        smallPaths = [tmpPath[i]]; // reset
-                    }
-
-
-                }
-                else {
-                    smallPaths.push(nextCPoint);
-                }
-
-
+                });
             }
-            while (true);
-
-
-            // count ++;
         });
 
 

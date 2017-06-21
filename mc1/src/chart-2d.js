@@ -190,6 +190,10 @@ class Chart2D {
         console.log('visible lines: ' + myVisits.length);
         return myVisits;
     }
+
+    getMyLines() {
+        return this.myLine;
+    }
 }
 
 

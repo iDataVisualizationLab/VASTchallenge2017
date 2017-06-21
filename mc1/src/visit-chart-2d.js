@@ -88,6 +88,12 @@ class VisitChart2D extends Chart2D {
 
         super.renderChart(events);
 
+        let myLines = super.getMyLines();
+        myLines.style("stroke-dasharray", function (line) {
+
+            return !!line.data.sameLocation ? ("3, 3") : null;
+        });
+
         this.renderPassingGates();
 
     }

@@ -155,3 +155,69 @@ function formatDate(dateTime, formatTemplate) {
 function getTimeInDayAsString (dateTime) {
     return dateTime.getHours() + ':' + dateTime.getMinutes() + ':' + dateTime.getSeconds();
 }
+
+/**
+ *
+ * @param line: context params
+ *
+ * @param path: complete path
+ * @return Array paths that tell the stop by
+ */
+function splitPathWithStopByGate(line, path) {
+    let tmpPath = path;
+    let preCPoint;
+    let nextCPoint;
+    let i=0;
+    let smallPaths = [tmpPath[0]];
+
+    let resultPaths = [];
+
+    do {
+
+        i++;
+        if (i >= tmpPath.length) {
+            if (smallPaths.length > 1) {
+                resultPaths.push({context: line, path: smallPaths});
+            }
+            break;
+        }
+
+        preCPoint = smallPaths[smallPaths.length-1];
+        nextCPoint = tmpPath[i];
+
+        if (preCPoint.getGate() == nextCPoint.getGate()) {
+
+            if (!nextCPoint.getMapPoint().isEntrance()) {
+                if (smallPaths.length > 1) { // only create line if there are two points or above
+                    resultPaths.push({context: line, path: smallPaths});
+
+                }
+
+                let delayPeriod = [preCPoint, nextCPoint];
+                delayPeriod.sameLocation = true;
+                resultPaths.push({context: line, path: delayPeriod});
+
+                if (i >= tmpPath.length-1) {
+                    break;
+                }
+
+                smallPaths = [nextCPoint];
+            }
+            else {
+                // get out of park (two consecutive entrances
+                i ++;
+                smallPaths = [tmpPath[i]]; // reset
+            }
+
+
+        }
+        else {
+            smallPaths.push(nextCPoint);
+        }
+
+
+    }
+    while (true);
+
+    return resultPaths;
+}

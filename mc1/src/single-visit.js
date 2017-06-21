@@ -83,7 +83,13 @@ class SingleVisit {
         }
         this.visitChart.setYDomain(0, maxY);
 
-        self.visitChart.addData(line.context, line.context.path, 'time', 'y');
+        let detailLines = splitPathWithStopByGate(line, line.context.path);
+        if (detailLines.length > 0) {
+            detailLines.forEach(function (l) {
+                self.visitChart.addData(l.context, l.path, 'time', 'y');
+
+            });
+        }
 
         let events = [
             {name: 'mouseover', handler: this.handleMouseOver, context: this}
