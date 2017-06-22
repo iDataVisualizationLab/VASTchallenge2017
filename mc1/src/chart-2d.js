@@ -52,11 +52,6 @@ class Chart2D {
         this.nativeSvg = svg;
         this.nativeSvg.selectAll('*').remove();
 
-        let self = this;
-        this.nativeSvg.on('click', function (d) {
-            self.clearSetting();
-        });
-
         this.svg = this.nativeSvg.append("g")
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")")
@@ -221,5 +216,14 @@ class Chart2D {
 
     getMyLines() {
         return this.myLine;
+    }
+
+    getNativeSvg() {
+        return this.nativeSvg;
+    }
+
+    bindSvgEvent(event, handler) {
+        let nativeSvg = this.nativeSvg;
+        nativeSvg.on('click', handler);
     }
 }

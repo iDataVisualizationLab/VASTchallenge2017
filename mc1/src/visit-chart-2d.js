@@ -12,7 +12,6 @@ class VisitChart2D extends Chart2D {
         }
 
         this.tooltip = new TooltipHelper('tooltip');
-
     }
 
     renderTimeRangeSelector() {
