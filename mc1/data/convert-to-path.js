@@ -94,6 +94,7 @@ var readExistingSensorData = function() {
                 tmpCar.velocity = 0;
                 tmpCar.startTime = time;
                 tmpCar.stopCount = 0;
+                tmpCar.stopDuration = 0;
                 myCar[carId] = tmpCar;
             }
 
@@ -110,6 +111,15 @@ var readExistingSensorData = function() {
 
                 if (prePoint.gate == tmpGateName) {
                     tmpCar.stopCount ++;
+
+                    let duration = calculateDuration(
+                        moment(prePoint.time, 'YYYY-MM-DD HH:mm:ss').toDate(),
+                        moment(tmpGateTime.time , 'YYYY-MM-DD HH:mm:ss').toDate()
+                    );
+
+                    if (tmpCar.stopDuration < duration) {
+                        tmpCar.stopDuration = duration;
+                    }
                 }
             }
             // add current hop to path
@@ -120,9 +130,7 @@ var readExistingSensorData = function() {
             let start = moment(tmpCar.startTime, 'YYYY-MM-DD HH:mm:ss').toDate();
             let end = moment(tmpCar.endTime , 'YYYY-MM-DD HH:mm:ss').toDate();
 
-            let timeDurationInMiliSecond = end.getTime() - start.getTime();
-            tmpCar.visitDuration = timeDurationInMiliSecond / 3600000;
-            tmpCar.visitDuration = tmpCar.visitDuration.toFixed(2);
+            tmpCar.visitDuration = calculateDuration(start, end);
 
             if (!tmpCar.camping && hasCampingBehavior(tmpCar.path)) {
                 tmpCar.camping = true;
@@ -163,6 +171,16 @@ var readExistingSensorData = function() {
         });
 
         return entranceCount;
+    }
+
+    /**
+     * Calculate duration in hours
+     */
+    function calculateDuration(startTime, endTime) {
+        let timeDurationInMiliSecond = endTime.getTime() - startTime.getTime();
+        timeDurationInMiliSecond = timeDurationInMiliSecond / 3600000;
+
+        return timeDurationInMiliSecond.toFixed(2);
     }
 };
 

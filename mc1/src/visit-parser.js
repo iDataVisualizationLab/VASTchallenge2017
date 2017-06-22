@@ -15,6 +15,7 @@ VisitParser.prototype.parse = function (visits) {
         line.velocity = +line.velocity;
         line.visitDuration = +line.visitDuration;
         line.stopCount = +line.stopCount;
+        line.stopDuration = +line.stopDuration;
         line.startTime = self.parseTime(line.startTime);
         line.endTime = self.parseTime(line.endTime);
 

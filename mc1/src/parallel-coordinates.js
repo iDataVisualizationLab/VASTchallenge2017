@@ -107,30 +107,42 @@ ParallelCoordinate.prototype.addDimension = function addDimension(dimension, acc
 
     let self = this;
 
+    let options = self.types[type];
+    let domain = options.extent(self.dataSet, accessKey);
+
     this.axisConfig[accessKey] = {
         label: dimension,
         type: type,
-        options: self.types[type]
+        options: self.types[type],
+        domain: domain
     };
 
+    self.updateYDomain(accessKey, domain);
 
-    let options = self.types[type];
+    self.dimensions.push(accessKey);
 
-    let domain = options.extent(self.dataSet, accessKey);
+    this.setDomain();
+};
 
+ParallelCoordinate.prototype.updateYDomain = function updateYDomain(accessKey, newDomain) {
+    let self = this;
+    let type = self.axisConfig[accessKey].type;
 
     if (type == 'Number') {
+
+        let lowerBound = Math.floor(newDomain[0]);
+        let upperBound = Math.ceil(newDomain[1]);
         self.y[accessKey] = d3.scaleLinear()
-            .domain(domain)
+            .domain([lowerBound, upperBound])
             .range([self.height, 0])
-            // .range([0, self.height])
+        // .range([0, self.height])
         ;
     }
     else {
         let myScale = d3.scalePoint()
-            .domain(domain)
-            .range([0, self.height])
-        ;
+                .domain(newDomain)
+                .range([0, self.height])
+            ;
 
         myScale.invert = (function(){
             let domain = myScale.domain();
@@ -146,14 +158,6 @@ ParallelCoordinate.prototype.addDimension = function addDimension(dimension, acc
 
         self.y[accessKey] = myScale;
     }
-
-
-
-    self.dimensions.push(accessKey);
-
-
-
-    this.setDomain();
 };
 
 ParallelCoordinate.prototype.setDomain = function setDomain() {
@@ -163,15 +167,27 @@ ParallelCoordinate.prototype.setDomain = function setDomain() {
     self.x.domain(self.dimensions);
 };
 
+ParallelCoordinate.prototype.clear = function clear() {
+    let self = this;
+
+    self.svg.selectAll('*').remove();
+};
+
 ParallelCoordinate.prototype.renderGraph = function renderGraph() {
 
     let self = this;
 
     // Add grey background lines for context.
+    let myDataSet = self.dataSet.filter(function (l) {
+        return l.display != 'none';
+    });
+
+    self.clear();
+
     let background = self.svg.append("g")
         .attr("class", "background")
         .selectAll("path")
-        .data(self.dataSet)
+        .data(myDataSet)
         .enter().append("path")
         .attr("d", path)
         .style('stroke-width', 0.2)
@@ -181,7 +197,7 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
     let foreground = self.svg.append("g")
         .attr("class", "foreground")
         .selectAll("path")
-        .data(self.dataSet)
+        .data(myDataSet)
         .enter().append("path")
         .attr("d", path)
         .style('stroke-width', 0.2)
@@ -228,18 +244,32 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
         .attr("class", "axis")
         .each(function(d) {
                    d3.select(this).call(self.axis.scale(self.y[d]));
-            // d3.select(this).call(d3.axisLeft(self.y[d]));
         })
         .append("text")
         .style("text-anchor", "middle")
         .style('fill', '#000000')
         .attr("y", -9)
         .text(function(d) { return self.axisConfig[d].label; })
+        .style('font-weight', function (dim) {
+            let selected = self.axisConfig[dim].selected;
+
+            return !!selected ? 'bold' : 'normal';
+        })
+        .on('click', function (d) {
+
+            let selected = !!self.axisConfig[d].selected;
+            self.axisConfig[d].selected = !selected;
+
+            updateScale(d);
+
+        })
     ;
 
     // Add and store a brush for each axis.
     g.append("g")
-        .attr("class", "brush")
+        .attr("class", function (dim) {
+            return "brush brush-" + dim;
+        })
         .each(function(d) {
 //                    d3.select(this).call(y[d].brush = d3.brushY().extent(y[d]).on("start", brushstart).on("brush", brush));
 
@@ -308,10 +338,7 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
             })
             .each(function(d) {
                 actives.push(d);
-                let selectionDomain = d3.brushSelection(this);
-                selectionDomain = selectionDomain.map(function (val) {
-                    return self.y[d].invert(val);
-                });
+                let selectionDomain = getSelectionDomain(d, this);
 
                 extents.push(selectionDomain);
 
@@ -320,13 +347,13 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
             });
 
         // update display for parallel coordinates
-        foreground.style("display", function(dimensions) {
+        foreground.style("display", function(line) {
 
             let myDp = actives.every(function(dim, i) {
 
                 let max = extents[i][0];
                 let min = extents[i][1];
-                let val = dimensions[dim];
+                let val = line[dim];
 
                 let dp = val >= min && val <= max;
 
@@ -335,7 +362,7 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
                 return !!dp;
             });
 
-            return myDp ? null : "none";
+            return line.display = (myDp ? null : "none");
         });
 
         // update display for other graphs via event dispatching
@@ -347,6 +374,38 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
 
             self.eventHandler.fireEvent(event);
         }
+
+    }
+
+    function getSelectionDomain(dim, context) {
+        let selectionDomain = d3.brushSelection(context);
+        if (!selectionDomain) {
+            return null;
+        }
+
+        selectionDomain = selectionDomain.map(function (val) {
+            return self.y[dim].invert(val);
+        });
+
+        return selectionDomain;
+    }
+
+    function updateScale(dim) {
+        let config = self.axisConfig[dim];
+        if(!config) {
+            return;
+        }
+
+        self.svg.selectAll('.brush-' + dim)
+            .each(function () {
+                let selectionDomain = getSelectionDomain(dim, this);
+
+                self.updateYDomain(dim, selectionDomain == null ? self.axisConfig[dim].domain : selectionDomain.reverse());
+
+                self.renderGraph();
+
+            })
+        ;
 
     }
 };
