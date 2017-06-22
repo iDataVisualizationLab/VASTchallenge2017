@@ -41,6 +41,8 @@ var MapPoint = function MapPoint(pos, r, g, b, alpha, name) {
     if (!!name) {
         this.name = name;
     }
+
+    this.stopCount = 0;
 };
 
 MapPoint.ROAD_COLOR = '#DDDDDD';
@@ -48,6 +50,20 @@ MapPoint.BACKGROUND = '#FFFFFF';
 
 MapPoint.prototype.getR = function getR() {
     return this.r;
+};
+
+MapPoint.prototype.increaseStopCount = function increaseStopCount() {
+
+    this.stopCount ++;
+
+    return this;
+};
+
+MapPoint.prototype.resetStopCount = function resetStopCount() {
+
+    this.stopCount = 0;
+
+    return this;
 };
 
 MapPoint.prototype.setR = function setR(r) {
@@ -627,4 +643,36 @@ ParkMap.prototype.render = function render(showLabel) {
             return self.singleVisit.style("visibility", "hidden");
         })
     ;
+};
+
+
+ParkMap.prototype.resetStopCount = function resetStopCount() {
+
+    let mp;
+    for(let name in this.pointNameMapping) {
+        if (!this.pointNameMapping.hasOwnProperty(name)) {
+            continue;
+        }
+
+        mp = this.pointNameMapping[name];
+
+        mp.resetStopCount();
+    }
+};
+
+ParkMap.prototype.increaseStopCount = function increaseStopCount(gate) {
+
+    let mp = this.pointNameMapping[gate];
+    if (!!mp) {
+        mp.increaseStopCount();
+
+    }
+};
+
+ParkMap.prototype.resetStopCountForGate = function resetStopCountForGate(gate) {
+
+    let mp = this.pointNameMapping[gate];
+    if (!!mp) {
+        mp.resetStopCount();
+    }
 };

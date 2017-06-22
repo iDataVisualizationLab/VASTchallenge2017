@@ -19,9 +19,17 @@ VisitParser.prototype.parse = function (visits) {
         line.startTime = self.parseTime(line.startTime);
         line.endTime = self.parseTime(line.endTime);
 
-        let path = line.path.map(function (timeGate) {
+        let path = line.path.map(function (timeGate, index) {
             let carPoint;
             let mapPoint = self.parkMap.getMapPointByName(timeGate.gate);
+            if (index > 0) {
+                let preidx = index - 1;
+                let prePoint = line.path[preidx];
+                if (prePoint.gate == timeGate.gate) {
+                    // stop point
+                    mapPoint.increaseStopCount();
+                }
+            }
 
             carPoint = new CarPoint(mapPoint, self.parseTime(timeGate.time), timeGate.velocity, timeGate.path);
 
