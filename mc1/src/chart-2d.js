@@ -110,6 +110,9 @@ class Chart2D {
             .style('visibility', function (line) {
                 return line.visibility = 'visible';
             })
+            .style('opacity', function (line) {
+                return line.opacity = 1;
+            })
         ;
 
         self.myLine

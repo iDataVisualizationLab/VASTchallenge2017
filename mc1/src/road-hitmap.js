@@ -122,3 +122,41 @@ RoadHeatmap.prototype.renderHeatMap = function renderHeatMap (lines, endTime, st
 
 
 };
+
+RoadHeatmap.prototype.renderVisitHeatMap = function renderVisitHeatMap (lines) {
+
+    let self = this;
+
+    this.updateVisitCount(lines);
+
+    self.parkMap.renderStopHeatMap();
+
+};
+
+RoadHeatmap.prototype.updateVisitCount = function renderVisitHeatMap (lines) {
+
+    let self = this;
+
+    self.parkMap.resetStopCount();
+
+    lines.forEach(function (l) {
+
+        let path = l.context.path;
+
+        path.forEach(function (cp, index) {
+            if (index > 0) {
+                let preidx = index - 1;
+                let prePoint = path[preidx];
+                let mp = cp.getMapPoint();
+
+                if (prePoint.getGate() == cp.getGate()) {
+                    // stop point
+                    mp.increaseStopCount();
+
+                }
+            }
+        });
+
+
+    });
+};

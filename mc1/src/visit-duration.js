@@ -164,4 +164,11 @@ class VisitDuration {
     clearSetting() {
         this.visitChart.clearSetting();
     }
+
+    viewVisitHeatMap() {
+        let self = this;
+        let lines = self.visitChart.getVisibleLines();
+
+        self.roadHeatMap.renderVisitHeatMap(lines);
+    }
 }

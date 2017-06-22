@@ -90,9 +90,9 @@ mc1.controller.changeGraphType = function(graphType) {
 };
 
 mc1.controller.viewStopHeatMap = function() {
-
-    let parkMap = mc1.parkMap;
-    parkMap.renderStopHeatMap();
+    
+    let chart = mc1.firstDayDuration || mc1.visitDuration;
+    chart.viewVisitHeatMap();
 
 };
 
