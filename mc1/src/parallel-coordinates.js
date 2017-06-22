@@ -257,6 +257,12 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
         })
         .on('click', function (d) {
 
+            let type = self.axisConfig[d].type;
+            if (type != 'Number') {
+                alert('Do not support viewing details of this dimension.');
+                return; // do not support zoom-in
+            }
+
             let selected = !!self.axisConfig[d].selected;
             self.axisConfig[d].selected = !selected;
 

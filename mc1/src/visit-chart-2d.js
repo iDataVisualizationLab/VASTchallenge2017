@@ -211,6 +211,7 @@ class VisitChart2D extends Chart2D {
         let carType = data['carType'];
         let camping = data['camping'];
         let stopCount = data['stopCount'];
+        let stopDuration = data['stopDuration'];
         let velocity = data['velocity'];
         let visitDuration = data['visitDuration'];
         let overnight = data['overnight'];
@@ -219,6 +220,7 @@ class VisitChart2D extends Chart2D {
         self.filters['carType'] = carType;
         self.filters['camping'] = camping;
         self.filters['stopCount'] = stopCount;
+        self.filters['stopDuration'] = stopDuration;
         self.filters['velocity'] = velocity;
         self.filters['visitDuration'] = visitDuration;
         self.filters['overnight'] = overnight;
@@ -253,6 +255,7 @@ class VisitChart2D extends Chart2D {
         let carType = self.filters['carType'];
         let camping = self.filters['camping'];
         let stopCount = self.filters['stopCount'];
+        let stopDuration = self.filters['stopDuration'];
         let velocity = self.filters['velocity'];
         let visitDuration = self.filters['visitDuration'];
         let overnight = self.filters['overnight'];
@@ -280,6 +283,11 @@ class VisitChart2D extends Chart2D {
                 return line.visibility = 'hidden';
             }
 
+            // stop duration
+            if (!!stopDuration && (ctx.stopDuration > stopDuration[0] || ctx.stopDuration < stopDuration[1])) {
+                return line.visibility = 'hidden';
+            }
+
             // overnight
             if (!!overnight && overnight.indexOf(ctx.overnight) < 0) {
                 return line.visibility = 'hidden';
@@ -302,6 +310,9 @@ class VisitChart2D extends Chart2D {
                 return line.visibility = 'hidden';
             }
 
+            if (ctx.display == 'none') {
+                return line.visibility = 'hidden';
+            }
 
             return line.visibility = 'visible';
         };
