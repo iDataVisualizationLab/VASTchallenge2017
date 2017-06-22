@@ -49,9 +49,9 @@ d3.json("data/all-car-path.json", function(error, lines) {
 
     mc1.parsedVisits = visitParser.parse(lines);
     // mc1.parsedVisits = mc1.parsedVisits.slice(0, 100);
-    // mc1.parsedVisits = mc1.parsedVisits.filter(function (visit) {
-    //     return visit.carId == '20150322080300-861';
-    // });
+    mc1.parsedVisits = mc1.parsedVisits.filter(function (visit) {
+        return visit.stopDuration < 24;
+    });
 
     mc1.eventHandler = new EventHandler();
     mc1.simulationManager = new SimulationManager(mc1.parkMap);
@@ -82,6 +82,7 @@ function renderParallelCoordinate() {
         carType:  { label: 'Car Type', type: 'String'},
         camping: {label: 'Camping', type: 'String'},
         stopCount: {label: 'Stop Count'},
+        stopDuration: {label: 'Stop Duration'},
         overnight: {label: 'Overnight', type: 'String'},
         visitDuration: {label: 'Visit Duration (hrs)' },
         velocity: {label: 'Velocity (mph)'}
