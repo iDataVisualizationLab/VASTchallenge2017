@@ -66,6 +66,12 @@ MapPoint.prototype.resetStopCount = function resetStopCount() {
     return this;
 };
 
+MapPoint.prototype.getStopCount = function getStopCount() {
+
+    return this.stopCount;
+};
+
+
 MapPoint.prototype.setR = function setR(r) {
     this.r = r;
 };
@@ -330,8 +336,9 @@ var ParkMap = function ParkMap (byteData, svg) {
         .attr('height', 150)
     ;
 
-    this.entranceGraph = new EntranceGraph(this.tooltipGraph);
+    this.tooltip = new TooltipHelper('tooltip');
 
+    // this.entranceGraph = new EntranceGraph(this.tooltipGraph);
 };
 
 ParkMap.CELL_WIDTH = 3;
@@ -350,6 +357,33 @@ ParkMap.prototype.getCarTraceContainer = function getCarTraceContainer() {
     return this.carTrace;
 };
 
+ParkMap.prototype.setupStopCountDomain = function setupStopCountDomain() {
+    let mp;
+    let min =100000, max = 0;
+    let tmpStopCount;
+    for(let k in this.pointNameMapping) {
+        if (!this.pointNameMapping.hasOwnProperty(k)) {
+            continue;
+        }
+
+        mp = this.pointNameMapping[k];
+        tmpStopCount = mp.getStopCount();
+        if (min > tmpStopCount) {
+            min = tmpStopCount;
+        }
+
+        if (max < tmpStopCount) {
+            max = tmpStopCount;
+        }
+
+    }
+    this.cellScale = d3.scaleLinear()
+        .range([ParkMap.CELL_WIDTH, 4*ParkMap.CELL_WIDTH])
+        .domain([min, max])
+    ;
+
+    console.log("Min-Max cell visit count: min=" + min + ";max=" + max);
+};
 
 ParkMap.prototype.clearCarTrace = function clearCarTrace() {
     this.carTrace.selectAll('*').remove();
@@ -619,32 +653,54 @@ ParkMap.prototype.render = function render(showLabel) {
                     .attr('fill', function (item) {
                         return item.getColor();
                     })
+                    .on('mouseover', function (cell) {
+                        self.tooltip.render(renderVisitCount(cell.getStopCount()), -15, 15);
+                    })
+                    .on('mouseout', function (cell) {
+                        self.tooltip.hide();
+                    })
                 ;
             })
 
     ;
 
+    // this.svg.selectAll('.sensor-cell')
+    //     .filter(function (d) {
+    //         return d.isEntrance();
+    //     })
+    //     .on("mouseover", function(d) {
+    //
+    //         // 1. Generate tree map
+    //         self.entranceGraph.render(d);
+    //
+    //         // 2. Setting position of the visualization
+    //         self.singleVisit.style("top", (event.pageY+10)+"px").style("left",(event.pageX+10)+"px");
+    //
+    //         // 3. Set visibility
+    //         return self.singleVisit.style("visibility", "visible");
+    //     })
+    //     .on("mouseout", function(d) {
+    //         return self.singleVisit.style("visibility", "hidden");
+    //     })
+    // ;
+};
+
+ParkMap.prototype.renderStopHeatMap = function renderStopHeatMap() {
+    let self = this;
     this.svg.selectAll('.sensor-cell')
-        .filter(function (d) {
-            return d.isEntrance();
+        // .filter(function (d) {
+        //     return d.isEntrance();
+        // })
+        .attr("width", function (d) {
+
+            let w = self.cellScale(d.getStopCount());
+            return self.cellScale(d.getStopCount());
         })
-        .on("mouseover", function(d) {
-
-            // 1. Generate tree map
-            self.entranceGraph.render(d);
-
-            // 2. Setting position of the visualization
-            self.singleVisit.style("top", (event.pageY+10)+"px").style("left",(event.pageX+10)+"px");
-
-            // 3. Set visibility
-            return self.singleVisit.style("visibility", "visible");
-        })
-        .on("mouseout", function(d) {
-            return self.singleVisit.style("visibility", "hidden");
+        .attr("height", function (d) {
+            return self.cellScale(d.getStopCount());
         })
     ;
 };
-
 
 ParkMap.prototype.resetStopCount = function resetStopCount() {
 

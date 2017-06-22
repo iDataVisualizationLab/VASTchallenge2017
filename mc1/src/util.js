@@ -236,3 +236,12 @@ function createGateTooltipHtml(carPoint) {
 
     return tb;
 }
+
+function renderVisitCount(count) {
+    let tb = "<table>" +
+            "<tr><td>Visit Count</td><td>:</td><td>" + count + "</td></tr>" +
+            "</table>"
+        ;
+
+    return tb;
+}

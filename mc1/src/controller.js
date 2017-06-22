@@ -2,114 +2,6 @@ var mc1 = mc1 || {};
 
 mc1.controller = mc1.controller || {};
 
-mc1.controller.clickEntranceType = function(self) {
-    let entranceType = document.getElementById('entranceType').value;
-    let vehicleCategory = document.getElementById('vehicleCategory').value;
-    let campingBehavior =  document.getElementById('campingBehavior').value;
-    let velocityBehavior =  document.getElementById('velocityBehavior').value;
-    let velocityLimit = document.getElementById('velocityLimit').value;
-    let durationBehavior =  document.getElementById('durationBehavior').value;
-    let durationThreshold = document.getElementById('durationThreshold').value;
-
-
-    if (!!mc1.visitDuration) {
-        mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-
-    if (!!mc1.firstDayDuration) {
-        mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-};
-
-mc1.controller.clickVehicleCategory = function(self) {
-
-    let entranceType = document.getElementById('entranceType').value;
-    let vehicleCategory = document.getElementById('vehicleCategory').value;
-    let campingBehavior = document.getElementById('campingBehavior').value;
-    let velocityBehavior =  document.getElementById('velocityBehavior').value;
-    let velocityLimit = document.getElementById('velocityLimit').value;
-    let durationBehavior =  document.getElementById('durationBehavior').value;
-    let durationThreshold = document.getElementById('durationThreshold').value;
-    console.log("entranceType: " + entranceType + "; vehicleCategory: " + self.value + "; vehicleBehavior" + campingBehavior + "; velocityBehavior: " + velocityBehavior + "; ");
-
-
-    if (!!mc1.visitDuration) {
-        mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-
-    if (!!mc1.firstDayDuration) {
-        mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-};
-
-
-mc1.controller.clickCampingBehavior = function(self) {
-    console.log(self.name + "=" + self.value);
-
-    let entranceType = document.getElementById('entranceType').value;
-    let vehicleCategory = document.getElementById('vehicleCategory').value;
-    let campingBehavior = document.getElementById('campingBehavior').value;
-    let velocityBehavior =  document.getElementById('velocityBehavior').value;
-    let velocityLimit = document.getElementById('velocityLimit').value;
-    let durationBehavior =  document.getElementById('durationBehavior').value;
-    let durationThreshold = document.getElementById('durationThreshold').value;
-
-    console.log("entranceType: " + entranceType + "; vehicleCategory: " + vehicleCategory + "; vehicleBehavior: " + self.value + "; velocityBehavior: " + velocityBehavior + "; ");
-
-
-    if (!!mc1.visitDuration) {
-        mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-
-    if (!!mc1.firstDayDuration) {
-        mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-};
-
-mc1.controller.clickVelocityBehavior = function(self) {
-    console.log(self.name + "=" + self.value);
-
-    let entranceType = document.getElementById('entranceType').value;
-    let vehicleCategory = document.getElementById('vehicleCategory').value;
-    let campingBehavior = document.getElementById('campingBehavior').value;
-    let velocityBehavior =  document.getElementById('velocityBehavior').value;
-    let velocityLimit = document.getElementById('velocityLimit').value;
-    let durationBehavior =  document.getElementById('durationBehavior').value;
-    let durationThreshold = document.getElementById('durationThreshold').value;
-    console.log("entranceType: " + entranceType + "; vehicleCategory: " + vehicleCategory + "; vehicleBehavior: " + campingBehavior + "; velocityBehavior: " + self.value + "; ");
-
-
-    if (!!mc1.visitDuration) {
-        mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-
-    if (!!mc1.firstDayDuration) {
-        mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-};
-
-mc1.controller.clickDurationBehavior = function(self) {
-    console.log(self.name + "=" + self.value);
-
-    let entranceType = document.getElementById('entranceType').value;
-    let vehicleCategory = document.getElementById('vehicleCategory').value;
-    let campingBehavior = document.getElementById('campingBehavior').value;
-    let velocityBehavior =  document.getElementById('velocityBehavior').value;
-    let velocityLimit = document.getElementById('velocityLimit').value;
-    let durationBehavior =  document.getElementById('durationBehavior').value;
-    let durationThreshold = document.getElementById('durationThreshold').value;
-    console.log("entranceType: " + entranceType + "; vehicleCategory: " + vehicleCategory + "; vehicleBehavior: " + campingBehavior + "; velocityBehavior: " + self.value + "; ");
-
-
-    if (!!mc1.visitDuration) {
-        mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-
-    if (!!mc1.firstDayDuration) {
-        mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-};
-
 mc1.controller.simulateTraffic = function(self) {
     console.log(self.name + "=" + self.value);
 
@@ -137,59 +29,6 @@ mc1.controller.simulateTimeBlock = function(self) {
     mc1.simulationManager.simulateTrafficByTimeBlock(mc1.firstDayDuration.getVisits());
 };
 
-mc1.controller.onVelocityLimitChange = function(self) {
-
-    console.log('change velocity limit');
-
-    let entranceType = document.getElementById('entranceType').value;
-    let vehicleCategory = document.getElementById('vehicleCategory').value;
-    let campingBehavior = document.getElementById('campingBehavior').value;
-    let velocityBehavior =  document.getElementById('velocityBehavior').value;
-
-    let velocityLimit = self.value;
-    let durationBehavior =  document.getElementById('durationBehavior').value;
-    let durationThreshold = document.getElementById('durationThreshold').value;
-
-
-    if (!!mc1.visitDuration) {
-        mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-
-    if (!!mc1.firstDayDuration) {
-        mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-};
-
-mc1.controller.onDurationThresholdChange = function(self) {
-
-    console.log('change duration threshold');
-
-    let days = self.value / 24;
-    days = days.toFixed(1);
-
-    document.getElementById('durationRangeValLabel').innerHTML = self.value > 48 ? days : self.value;
-    document.getElementById('durationUnit').innerHTML = self.value > 48 ? "(days)" : "(hrs)";
-
-
-
-    let entranceType = document.getElementById('entranceType').value;
-    let vehicleCategory = document.getElementById('vehicleCategory').value;
-    let campingBehavior = document.getElementById('campingBehavior').value;
-    let velocityBehavior =  document.getElementById('velocityBehavior').value;
-
-    let velocityLimit = document.getElementById('velocityLimit').value;
-    let durationBehavior =  document.getElementById('durationBehavior').value;
-    let durationThreshold = document.getElementById('durationThreshold').value;
-
-
-    if (!!mc1.visitDuration) {
-        mc1.visitDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-
-    if (!!mc1.firstDayDuration) {
-        mc1.firstDayDuration.highlightVisitsByEntranceType(entranceType, vehicleCategory, campingBehavior, velocityBehavior, velocityLimit, durationBehavior, durationThreshold);
-    }
-};
 
 mc1.controller.clearRoad = function(self) {
 
@@ -247,6 +86,13 @@ mc1.controller.changeGraphType = function(graphType) {
             delete mc1.firstDayDuration;
 
     }
+
+};
+
+mc1.controller.viewStopHeatMap = function() {
+
+    let parkMap = mc1.parkMap;
+    parkMap.renderStopHeatMap();
 
 };
 

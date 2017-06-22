@@ -26,15 +26,22 @@ class TooltipHelper {
         ;
     }
 
-    render(html) {
+    render(html, offsetX, offsetY) {
 
+        if (!offsetX) {
+            offsetX = 0;
+        }
+
+        if (!offsetY) {
+            offsetY = 0;
+        }
         let self = this;
 
         self.tooltip
             .style('background', '#CCCCCC')
             .html(html)
-            .style("left", (d3.event.pageX + 20) + "px")
-            .style("top", (d3.event.pageY - 50) + "px")
+            .style("left", (d3.event.pageX + 20 + offsetX) + "px")
+            .style("top", (d3.event.pageY - 50 + offsetY) + "px")
         ;
 
         this.show();

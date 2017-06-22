@@ -28,6 +28,10 @@ VisitParser.prototype.parse = function (visits) {
                 if (prePoint.gate == timeGate.gate) {
                     // stop point
                     mapPoint.increaseStopCount();
+
+                    if(!prePoint.gate.startsWith('camp')) {
+                        console.log('Stop at: ' + prePoint.gate + "; count:" + mapPoint.getStopCount());
+                    }
                 }
             }
 
@@ -41,6 +45,8 @@ VisitParser.prototype.parse = function (visits) {
     });
 
     this.visits = visits;
+
+    this.parkMap.setupStopCountDomain();
 
     return visits;
 };
