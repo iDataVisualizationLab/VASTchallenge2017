@@ -113,7 +113,7 @@ class SingleVisit {
             .text(function (l) {
 
                 let d = l.context.path[0];
-                return "Car: " + l.context.carId + ' (' + l.context.carType + ')';
+                return "Car: " + l.context.carId + ' (Type: ' + l.context.carType + ')';
             })
             .attr("transform", "translate(" + offsetX + "," + (margin.top) + ")")
         ;
