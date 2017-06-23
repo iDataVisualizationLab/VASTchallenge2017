@@ -1,35 +1,64 @@
 'use strict';
-class VisitByDay extends VisitDuration {
-    constructor(visitChart, parkMap,  eventHandler, simulationManager) {
-        super(visitChart, parkMap, fromHour, toHour, eventHandler, simulationManager);
-
-        if (!fromHour) {
-            fromHour = '00:00:01';
-        }
-
-        if (!toHour) {
-            toHour = '23:59:59';
-        }
+const ONE_DAY_HEIGHT = 100;
+class VisitByDay {
+    constructor(svg, parkMap,  eventHandler, simulationManager) {
 
         this.parseTime = d3.timeParse("%H:%M:%S");
 
-        this.fromTime = this.parseTime(fromHour);
-        this.toTime = this.parseTime(toHour);
+        this.days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
-        this.visitChart.setXDomain(this.fromTime, this.toTime);
-        this.visitChart.setYDomain(0, 20000);
+        this.charts = {};
+
+        this.chartDatas = {};
+
+        let self = this;
+
+        this.days.forEach(function (d) {
+           self.charts[d] = new Chart2D(svg, width, ONE_DAY_HEIGHT, {id: 3, margin: margin, timeChart: true});
+        });
+
+
+        // this.fromTime = this.parseTime(fromHour);
+        // this.toTime = this.parseTime(toHour);
+        //
+        // this.visitChart.setXDomain(this.fromTime, this.toTime);
+        // this.visitChart.setYDomain(0, 20000);
+    }
+
+    getDayStringFromIndex(idx) {
+        return this.days[idx];
     }
 
     setVisits(visits) {
-        let lines = visits.map(function (l) {
+        let self = this;
+        let cData;
+        let dayString;
+
+        visits.forEach(function (l) {
+            l.startDay = l.startTime.getDay();
+            l.endDay = l.endTime.getDay();
+
+            dayString = self.getDayStringFromIndex(l.startDay);
+            if (!self.chartDatas.hasOwnProperty(dayString)) {
+                self.chartDatas[dayString] = [];
+            }
+
+            cData = self.chartDatas[dayString];
+            cData.push(l);
+
             return l;
         });
 
-        lines.sort(function (l1, l2) {
-            return getTimeInDayBySeconds(l1.startTime) - getTimeInDayBySeconds(l2.startTime);
-        });
+        for(let day in self.chartDatas) {
+            if (!self.chartDatas.hasOwnProperty(day)) {
+                continue;
+            }
 
-        this.lines = lines;
+            cData = self.chartDatas[day];
+            cData.sort(function (l1, l2) {
+                return getTimeInDayBySeconds(l1.startTime) - getTimeInDayBySeconds(l2.startTime);
+            });
+        }
     }
 
     render() {

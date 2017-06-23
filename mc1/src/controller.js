@@ -76,6 +76,9 @@ mc1.controller.changeGraphType = function(graphType) {
             mc1.spiral.render();
             break;
         case 'week-day':
+            mc1.dayOfWeekChart = new VisitByDay(mc1.firstDaySpanSvg, width, height, {id: 2, margin: margin, timeChart: true});
+            mc1.dayOfWeekChart.setVisits(mc1.parsedVisits);
+            mc1.dayOfWeekChart.render();
             break;
         case 'on-year':
         default:
