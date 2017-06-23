@@ -98,7 +98,8 @@ class SingleVisit {
         }
 
         let events = [
-            {name: 'mouseover', handler: this.handleMouseOver, context: this}
+            {name: 'mouseover', handler: this.handleMouseOver, context: this},
+            {name: 'mouseout', handler: this.handleMouseOut, context: this}
         ];
 
         this.visitChart.renderChart(events);
@@ -158,8 +159,13 @@ class SingleVisit {
 
         // this.eventHandler.fireEvent({name: 'show-road-heat-map', lines: [e.line.context]});
 
-        this.roadHeatMap.renderHeatMap([e.line], {fullPath: true, alpha: 0.5});
+        this.roadHeatMap.renderHeatMap([e.line], {fullPath: true, alpha: 0.4});
         // debugger;
+    }
+
+    handleMouseOut(e) {
+        this.roadHeatMap.clearMap();
+
     }
 
     hide() {

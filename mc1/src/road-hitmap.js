@@ -106,6 +106,10 @@ RoadHeatmap.prototype.getVisitedRoadCellHeatMap = function getVisitedRoadCellHea
     return visitedRoadCells;
 };
 
+RoadHeatmap.prototype.clearMap = function clearMap () {
+    this.parkMap.clearRoad();
+};
+
 RoadHeatmap.prototype.renderHeatMap = function renderHeatMap (lines, options) {
 
     if (!options) {
