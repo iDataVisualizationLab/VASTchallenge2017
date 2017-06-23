@@ -27,6 +27,10 @@ class Chart2D {
             options.height = 500 - margin.top - margin.bottom;
         }
 
+        if (!options.hasOwnProperty('removeChildren')) {
+            options['removeChildren'] = true;
+        }
+
         this.width = options.width;
         this.height = options.height;
 
@@ -50,7 +54,10 @@ class Chart2D {
         this.filters = {};
 
         this.nativeSvg = svg;
-        this.nativeSvg.selectAll('*').remove();
+
+        if (!!options.removeChildren) {
+            this.nativeSvg.selectAll('*').remove();
+        }
 
         this.svg = this.nativeSvg.append("g")
             .attr("transform",

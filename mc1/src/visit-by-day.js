@@ -31,6 +31,10 @@ class VisitByDay {
 
         this.days.forEach(function (d, index) {
 
+            if (index > 0) {
+                options.removeChildren = false;
+            }
+
             options.id = index;
             let chart = new VisitChart2D(svg, width, oneChartHeight, options);
            // self.charts[d] = new VisitChart2D(svg, width, ONE_DAY_HEIGHT, {id: 3, margin: margin, timeChart: true});
