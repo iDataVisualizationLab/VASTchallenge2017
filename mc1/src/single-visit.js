@@ -4,7 +4,6 @@ class SingleVisit {
 
 
         this.singleVisit = d3.select('body').select('#' + divId)
-            .style("position", "absolute")
             .style("z-index", "10")
             .style("visibility", "hidden")
         ;

@@ -12,6 +12,7 @@ VisitParser.prototype.parse = function (visits) {
 
         let colorIdx = line.carType;
         line.color = line.carType == '2P' ? '#000000' : colorFunction(colorIdx);
+        line.publicCar = line.carType != '2P';
         line.velocity = +line.velocity;
         line.visitDuration = +line.visitDuration;
         line.stopCount = +line.stopCount;
