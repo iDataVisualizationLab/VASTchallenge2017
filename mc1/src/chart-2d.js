@@ -27,6 +27,14 @@ class Chart2D {
             options.height = 500 - margin.top - margin.bottom;
         }
 
+        if (!options.offSetX) {
+            options.offSetX = 0;
+        }
+
+        if (!options.offSetY) {
+            options.offSetY = 0;
+        }
+
         if (!options.hasOwnProperty('removeChildren')) {
             options['removeChildren'] = true;
         }
@@ -96,10 +104,13 @@ class Chart2D {
 
         let valueLine = d3.line()
                 .x(function(d, idx) {
-                    return !!xKey ? self.x(d[xKey]) : self.x(idx);
+                    let mx = !!xKey ? self.x(d[xKey]) : self.x(idx);
+                    return mx + self.options.offSetX;
                 })
                 .y(function(d, idx) {
-                    return !!yKey ? self.y(d[yKey]) : self.y(idx); })
+                    let my = !!yKey ? self.y(d[yKey]) : self.y(idx);
+                    return my + self.options.offSetY;
+                })
             ;
 
         self.lineData.push( {valueLine: valueLine, data: dataArray, context: context, x: xKey, y: yKey});

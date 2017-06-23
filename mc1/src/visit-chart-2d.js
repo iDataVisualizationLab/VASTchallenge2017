@@ -124,11 +124,11 @@ class VisitChart2D extends Chart2D {
                 .attr('r', self.options.defaultGateRadius)
                 .attr('cx', function (d) {
                     let xKey = line.x;
-                    return self.x(d[xKey]);
+                    return self.x(d[xKey]) + self.options.offSetX;
                 })
                 .attr('cy', function (d) {
                     let yKey = line.y;
-                    return self.y(d[yKey]);
+                    return self.y(d[yKey]) + self.options.offSetY;
                 })
                 .style('fill', function (d) {
                     return d.mapPoint.getColor();

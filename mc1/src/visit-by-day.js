@@ -10,17 +10,6 @@ class VisitByDay {
         this.charts = {};
 
         this.chartDatas = {};
-
-        let self = this;
-
-        // mc1.firstDayDuration = new VisitTimeBlock(firstDaySpanChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager);
-
-        let oneChartHeight = Math.ceil(height / this.days.length);
-
-        if (oneChartHeight < ONE_DAY_HEIGHT) {
-            oneChartHeight = ONE_DAY_HEIGHT;
-        }
-
         if (!options) {
             options = {
                 margin: {top: 20, right: 20, bottom: 50, left: 70}
@@ -29,14 +18,30 @@ class VisitByDay {
 
         options.timeChart = true;
 
+        let self = this;
+
+        // mc1.firstDayDuration = new VisitTimeBlock(firstDaySpanChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager);
+
+        let oneChartHeight = Math.ceil((height - options.margin.top)/ this.days.length);
+
+        // if (oneChartHeight < ONE_DAY_HEIGHT) {
+        //     oneChartHeight = ONE_DAY_HEIGHT;
+        // }
+
+
+
         this.days.forEach(function (d, index) {
+            let op = {};
+            Object.assign(op, options);
 
             if (index > 0) {
-                options.removeChildren = false;
+                op.removeChildren = false;
             }
 
-            options.id = index;
-            let chart = new VisitChart2D(svg, width, oneChartHeight, options);
+            op.id = index;
+            op.offSetY = height - (index + 1) * oneChartHeight;
+
+            let chart = new VisitChart2D(svg, width, oneChartHeight, op);
            // self.charts[d] = new VisitChart2D(svg, width, ONE_DAY_HEIGHT, {id: 3, margin: margin, timeChart: true});
            self.charts[d] = new VisitTimeBlock(chart, parkMap, null, null, eventHandler, simulationManager);
         });
@@ -93,7 +98,13 @@ class VisitByDay {
 
     render() {
         let self =  this;
-        self.charts['mon'].render();
+
+        self.days.forEach(function (d) {
+
+            console.log('rendering for day: ' + d + ':' + self.chartDatas[d].length)
+            self.charts[d].render();
+        })
+
     }
 }
 
