@@ -61,6 +61,14 @@ class VisitDuration {
 
     }
 
+    setXDomain(min, max) {
+        this.visitChart.setXDomain(min, max);
+    }
+
+    setYDomain(min, max) {
+        this.visitChart.setYDomain(min, max);
+    }
+
     setVisits (visits) {
 
         this.lines = visits;

@@ -73,14 +73,22 @@ class VisitByDay {
             return l;
         });
 
+        let peakVisitsPerday = d3.max(this.days, function (d) {
+           return self.chartDatas[d].length;
+        });
+
+
         for(let day in self.chartDatas) {
             if (!self.chartDatas.hasOwnProperty(day)) {
                 continue;
             }
 
             cData = self.chartDatas[day];
+            self.charts[day].setYDomain(0, peakVisitsPerday);
+
             self.charts[day].setVisits(cData);
         }
+
     }
 
     render() {
