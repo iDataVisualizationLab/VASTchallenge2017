@@ -61,9 +61,16 @@ class VisitDuration {
 
     }
 
-    render(lines) {
-        // parse the date / time
+    setVisits (visits) {
+
+        this.lines = visits;
+    }
+
+    handleChartContextTime() {
+
         let self = this;
+
+        let lines = this.lines;
         lines.forEach(function(line, index) {
 
             line.path.forEach(function (carPoint) {
@@ -122,7 +129,11 @@ class VisitDuration {
             self.visitChart.addData(line, line.path, 'time', 'y');
 
         });
+    }
 
+    render() {
+        // parse the date / time
+        this.handleChartContextTime();
 
         this.visitChart.renderChart(this.events);
         this.visitChart.renderAxis('Time', 'Visits');

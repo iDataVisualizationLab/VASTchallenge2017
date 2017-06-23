@@ -69,8 +69,8 @@ d3.json("data/all-car-path.json", function(error, lines) {
 
     d3.timeout(function () {
         // mc1.controller.changeGraphType('one-year');
-        mc1.controller.changeGraphType('hour');
-        // mc1.controller.changeGraphType('hour-spiral');
+        // mc1.controller.changeGraphType('hour');
+        mc1.controller.changeGraphType('week-day');
         //
     });
 });

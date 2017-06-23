@@ -1,7 +1,7 @@
 'use strict';
 const ONE_DAY_HEIGHT = 100;
 class VisitByDay {
-    constructor(svg, parkMap,  eventHandler, simulationManager) {
+    constructor(svg, parkMap,  eventHandler, simulationManager, width, height, options) {
 
         this.parseTime = d3.timeParse("%H:%M:%S");
 
@@ -13,8 +13,28 @@ class VisitByDay {
 
         let self = this;
 
-        this.days.forEach(function (d) {
-           self.charts[d] = new Chart2D(svg, width, ONE_DAY_HEIGHT, {id: 3, margin: margin, timeChart: true});
+        // mc1.firstDayDuration = new VisitTimeBlock(firstDaySpanChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager);
+
+        let oneChartHeight = Math.ceil(height / this.days.length);
+
+        if (oneChartHeight < ONE_DAY_HEIGHT) {
+            oneChartHeight = ONE_DAY_HEIGHT;
+        }
+
+        if (!options) {
+            options = {
+                margin: {top: 20, right: 20, bottom: 50, left: 70}
+            };
+        }
+
+        options.timeChart = true;
+
+        this.days.forEach(function (d, index) {
+
+            options.id = index;
+            let chart = new VisitChart2D(svg, width, oneChartHeight, options);
+           // self.charts[d] = new VisitChart2D(svg, width, ONE_DAY_HEIGHT, {id: 3, margin: margin, timeChart: true});
+           self.charts[d] = new VisitTimeBlock(chart, parkMap, null, null, eventHandler, simulationManager);
         });
 
 
@@ -55,14 +75,13 @@ class VisitByDay {
             }
 
             cData = self.chartDatas[day];
-            cData.sort(function (l1, l2) {
-                return getTimeInDayBySeconds(l1.startTime) - getTimeInDayBySeconds(l2.startTime);
-            });
+            self.charts[day].setVisits(cData);
         }
     }
 
     render() {
-
+        let self =  this;
+        self.charts['mon'].render();
     }
 }
 

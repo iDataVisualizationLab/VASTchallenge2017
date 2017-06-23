@@ -39,16 +39,17 @@ class VisitTimeBlock extends VisitDuration {
             return getTimeInDayBySeconds(l1.startTime) - getTimeInDayBySeconds(l2.startTime);
         });
 
-        this.lines = lines;
+        super.setVisits(lines);
     }
 
     getVisits () {
         return this.lines;
     }
 
-    render() {
-        // parse the date / time
+    handleChartContextTime() {
+
         let self = this;
+
         let lines = this.lines;
 
         let count = 0;
@@ -127,6 +128,11 @@ class VisitTimeBlock extends VisitDuration {
                 });
             }
         });
+    }
+
+    render() {
+        // parse the date / time
+        this.handleChartContextTime();
 
 
         this.visitChart.renderChart(this.events);
