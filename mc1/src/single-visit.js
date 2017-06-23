@@ -71,7 +71,11 @@ class SingleVisit {
 
         this.clear();
 
-        this.visitChart = new VisitChart2D(this.visitSvg, this.width, this.height, {timeChart: true, defaultLineWidth: 3, defaultGateRadius: 3});
+        let op =  {timeChart: true, defaultLineWidth: 3, defaultGateRadius: 3};
+        // op.gatesForInternalCars = ['gate', 'entrance', 'camping'];
+        op.gatesForVisitingCars = ['camping', 'gate', 'entrance', 'ranger-stop', 'ranger-base'];
+
+        this.visitChart = new VisitChart2D(this.visitSvg, this.width, this.height, op);
 
         let minDate = line.context['startTime'];
         let maxDate = line.context['endTime'];

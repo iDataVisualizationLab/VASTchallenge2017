@@ -11,6 +11,14 @@ class VisitChart2D extends Chart2D {
             op.defaultGateRadius = 0.5;
         }
 
+        if (!op.gatesForVisitingCars) {
+            op.gatesForVisitingCars = ['gate', 'entrance', 'camping'];
+        }
+
+        if (!op.gatesForInternalCars) {
+            op.gatesForInternalCars = ['camping', 'ranger-stop', 'ranger-base'];
+        }
+
         this.tooltip = new TooltipHelper('tooltip');
     }
 
@@ -101,8 +109,8 @@ class VisitChart2D extends Chart2D {
 
     renderPassingGates() {
         let self = this;
-        let gateVisiting = ['gate', 'entrance', 'camping'];
-        let gateInternal = ['camping', 'ranger-stop', 'ranger-base'];
+        let gateVisiting = self.options.gatesForVisitingCars; //['gate', 'entrance', 'camping'];
+        let gateInternal = self.options.gatesForInternalCars; //['camping', 'ranger-stop', 'ranger-base'];
 
         self.myLine.each(function (line) {
 
