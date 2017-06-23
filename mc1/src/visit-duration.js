@@ -37,7 +37,7 @@ class VisitDuration {
         this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
 
 
-        this.singleVisit = new SingleVisit('singleVisit', this.eventHandler);
+        this.singleVisit = new SingleVisit('singleVisit', this.roadHeatMap, this.eventHandler);
         let self = this;
         this.visitChart.bindSvgEvent('click',function () {
             self.clearSetting();

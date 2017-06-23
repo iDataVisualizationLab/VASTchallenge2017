@@ -48,17 +48,32 @@ var RoadHeatmap = function RoadHeatmap(partMap, rawData) {
 //     return myVisits;
 // };
 
-RoadHeatmap.prototype.getVisitedRoadCellHeatMap = function getVisitedRoadCellHeatMap (lines) {
+/**
+ *
+ * @param lines
+ * @param fullPath: boolean: get all cells of full path or context path. Context path depends on time
+ * @return {{}}
+ */
+RoadHeatmap.prototype.getVisitedRoadCellHeatMap = function getVisitedRoadCellHeatMap (lines, options) {
 
     let visitedRoadCells = {};
     let tmpCell;
 
-    let baseColor = hexToRgb(MapPoint.BACKGROUND, 0.1);
+    if (!options) {
+        options = {};
+    }
+
+    if (!options.hasOwnProperty('alpha')) {
+        options.alpha = 0.1;
+    }
+
+    let baseColor = hexToRgb(MapPoint.BACKGROUND, options.alpha);
 
     lines.forEach(function (line) {
 
         let lineColor = line.context.color;
-        line.data.forEach(function (carPoint) {
+        let paths = !!options.fullPath ? line.context.path : line.data;
+        paths.forEach(function (carPoint) {
 
             if (!carPoint.path) {
                 return;
@@ -83,7 +98,7 @@ RoadHeatmap.prototype.getVisitedRoadCellHeatMap = function getVisitedRoadCellHea
                      baseColor = tmpCell.color;
                  }
 
-                 tmpCell.color = mergeTwoRGBs(baseColor, hexToRgb(lineColor, 0.1));
+                 tmpCell.color = mergeTwoRGBs(baseColor, hexToRgb(lineColor, options.alpha));
             });
         });
     });
@@ -91,20 +106,28 @@ RoadHeatmap.prototype.getVisitedRoadCellHeatMap = function getVisitedRoadCellHea
     return visitedRoadCells;
 };
 
-RoadHeatmap.prototype.renderHeatMap = function renderHeatMap (lines, endTime, startTime) {
-    if (!endTime) {
-        endTime = '2015-05-1 23:59:59';
+RoadHeatmap.prototype.renderHeatMap = function renderHeatMap (lines, options) {
+
+    if (!options) {
+        options = {};
+    }
+    if (!options.endTime) {
+        options.endTime = '2015-05-1 23:59:59';
 
     }
 
-    if (!startTime) {
-        startTime = '2015-05-01 00:00:01';
+    if (!options.startTime) {
+        options.startTime = '2015-05-01 00:00:01';
+    }
+
+    if (!options.hasOwnProperty('fullPath')) {
+        options.fullPath = false;
     }
 
     let self = this;
     self.parkMap.clearRoad();
 
-    let cellColors = this.getVisitedRoadCellHeatMap(lines);
+    let cellColors = this.getVisitedRoadCellHeatMap(lines, options);
 
     let hexColor;
     let tmpCellColor;

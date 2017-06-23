@@ -1,6 +1,6 @@
 'use strict';
 class SingleVisit {
-    constructor(divId, eventHandler, options) {
+    constructor(divId, roadHeatMap, eventHandler, options) {
 
 
         this.singleVisit = d3.select('body').select('#' + divId)
@@ -40,6 +40,8 @@ class SingleVisit {
         this.eventHandler = eventHandler;
 
         this.init();
+
+        this.roadHeatMap = roadHeatMap;
     }
 
     init() {
@@ -153,6 +155,10 @@ class SingleVisit {
     }
 
     handleMouseOver(e) {
+
+        // this.eventHandler.fireEvent({name: 'show-road-heat-map', lines: [e.line.context]});
+
+        this.roadHeatMap.renderHeatMap([e.line], {fullPath: true, alpha: 0.5});
         // debugger;
     }
 
