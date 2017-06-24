@@ -8,6 +8,15 @@ class CellHeatMap {
         this.width = width - margin.left - margin.right;
         this.height =  height - margin.top - margin.bottom;
 
+        if (!options.gridSizeX) {
+            options.gridSizeX = this.width / options.gridColumns;
+        }
+
+        if (!options.gridSizeY) {
+            options.gridSizeY = options.gridSizeX;
+        }
+
+
         var svg = d3.select("#" + divId).append("svg")
             .attr("width", this.width + margin.left + margin.right)
             .attr("height", this.height + margin.top + margin.bottom)
@@ -25,12 +34,8 @@ class CellHeatMap {
             options = {};
         }
 
-        if (!options.gridSizeX) {
-            options.gridSizeX = 10;
-        }
-
-        if (!options.gridSizeY) {
-            options.gridSizeY = 10;
+        if (!options.gridColumns) {
+            options.gridColumns = 24;
         }
 
         if (!options.xKey) {
@@ -62,19 +67,11 @@ class CellHeatMap {
 
     setLabelX(labels) {
         this.xLabels = labels;
-
-        if (labels.length > 0) {
-
-            this.options.gridSizeX = this.width / labels.length;
-        }
     }
 
     setLabelY(labels) {
         this.yLabels = labels;
 
-        if (labels.length > 0) {
-            this.options.gridSizeY = this.height / labels.length;
-        }
     }
 
     setColors(colors) {
@@ -92,17 +89,21 @@ class CellHeatMap {
         let yKey = self.options.yKey;
         let hKey = self.options.heatKey;
 
+        let totalColors = self.colors.length - 1;
+        let maxVal = d3.max(data, function (d) { return +d[hKey]; });
         this.colorScale = d3.scaleQuantile()
-            .domain([0, self.colors.length - 1, d3.max(data, function (d) { return d[hKey]; })])
+            .domain([0, self.colors.length - 1, maxVal])
             .range(self.colors)
         ;
 
+        let quantiles = this.colorScale.quantiles();
+
         this.minX = d3.min(this.data, function (d) {
-            return d[xKey];
+            return +d[xKey];
         });
 
         this.minY = d3.min(this.data, function (d) {
-            return d[yKey];
+            return +d[yKey];
         })
     }
 
@@ -140,6 +141,38 @@ class CellHeatMap {
         ;
 
         this.renderAxis();
+    }
+
+    renderLegends() {
+        let self = this;
+        let legendElementWidth = self.options.gridSizeX * 2;
+        let gridSizeY = self.options.gridSizeY;
+        let height = this.height;
+
+        let quantiles = self.colorScale.quantiles();
+        var legend = self.svg.selectAll(".legend")
+            .data([0].concat(quantiles), function(d) {
+                return d;
+            })
+            .enter().append("g")
+            .attr("class", "legend");
+
+        legend.append("rect")
+            .attr("x", function(d, i) { return legendElementWidth * i; })
+            .attr("y", height)
+            .attr("width", legendElementWidth)
+            .attr("height", gridSizeY / 2)
+            .style("fill", function(d, i) { return self.colors[i]; });
+
+        legend.append("text")
+            .attr("class", "mono")
+            .text(function(d) {
+                return "≥ " + Math.round(d);
+            })
+            .attr("x", function(d, i) { return legendElementWidth * i; })
+            .attr("y", height + gridSizeY);
+
+        legend.exit().remove();
     }
 
 }

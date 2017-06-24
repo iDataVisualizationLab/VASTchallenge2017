@@ -47,6 +47,7 @@
     d3.tsv('daytime.tsv', function (error, data) {
         heatMap.setData(data);
         heatMap.render();
+        heatMap.renderLegends();
 
     });
 
