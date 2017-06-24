@@ -62,6 +62,10 @@ class CellHeatMap {
             options.offSetY = 0;
         }
 
+        if (!options.legendOffsetY) {
+            options.legendOffsetY = 0;
+        }
+
         return options;
     }
 
@@ -143,7 +147,9 @@ class CellHeatMap {
 
         self.svg.selectAll('.card').data(this.data).enter()
             .append('rect')
-            .attr("class", "card bordered")
+            .attr("class", function (l) {
+                return "card bordered heat-map-cell-id-" + l.id;
+            })
             .attr("x", function(d) {
                 return (d[xKey] - self.minX) * gridSizeX + self.options.offSetX;
             })
@@ -179,7 +185,7 @@ class CellHeatMap {
 
         legend.append("rect")
             .attr("x", function(d, i) { return legendElementWidth * i; })
-            .attr("y", height)
+            .attr("y", height + self.options.legendOffsetY)
             .attr("width", legendElementWidth)
             .attr("height", gridSizeY / 2)
             .style("fill", function(d, i) { return self.colors[i]; });
@@ -190,7 +196,7 @@ class CellHeatMap {
                 return "≥ " + Math.round(d);
             })
             .attr("x", function(d, i) { return legendElementWidth * i; })
-            .attr("y", height + gridSizeY);
+            .attr("y", height + gridSizeY + self.options.legendOffsetY);
 
         legend.exit().remove();
     }

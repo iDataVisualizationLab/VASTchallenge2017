@@ -31,9 +31,12 @@
             stroke: #000000;
         }
 
+        rect.bordered {
+            stroke: #E6E6E6;
+            stroke-width:2px;
+        }
+
     </style>
-
-
 </head>
 <body>
 
@@ -69,7 +72,7 @@
 
         </td>
         <td>
-            <div id="singleVisit"></div>
+            <div id="mySingleVisit"></div>
         </td>
     </tr>
     <tr>
@@ -77,7 +80,7 @@
             <div id="visitDuration"></div>
         </td>
         <td>
-            <div id="weekDayHeatMap"></div>
+            <div id="arrivalHeatMap"></div>
         </td>
     </tr>
     <tr>
@@ -113,6 +116,8 @@
 <script type="text/javascript" src="src/car-point.js"></script>
 <script type="text/javascript" src="src/parallel-coordinates.js"></script>
 <script type="text/javascript" src="src/chart-2d.js"></script>
+<script type="text/javascript" src="src/cell-heat-map.js"></script>
+<script type="text/javascript" src="src/arrival-heat-map.js"></script>
 <script type="text/javascript" src="src/visit-chart-2d.js"></script>
 <script type="text/javascript" src="src/spiral-graph.js"></script>
 <script type="text/javascript" src="src/visit-by-day.js"></script>

@@ -92,6 +92,12 @@ mc1.controller.changeGraphType = function(graphType) {
 
             delete mc1.firstDayDuration;
 
+            // heatmap
+
+            mc1.arrivalHeatMap = new ArrivalHeatMap('arrivalHeatMap', 720, 500);
+            mc1.arrivalHeatMap.setData(mc1.parsedVisits);
+            mc1.arrivalHeatMap.render();
+
     }
 
 };

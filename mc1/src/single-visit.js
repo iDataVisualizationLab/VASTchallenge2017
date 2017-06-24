@@ -4,8 +4,9 @@ class SingleVisit {
 
 
         this.singleVisit = d3.select('body').select('#' + divId)
-            .style("z-index", "10")
-            .style("visibility", "hidden")
+            // .style("z-index", "10")
+            // .style("visibility", "hidden")
+            // .style("position", "relative")
         ;
 
         if (!options) {

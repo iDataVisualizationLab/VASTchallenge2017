@@ -19,6 +19,8 @@ VisitParser.prototype.parse = function (visits) {
         line.stopDuration = +line.stopDuration;
         line.startTime = self.parseTime(line.startTime);
         line.endTime = self.parseTime(line.endTime);
+        line.startDay = line.startTime.getDay();
+        line.endDay = line.endTime.getDay();
 
         let path = line.path.map(function (timeGate, index) {
             let carPoint;

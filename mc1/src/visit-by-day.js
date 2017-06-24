@@ -64,9 +64,6 @@ class VisitByDay {
         let dayString;
 
         visits.forEach(function (l) {
-            l.startDay = l.startTime.getDay();
-            l.endDay = l.endTime.getDay();
-
             dayString = self.getDayStringFromIndex(l.startDay);
             if (!self.chartDatas.hasOwnProperty(dayString)) {
                 self.chartDatas[dayString] = [];
