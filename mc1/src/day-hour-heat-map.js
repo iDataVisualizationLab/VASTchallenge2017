@@ -61,9 +61,9 @@ class DayHourHeatMap extends CellHeatMap {
         let tmpData;
 
         visits.forEach(function (l) {
-            if (l.carType == '2P' || l.camping == false) {
-                return;
-            }
+            // if (l.carType == '2P' || l.camping == false) {
+            //     return;
+            // }
 
             time = !!depart ? l.endTime : l.startTime;
 

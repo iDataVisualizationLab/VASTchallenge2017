@@ -79,19 +79,19 @@ mc1.controller.changeGraphType = function(graphType) {
         case 'week-day':
         default:
             //
-            // d3.timeout(function () {
-            //     mc1.dayOfWeekChart = new VisitByDay(mc1.firstDaySpanSvg,  mc1.parkMap, mc1.eventHandler, mc1.simulationManager, width, height, {margin: margin, timeChart: true});
-            //     mc1.dayOfWeekChart.setVisits(mc1.parsedVisits);
-            //     mc1.dayOfWeekChart.render();
-            // });
-            //
-            //
-            // d3.timeout(function () {
-            //     let visitChart = new VisitChart2D(mc1.visitDurationSvg, width, height, {id: 1, margin: margin, timeChart: true});
-            //     mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager);
-            //     mc1.visitDuration.setVisits(mc1.parsedVisits);
-            //     mc1.visitDuration.render();
-            // });
+            d3.timeout(function () {
+                mc1.dayOfWeekChart = new VisitByDay(mc1.firstDaySpanSvg,  mc1.parkMap, mc1.eventHandler, mc1.simulationManager, width, height, {margin: margin, timeChart: true});
+                mc1.dayOfWeekChart.setVisits(mc1.parsedVisits);
+                mc1.dayOfWeekChart.render();
+            });
+
+
+            d3.timeout(function () {
+                let visitChart = new VisitChart2D(mc1.visitDurationSvg, width, height, {id: 1, margin: margin, timeChart: true});
+                mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager);
+                mc1.visitDuration.setVisits(mc1.parsedVisits);
+                mc1.visitDuration.render();
+            });
 
 
 
