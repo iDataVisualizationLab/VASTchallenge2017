@@ -30,9 +30,9 @@ var margin = {top: 20, right: 20, bottom: 50, left: 70},
 mc1.visitDurationSvg = d3.select('body').select('#visitDuration').append('svg')
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")")
+        // .append("g")
+        // .attr("transform",
+        //     "translate(" + margin.left + "," + margin.top + ")")
     ;
 
 mc1.firstDaySpanSvg = d3.select('body').select('#firstDaySpan').append('svg')
@@ -49,11 +49,12 @@ d3.json("data/all-car-path.json", function(error, lines) {
 
     mc1.parsedVisits = visitParser.parse(lines);
     // mc1.parsedVisits = mc1.parsedVisits.slice(0, 100);
-    mc1.parsedVisits = mc1.parsedVisits.filter(function (visit) {
-        return visit.stopDuration < 24;
-    });
+    // mc1.parsedVisits = mc1.parsedVisits.filter(function (visit) {
+    //     return visit.stopDuration < 24;
+    // });
 
     mc1.eventHandler = new EventHandler();
+
     mc1.simulationManager = new SimulationManager(mc1.parkMap);
 
 
@@ -78,7 +79,7 @@ d3.json("data/all-car-path.json", function(error, lines) {
 function renderParallelCoordinate() {
     let dimensions = {
         // startTime: {label: "Start Time"},
-
+        publicCar: {label: 'Public Car', type: 'String'},
         carType:  { label: 'Car Type', type: 'String'},
         camping: {label: 'Camping', type: 'String'},
         stopCount: {label: 'Stop Count'},
