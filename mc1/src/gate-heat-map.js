@@ -99,12 +99,6 @@ class GateHeatMap extends CellHeatMap {
                     return;
                 }
 
-                if (gate.startsWith('general-gate')) {
-
-                    console.log("car: " + l.carId);
-                    debugger;
-                }
-
                 // we are interested in gates where it stops for a while
                 let start = new Date(preCp.getTime().getTime());
                 let end = cp.getTime().getTime();

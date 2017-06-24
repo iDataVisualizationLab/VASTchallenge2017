@@ -112,7 +112,7 @@ mc1.controller.changeGraphType = function(graphType) {
             });
 
 
-            mc1.gateTimetHeatMap = new GateHeatMap('gateTimeHeatMap', 720, 1000);
+            mc1.gateTimetHeatMap = new GateHeatMap('gateTimeHeatMap', 720, 680);
             mc1.gateTimetHeatMap.setData(mc1.parsedVisits);
             mc1.gateTimetHeatMap.render();
     }
