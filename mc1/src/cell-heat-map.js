@@ -94,9 +94,14 @@ class CellHeatMap {
         let hKey = self.options.heatKey;
 
         let totalColors = self.colors.length - 1;
-        let maxVal = d3.max(data, function (d) { return +d[hKey]; });
+
+
+        let minMax = d3.extent(data, function (d) {
+            return +d[hKey];
+        });
+
         this.colorScale = d3.scaleQuantile()
-            .domain([0, totalColors, maxVal])
+            .domain([minMax[0], totalColors, minMax[1]])
             .range(self.colors)
         ;
 

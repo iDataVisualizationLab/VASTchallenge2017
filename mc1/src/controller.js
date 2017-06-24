@@ -94,9 +94,13 @@ mc1.controller.changeGraphType = function(graphType) {
 
             // heatmap
 
-            mc1.arrivalHeatMap = new ArrivalHeatMap('arrivalHeatMap', 720, 500);
+            mc1.arrivalHeatMap = new DayHourHeatMap('arrivalHeatMap', 720, 360);
             mc1.arrivalHeatMap.setData(mc1.parsedVisits);
             mc1.arrivalHeatMap.render();
+
+            mc1.departHeatMap = new DensityHeatMap('densityHeatMap', 720, 360);
+            mc1.departHeatMap.setData(mc1.parsedVisits);
+            mc1.departHeatMap.render();
 
     }
 

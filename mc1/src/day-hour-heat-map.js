@@ -1,5 +1,5 @@
 'use strict';
-class ArrivalHeatMap extends CellHeatMap {
+class DayHourHeatMap extends CellHeatMap {
 
     constructor(divId, width, height, options) {
         super(divId, width, height, options);
@@ -16,28 +16,10 @@ class ArrivalHeatMap extends CellHeatMap {
         super.setColors(colors);
         super.setLabelX(times);
         super.setLabelY(days);
-    }
-
-    handleOptions(options) {
-       options = super.handleOptions(options);
-
-       options.xKey = 'hour';
-       options.yKey = 'day';
-       options.heatKey = 'count';
-       options.legendOffsetY = -70;
-
-       return options;
-    }
-
-    setData(visits) {
 
         let self = this;
-        let myData = {};
         let key;
-        let arrivalTime;
-        let arrivalHour;
-        let arrivalDay;
-        let tmpData;
+        let myData = this.objectData = {};
 
         self.yLabels.forEach(function (ly, idY) {
 
@@ -56,22 +38,54 @@ class ArrivalHeatMap extends CellHeatMap {
             });
 
         });
+    }
 
+    handleOptions(options) {
+       options = super.handleOptions(options);
+
+       options.xKey = 'hour';
+       options.yKey = 'day';
+       options.heatKey = 'count';
+       options.legendOffsetY = 0;
+
+       return options;
+    }
+
+    handleTimeData(visits, depart) {
+        let self = this;
+        let myData = self.objectData;
+        let key;
+        let time;
+        let hour;
+        let day;
+        let tmpData;
 
         visits.forEach(function (l) {
             if (l.carType == '2P' || l.camping == false) {
                 return;
             }
 
-            arrivalTime = l.startTime;
-            arrivalDay = arrivalTime.getDay();
-            arrivalHour = arrivalTime.getHours();
+            time = !!depart ? l.endTime : l.startTime;
 
-            key = self.yLabels[arrivalDay] + '-' + arrivalHour;
+            if (!time){
+                debugger;
+            }
+
+            day = time.getDay();
+            hour = time.getHours();
+
+            key = self.yLabels[day] + '-' + hour;
             tmpData = myData[key];
             tmpData.count ++;
 
         });
+
+        return myData;
+    }
+
+    setData(visits, depart) {
+
+        let myData = this.handleTimeData(visits, depart);
 
         let visData = Object.keys(myData).map(function (k) {
            return myData[k];
