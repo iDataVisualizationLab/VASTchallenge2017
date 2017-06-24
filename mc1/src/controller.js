@@ -112,9 +112,16 @@ mc1.controller.changeGraphType = function(graphType) {
             });
 
 
-            mc1.gateTimetHeatMap = new GateHeatMap('gateTimeHeatMap', 720, 680);
-            mc1.gateTimetHeatMap.setData(mc1.parsedVisits);
-            mc1.gateTimetHeatMap.render();
+            d3.timeout(function () {
+                mc1.gateTimetHeatMap = new GateHeatMap('gateTimeHeatMap', 720, 680);
+                mc1.gateTimetHeatMap.setData(mc1.parsedVisits);
+                mc1.gateTimetHeatMap.render();
+            });
+
+            mc1.gateDayHeatMap = new GateDayHeatMap('gateDayHeatMap', 720, 680);
+            mc1.gateDayHeatMap.setData(mc1.parsedVisits);
+            mc1.gateDayHeatMap.render();
+
     }
 
 };
