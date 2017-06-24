@@ -49,9 +49,10 @@ d3.json("data/all-car-path.json", function(error, lines) {
 
     mc1.parsedVisits = visitParser.parse(lines);
     // mc1.parsedVisits = mc1.parsedVisits.slice(0, 100);
-    // mc1.parsedVisits = mc1.parsedVisits.filter(function (visit) {
-    //     return visit.stopDuration < 24;
-    // });
+    mc1.parsedVisits = mc1.parsedVisits.filter(function (visit) {
+        // return visit.carType != '2P';
+        return visit.carType == '2P';
+    });
 
     mc1.eventHandler = new EventHandler();
 
