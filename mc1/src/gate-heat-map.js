@@ -12,9 +12,7 @@ class GateHeatMap extends CellHeatMap {
         let colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
             gates = Object.keys(mc1.parkMap.pointNameMapping)
                 .filter(function (g) {
-
-
-                return !g.startsWith('gate') && !g.startsWith('entrance') && !g.startsWith('ranger-base');
+                    return !g.startsWith('gate') && !g.startsWith('entrance') && !g.startsWith('ranger-base') && !g.startsWith('general');
             }).sort(function (a, b) {
 
                 if (a == b) {

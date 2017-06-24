@@ -14,7 +14,7 @@ class GateDayHeatMap extends CellHeatMap {
                 .filter(function (g) {
 
 
-                return !g.startsWith('gate') && !g.startsWith('entrance') && !g.startsWith('ranger-base');
+                return !g.startsWith('gate') && !g.startsWith('entrance') && !g.startsWith('ranger-base') && !g.startsWith('general');
             }).sort(function (a, b) {
 
                 if (a == b) {
@@ -43,7 +43,7 @@ class GateDayHeatMap extends CellHeatMap {
                     myData[key] = {
                         id: key,
                         gate: idY,
-                        hour: idX,
+                        day: idX,
                         count: 0
                     };
                 }
@@ -58,7 +58,7 @@ class GateDayHeatMap extends CellHeatMap {
 
         options.margin.left = 150;
         options.margin.bottom = 40;
-       options.xKey = 'hour';
+       options.xKey = 'day';
        options.yKey = 'gate';
        options.heatKey = 'count';
        options.legendOffsetY = 0;
