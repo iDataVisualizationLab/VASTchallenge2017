@@ -51,7 +51,7 @@ class CellHeatMap {
         }
 
         if (!options.margin) {
-            options.margin = { top: 50, right: 0, bottom: 100, left: 30 };
+            options.margin = { top: 50, right: 30, bottom: 100, left: 30 };
         }
 
         if (!options.offSetX) {

@@ -78,30 +78,43 @@ mc1.controller.changeGraphType = function(graphType) {
         case 'on-year':
         case 'week-day':
         default:
+            //
+            // d3.timeout(function () {
+            //     mc1.dayOfWeekChart = new VisitByDay(mc1.firstDaySpanSvg,  mc1.parkMap, mc1.eventHandler, mc1.simulationManager, width, height, {margin: margin, timeChart: true});
+            //     mc1.dayOfWeekChart.setVisits(mc1.parsedVisits);
+            //     mc1.dayOfWeekChart.render();
+            // });
+            //
+            //
+            // d3.timeout(function () {
+            //     let visitChart = new VisitChart2D(mc1.visitDurationSvg, width, height, {id: 1, margin: margin, timeChart: true});
+            //     mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager);
+            //     mc1.visitDuration.setVisits(mc1.parsedVisits);
+            //     mc1.visitDuration.render();
+            // });
 
-            d3.timeout(function () {
-                mc1.dayOfWeekChart = new VisitByDay(mc1.firstDaySpanSvg,  mc1.parkMap, mc1.eventHandler, mc1.simulationManager, width, height, {margin: margin, timeChart: true});
-                mc1.dayOfWeekChart.setVisits(mc1.parsedVisits);
-                mc1.dayOfWeekChart.render();
-            });
 
-            let visitChart = new VisitChart2D(mc1.visitDurationSvg, width, height, {id: 1, margin: margin, timeChart: true});
-            mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager);
-            mc1.visitDuration.setVisits(mc1.parsedVisits);
-            mc1.visitDuration.render();
 
             delete mc1.firstDayDuration;
 
             // heatmap
+            d3.timeout(function () {
+                mc1.arrivalHeatMap = new DayHourHeatMap('arrivalHeatMap', 720, 360);
+                mc1.arrivalHeatMap.setData(mc1.parsedVisits);
+                mc1.arrivalHeatMap.render();
+            });
 
-            mc1.arrivalHeatMap = new DayHourHeatMap('arrivalHeatMap', 720, 360);
-            mc1.arrivalHeatMap.setData(mc1.parsedVisits);
-            mc1.arrivalHeatMap.render();
 
-            mc1.departHeatMap = new DensityHeatMap('densityHeatMap', 720, 360);
-            mc1.departHeatMap.setData(mc1.parsedVisits);
-            mc1.departHeatMap.render();
+            d3.timeout(function () {
+                mc1.departHeatMap = new DensityHeatMap('densityHeatMap', 720, 360);
+                mc1.departHeatMap.setData(mc1.parsedVisits);
+                mc1.departHeatMap.render();
+            });
 
+
+            mc1.gateTimetHeatMap = new GateHeatMap('gateTimeHeatMap', 720, 1000);
+            mc1.gateTimetHeatMap.setData(mc1.parsedVisits);
+            mc1.gateTimetHeatMap.render();
     }
 
 };
