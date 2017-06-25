@@ -42,7 +42,7 @@ class Chart2D {
         this.width = options.width;
         this.height = options.height;
 
-
+        this.lineData = [];
         this.options = options;
 
         // let margin = this.options.margin;
