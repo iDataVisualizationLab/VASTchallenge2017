@@ -98,10 +98,6 @@ class VisitByDay {
         let self =  this;
 
         self.days.forEach(function (d, idx) {
-
-            if (idx > 0) {
-                return;
-            }
             console.log('rendering for day: ' + d + ':' + self.chartDatas[d].length)
             self.charts[d].render();
         })
