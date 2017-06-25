@@ -76,6 +76,9 @@ class VisitDuration {
     setVisits (visits) {
 
         this.lines = visits;
+
+        this.visitChart.setYDomain(0, Math.ceil(visits.length + 0.05*visits.length));
+
     }
 
     handleChartContextTime() {
