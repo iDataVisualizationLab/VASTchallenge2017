@@ -27,6 +27,10 @@ class VisitDuration {
         this.init();
     }
 
+    setName(name) {
+        this.name = name;
+    }
+
     init() {
         this.events = [
             {name: 'mouseover'}

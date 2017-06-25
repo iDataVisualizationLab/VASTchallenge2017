@@ -43,7 +43,8 @@ class VisitByDay {
 
             let chart = new VisitChart2D(svg, width, oneChartHeight, op);
            // self.charts[d] = new VisitChart2D(svg, width, ONE_DAY_HEIGHT, {id: 3, margin: margin, timeChart: true});
-           self.charts[d] = new VisitTimeBlock(chart, parkMap, null, null, eventHandler, simulationManager);
+            self.charts[d] = new VisitTimeBlock(chart, parkMap, null, null, eventHandler, simulationManager);
+            self.charts[d].setName('chart-' + d);
         });
 
 
@@ -96,8 +97,11 @@ class VisitByDay {
     render() {
         let self =  this;
 
-        self.days.forEach(function (d) {
+        self.days.forEach(function (d, idx) {
 
+            if (idx > 0) {
+                return;
+            }
             console.log('rendering for day: ' + d + ':' + self.chartDatas[d].length)
             self.charts[d].render();
         })
