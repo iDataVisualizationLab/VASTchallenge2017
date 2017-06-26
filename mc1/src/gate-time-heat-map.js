@@ -3,8 +3,6 @@ class GateTimeHeatMap extends CellHeatMap {
 
     constructor(divId, width, height, options) {
         super(divId, width, height, options);
-
-        this.init();
     }
 
     init() {
@@ -17,6 +15,11 @@ class GateTimeHeatMap extends CellHeatMap {
         super.setLabelX(times);
         super.setLabelY(gates);
 
+        this.setupDefaultHeatMapData();
+
+    }
+
+    setupDefaultHeatMapData() {
         let self = this;
         let key;
         let myData = this.objectData = {};
@@ -80,6 +83,18 @@ class GateTimeHeatMap extends CellHeatMap {
 
 
         return options;
+    }
+
+    calculateGridSize() {
+        let options = this.options;
+
+        if (!options.gridSizeX) {
+            options.gridSizeX = (this.width - options.margin.left - options.margin.right) / this.xLabels.length;
+        }
+
+        if (!options.gridSizeY) {
+            options.gridSizeY = (this.height - options.margin.bottom - options.margin.top)/ this.yLabels.length + 1; // add one for legend
+        }
     }
 
     handleTimeData(visits, depart) {

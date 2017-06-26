@@ -130,7 +130,11 @@ mc1.controller.changeGraphType = function(graphType) {
                 mc1.gateDayHeatMap.render();
             });
 
-
+            d3.timeout(function () {
+                mc1.gateDayHeatMap = new GateEveryDayHeatMap('gateEveryDayHeatMap', 1720, 510);
+                mc1.gateDayHeatMap.setData(mc1.parsedVisits);
+                mc1.gateDayHeatMap.render();
+            });
     }
 
 };

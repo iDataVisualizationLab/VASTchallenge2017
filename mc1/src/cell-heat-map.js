@@ -8,13 +8,7 @@ class CellHeatMap {
         this.width = width - margin.left - margin.right;
         this.height =  height - margin.top - margin.bottom;
 
-        if (!options.gridSizeX) {
-            options.gridSizeX = this.width / options.gridColumns;
-        }
 
-        if (!options.gridSizeY) {
-            options.gridSizeY = options.gridSizeX;
-        }
 
 
         var svg = d3.select("#" + divId).append("svg")
@@ -27,6 +21,26 @@ class CellHeatMap {
         this.svg = svg;
 
         this.options = options;
+
+        this.init();
+
+        this.calculateGridSize();
+    }
+
+    init() {
+
+    }
+
+    calculateGridSize() {
+        let options = this.options;
+
+        if (!options.gridSizeX) {
+            options.gridSizeX = this.width / options.gridColumns;
+        }
+
+        if (!options.gridSizeY) {
+            options.gridSizeY = options.gridSizeX;
+        }
     }
 
     handleOptions(options) {
@@ -161,14 +175,17 @@ class CellHeatMap {
             .attr("y", function(d) {
                 return (d[yKey] - self.minY)* gridSizeY + self.options.offSetY;
             })
-            .attr("rx", 4)
-            .attr("ry", 4)
+            // .attr("rx", 4)
+            // .attr("ry", 4)
             .attr("width", gridSizeX)
             .attr("height", gridSizeY)
             .style("fill", function (d) {
                 return self.colorScale(d[heatKey]);
             })
-            // .style("fill", colors[0])
+            .style("stroke", function (d) {
+                return !!d.weekend ? '#990000' : '#E6E6E6';
+            })
+            .style("stroke-width", 1)
         ;
 
         this.renderAxis();
