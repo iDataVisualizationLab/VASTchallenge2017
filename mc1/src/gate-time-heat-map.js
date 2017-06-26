@@ -1,5 +1,5 @@
 'use strict';
-class GateHeatMap extends CellHeatMap {
+class GateTimeHeatMap extends CellHeatMap {
 
     constructor(divId, width, height, options) {
         super(divId, width, height, options);
@@ -9,19 +9,9 @@ class GateHeatMap extends CellHeatMap {
 
     init() {
 
-        let colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
-            gates = Object.keys(mc1.parkMap.pointNameMapping)
-                .filter(function (g) {
-                    return !g.startsWith('gate') && !g.startsWith('entrance') && !g.startsWith('ranger-base') && !g.startsWith('general');
-            }).sort(function (a, b) {
-
-                if (a == b) {
-                    return 0;
-                }
-
-                return a > b ? 1 : -1;
-            }),
-            times = ["1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "10a", "11a", "12a", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p", "10p", "11p", "12p"];
+        let colors = this.constructor.createColors();
+        let gates = this.constructor.createGates();
+        let times = this.constructor.createTimes();
 
         super.setColors(colors);
         super.setLabelX(times);
@@ -40,7 +30,7 @@ class GateHeatMap extends CellHeatMap {
                     myData[key] = {
                         id: key,
                         gate: idY,
-                        hour: idX,
+                        time: idX,
                         count: 0
                     };
                 }
@@ -50,25 +40,52 @@ class GateHeatMap extends CellHeatMap {
         });
     }
 
+    static createTimes() {
+        let times = ["1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "10a", "11a", "12a", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p", "10p", "11p", "12p"];
+        return times;
+    }
+
+    static createGates() {
+        let gates = Object.keys(mc1.parkMap.pointNameMapping)
+            .filter(function (g) {
+
+
+                return !g.startsWith('gate') && !g.startsWith('entrance') && !g.startsWith('ranger-base') && !g.startsWith('general');
+            }).sort(function (a, b) {
+
+                if (a == b) {
+                    return 0;
+                }
+
+                return a > b ? 1 : -1;
+            });
+
+        return gates;
+    }
+
+    static createColors() {
+        let colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"]; // alternatively colorbrewer.YlGnBu[9]
+        return colors;
+    }
+
     handleOptions(options) {
-       options = super.handleOptions(options);
+        options = super.handleOptions(options);
 
         options.margin.left = 150;
         options.margin.bottom = 40;
-       options.xKey = 'hour';
-       options.yKey = 'gate';
-       options.heatKey = 'count';
-       options.legendOffsetY = 0;
+        options.xKey = 'time';
+        options.yKey = 'gate';
+        options.heatKey = 'count';
+        options.legendOffsetY = 0;
 
 
-       return options;
+        return options;
     }
 
     handleTimeData(visits, depart) {
         let self = this;
         let myData = self.objectData;
         let key;
-        let time;
         let hour;
         let gate;
         let tmpData;
@@ -134,7 +151,7 @@ class GateHeatMap extends CellHeatMap {
         let myData = this.handleTimeData(visits, depart);
 
         let visData = Object.keys(myData).map(function (k) {
-           return myData[k];
+            return myData[k];
         });
 
         super.setData(visData);
