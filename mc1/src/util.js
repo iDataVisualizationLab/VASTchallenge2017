@@ -247,13 +247,27 @@ function renderVisitCount(count) {
 }
 
 /**
- * Calculate days different between two dates
+ * Calculate days different between two dates. date1 > date2
  *
  * @param date1
  * @param date2
  * @return {number}
  */
 function dayDiff(date1, date2) {
-    var timeDiff = Math.abs(date2.getTime() - date1.getTime());
-    return Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    let start = new Date(date2.getTime());
+    let end = formatDate(date1.getTime());
+    let count = 0;
+
+    do {
+        start.setDate(start.getDate() + 1);
+        if (formatDate(start) == end) {
+            count ++;
+            break;
+        }
+        count ++;
+    }
+    while(true);
+
+    return count;
 }

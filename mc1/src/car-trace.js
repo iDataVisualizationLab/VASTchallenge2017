@@ -61,7 +61,25 @@ class CarTraceMap extends TraceMap {
         this.svg.selectAll('*').remove();
     }
 
-    static createTimes(startDate, endDate) {
+    static createTimes(line) {
+
+        let paths = line.context.path;
+
+
+        let minMax = d3.extent(paths, function (cp) {
+
+            let time = new Date();
+            let cpTime = cp.getTime();
+            time.setHours(cpTime.getHours());
+            time.setMinutes(cpTime.getMinutes());
+            time.setSeconds(cpTime.getSeconds());
+
+            return time.getTime();
+
+        });
+
+        let startDate = new Date(minMax[0]);
+        let endDate = new Date(minMax[1]);
 
         let times = [];
         let myTime = new Date(startDate.getTime());
@@ -122,6 +140,8 @@ class CarTraceMap extends TraceMap {
         let nextCp;
         // let currentTimeData;
 
+        let skipDay = 0;
+
         paths.forEach(function (cp, index) {
             cpTime = cp.getTime();
             day = formatDate(cpTime);
@@ -131,8 +151,9 @@ class CarTraceMap extends TraceMap {
 
             if (preDay != day) {
 
-                if (index > 0 && dayDiff(cp, paths[index - 1]) > 1) {
-                    myYLabels.push('day...');
+                if (index > 0 && dayDiff(cp.getTime(), paths[index - 1].getTime()) > 1) {
+                    skipDay ++;
+                    myYLabels.push('skip-day-' + skipDay);
                 }
 
                 myYLabels.push(day);
@@ -183,8 +204,12 @@ class CarTraceMap extends TraceMap {
         let start = new Date(startTime.getTime());
         start.setMinutes(start.getMinutes() + 1);
 
-        let myEndTime = new Date(endTime.getTime());
-        myEndTime.setMinutes(myEndTime.getMinutes() - 1);
+       let myEndTime = new Date(endTime.getTime());
+        myEndTime.setYear(startTime.getYear());
+        myEndTime.setMonth(startTime.getMonth());
+        myEndTime.setDate(startTime.getDate());
+
+       myEndTime.setMinutes(myEndTime.getMinutes() - 1);
 
         let end = myEndTime.getTime();
 
@@ -201,11 +226,11 @@ class CarTraceMap extends TraceMap {
                 };
             }
 
-            start.setMinutes(start.getMinutes() + 1);
-
-            if (start.getTime() > end) {
+            if (start.getTime()>= end) {
                 break;
             }
+
+            start.setMinutes(start.getMinutes() + 1);
         }
         while(true);
 
@@ -218,7 +243,7 @@ class CarTraceMap extends TraceMap {
      */
     setData(line) {
 
-        let times = this.constructor.createTimes(line.context.startTime, line.context.endTime);
+        let times = this.constructor.createTimes(line);
         this.setLabelX(times);
 
         let myData = this.handleTimeData(line);
