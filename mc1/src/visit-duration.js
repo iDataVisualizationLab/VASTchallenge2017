@@ -41,7 +41,8 @@ class VisitDuration {
         this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
 
 
-        this.singleVisit = new SingleVisit('mySingleVisit', this.roadHeatMap, this.eventHandler);
+        // this.singleVisit = new SingleVisit('mySingleVisit', this.roadHeatMap, this.eventHandler);
+        this.singleVisit = new CarTraceMap('mySingleVisit', 750, 220);
         let self = this;
         this.visitChart.bindSvgEvent('click',function () {
             self.clearSetting();
@@ -162,7 +163,8 @@ class VisitDuration {
         let self = this;
         let line = e.line;
 
-        self.singleVisit.render(line);
+        self.singleVisit.setData(line);
+        self.singleVisit.render();
 
         self.visitChart.highlightSingleVisit(line.context.carId);
 

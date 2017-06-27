@@ -8,6 +8,8 @@ class TraceMap {
         this.width = width - margin.left - margin.right;
         this.height =  height - margin.top - margin.bottom;
 
+        d3.select("#" + divId).selectAll('*').remove();
+
         var svg = d3.select("#" + divId).append("svg")
             .attr("width", this.width + margin.left + margin.right)
             .attr("height", this.height + margin.top + margin.bottom)
@@ -21,11 +23,11 @@ class TraceMap {
 
         this.init();
 
-        this.calculateGridSize();
     }
 
     init() {
 
+        this.calculateGridSize();
     }
 
     calculateGridSize() {
@@ -72,6 +74,11 @@ class TraceMap {
         if (!options.legendOffsetY) {
             options.legendOffsetY = 0;
         }
+
+        if (!options.strokeWidth) {
+            options.strokeWidth = 1;
+        }
+
 
         return options;
     }
@@ -137,7 +144,7 @@ class TraceMap {
         let gridSizeY = self.options.gridSizeY;
         let xKey = self.options.xKey;
         let yKey = self.options.yKey;
-        let heatKey = self.options.heatKey;
+        let fillKey = self.options.fillKey;
 
 
         self.svg.selectAll('.card').data(this.data).enter()
@@ -156,12 +163,12 @@ class TraceMap {
             .attr("width", gridSizeX)
             .attr("height", gridSizeY)
             .style("fill", function (d) {
-                return self.colorScale(d[heatKey]);
+                return d[fillKey];
             })
             .style("stroke", function (d) {
                 return !!d.weekend ? '#990000' : '#E6E6E6';
             })
-            .style("stroke-width", 1)
+            .style("stroke-width", self.options.strokeWidth)
         ;
 
         this.renderAxis();

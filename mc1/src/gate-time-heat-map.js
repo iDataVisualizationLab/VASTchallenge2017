@@ -15,6 +15,8 @@ class GateTimeHeatMap extends CellHeatMap {
         super.setLabelX(times);
         super.setLabelY(gates);
 
+        super.init();
+
         this.setupDefaultHeatMapData();
 
     }
