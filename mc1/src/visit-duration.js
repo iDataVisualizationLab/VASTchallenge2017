@@ -33,7 +33,7 @@ class VisitDuration {
 
     init() {
         this.events = [
-            {name: 'mouseover'}
+            {name: 'mouseover', handler: this.onLineMouseOver, context: this}
             // {name: 'mouseout'}
         ];
 
@@ -96,8 +96,8 @@ class VisitDuration {
                 return carPoint.time;
             });
 
-            line.contextStartTime = timeContext[0];
-            line.contextEndTime = timeContext[1];
+            // line.contextStartTime = timeContext[0];
+            // line.contextEndTime = timeContext[1];
 
             // split paths
 
