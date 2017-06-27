@@ -116,7 +116,7 @@ mc1.controller.changeGraphType = function(graphType) {
 
             // density map by day and hour
             d3.timeout(function () {
-                mc1.departHeatMap = new DensityHeatMap('densityHeatMap', 720, 360);
+                mc1.departHeatMap = new DensityHeatMap('densityHeatMap', 720, 280);
                 mc1.departHeatMap.setData(mc1.parsedVisits);
                 mc1.departHeatMap.render();
             });

@@ -12,7 +12,7 @@ class SingleVisit {
         if (!options) {
             options = {};
         }
-        let margin = {top: 20, right: 20, bottom: 50, left: 70};
+        let margin = {top: 10, right: 20, bottom: 10, left: 70};
         if (!options.margin) {
             options.margin = margin;
         }
@@ -22,7 +22,7 @@ class SingleVisit {
         }
 
         if (!options.height) {
-            options.height = 500 - margin.top - margin.bottom;
+            options.height = 220 - margin.top - margin.bottom;
         }
 
         this.width = options.width;
