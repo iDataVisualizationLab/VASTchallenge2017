@@ -19,14 +19,6 @@ class Chart2D {
             options.margin = margin;
         }
 
-        if (!options.width) {
-            options.width = 720 - margin.left - margin.right;
-        }
-
-        if (!options.height) {
-            options.height = 500 - margin.top - margin.bottom;
-        }
-
         if (!options.offSetX) {
             options.offSetX = 0;
         }
@@ -39,8 +31,6 @@ class Chart2D {
             options['removeChildren'] = true;
         }
 
-        this.width = options.width;
-        this.height = options.height;
 
         this.lineData = [];
         this.options = options;
