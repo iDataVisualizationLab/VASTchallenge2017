@@ -1,95 +1,19 @@
 'use strict';
-class CellHeatMap {
+class CellHeatMap extends TraceMap {
     constructor(divId, width, height, options) {
-
-       options = this.handleOptions(options);
-
-        let margin = options.margin;
-        this.width = width - margin.left - margin.right;
-        this.height =  height - margin.top - margin.bottom;
-
-
-
-
-        var svg = d3.select("#" + divId).append("svg")
-            .attr("width", this.width + margin.left + margin.right)
-            .attr("height", this.height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-        this.svg = svg;
-
-        this.options = options;
-
-        this.init();
-
-        this.calculateGridSize();
+        super(divId, width, height, options);
     }
 
-    init() {
-
-    }
-
-    calculateGridSize() {
-        let options = this.options;
-
-        if (!options.gridSizeX) {
-            options.gridSizeX = this.width / options.gridColumns;
-        }
-
-        if (!options.gridSizeY) {
-            options.gridSizeY = options.gridSizeX;
-        }
-    }
 
     handleOptions(options) {
-        if (!options) {
-            options = {};
-        }
 
-        if (!options.gridColumns) {
-            options.gridColumns = 24;
-        }
-
-        if (!options.xKey) {
-            options.xKey = 'x';
-        }
-
-        if (!options.yKey) {
-            options.yKey = 'y';
-        }
+        options = super.handleOptions(options);
 
         if (!options.heatKey) {
             options.heatKey = 'value';
         }
 
-        if (!options.margin) {
-            options.margin = { top: 30, right: 30, bottom: 30, left: 30 };
-        }
-
-        if (!options.offSetX) {
-            options.offSetX = 0;
-        }
-
-        if (!options.offSetY) {
-            options.offSetY = 0;
-        }
-
-        if (!options.legendOffsetY) {
-            options.legendOffsetY = 0;
-        }
-
         return options;
-    }
-
-    setLabelX(labels) {
-        this.xLabels = labels;
-    }
-
-    setLabelY(labels) {
-        this.yLabels = labels;
-
     }
 
     setColors(colors) {
@@ -101,14 +25,12 @@ class CellHeatMap {
      * @param data
      */
     setData(data) {
+
+        super.setData(data);
+
         let self = this;
-        this.data = data;
-        let xKey = self.options.xKey;
-        let yKey = self.options.yKey;
         let hKey = self.options.heatKey;
-
         let totalColors = self.colors.length - 1;
-
 
         let minMax = d3.extent(data, function (d) {
             return +d[hKey];
@@ -118,41 +40,8 @@ class CellHeatMap {
             .domain([minMax[0], totalColors, minMax[1]])
             .range(self.colors)
         ;
-
-        this.minX = d3.min(this.data, function (d) {
-            return +d[xKey];
-        });
-
-        this.minY = d3.min(this.data, function (d) {
-            return +d[yKey];
-        })
     }
 
-    renderAxis() {
-        let self = this;
-        let gridSizeY = self.options.gridSizeY;
-        let gridSizeX = self.options.gridSizeX;
-        self.svg.selectAll(".yLabel")
-            .data(self.yLabels)
-            .enter().append("text")
-            .text(function (d) { return d; })
-            .attr("x", 0)
-            .attr("y", function (d, i) { return (i)* gridSizeY; })
-            .style("text-anchor", "end")
-            .attr("transform", "translate(-6," + gridSizeY / 1.5 + ")")
-            .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
-
-        self.svg.selectAll(".xLabel")
-            .data(self.xLabels)
-            .enter().append("text")
-            .text(function(d) { return d; })
-            .attr("x", function(d, i) { return i * gridSizeX; })
-            .attr("y", 0)
-            .style("text-anchor", "middle")
-            .attr("transform", "translate(" + gridSizeX / 2 + ", -6)")
-            .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
-
-    }
 
     render() {
 
