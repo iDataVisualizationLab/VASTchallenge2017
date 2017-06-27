@@ -16,11 +16,9 @@ mc1.paraSvg = d3.select('body').select('#parallelCoordinates')
     .append('svg')
 ;
 
-
-
 Util.createMapByteData(MAP_WIDTH, MAP_HEIGHT, mapFile, function (mapByteData) {
     mc1.parkMap = new ParkMap(mapByteData, mc1.mapSvg);
-    mc1.parkMap.render(true);
+    // mc1.parkMap.render(true);
 });
 
 var margin = {top: 20, right: 20, bottom: 50, left: 70},
@@ -49,10 +47,10 @@ d3.json("data/all-car-path.json", function(error, lines) {
 
     mc1.parsedVisits = visitParser.parse(lines);
     // mc1.parsedVisits = mc1.parsedVisits.slice(0, 100);
-    mc1.parsedVisits = mc1.parsedVisits.filter(function (visit) {
-        // return visit.carType != '2P';
-        return visit.carType == '2P';
-    });
+    // mc1.parsedVisits = mc1.parsedVisits.filter(function (visit) {
+    //     return visit.carType != '2P' && visit.camping == false && visit.stopCount > 0;
+    //     // return visit.carType == '2P';
+    // });
 
     mc1.eventHandler = new EventHandler();
 

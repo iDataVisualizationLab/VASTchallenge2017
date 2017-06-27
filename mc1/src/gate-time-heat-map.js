@@ -74,8 +74,8 @@ class GateTimeHeatMap extends CellHeatMap {
     handleOptions(options) {
         options = super.handleOptions(options);
 
-        options.margin.left = 150;
-        options.margin.bottom = 40;
+        options.margin.left = 100;
+        // options.margin.bottom = 10;
         options.xKey = 'time';
         options.yKey = 'gate';
         options.heatKey = 'count';

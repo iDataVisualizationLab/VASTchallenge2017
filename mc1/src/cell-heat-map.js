@@ -65,7 +65,7 @@ class CellHeatMap {
         }
 
         if (!options.margin) {
-            options.margin = { top: 50, right: 30, bottom: 100, left: 30 };
+            options.margin = { top: 30, right: 30, bottom: 30, left: 30 };
         }
 
         if (!options.offSetX) {
@@ -137,7 +137,7 @@ class CellHeatMap {
             .enter().append("text")
             .text(function (d) { return d; })
             .attr("x", 0)
-            .attr("y", function (d, i) { return i * gridSizeY; })
+            .attr("y", function (d, i) { return (i)* gridSizeY; })
             .style("text-anchor", "end")
             .attr("transform", "translate(-6," + gridSizeY / 1.5 + ")")
             .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
@@ -193,9 +193,10 @@ class CellHeatMap {
 
     renderLegends() {
         let self = this;
-        let legendElementWidth = self.options.gridSizeX * 2;
+        let legendElementWidth = (this.width-this.options.margin.left - this.options.margin.right) / (this.colors.length + 1);
         let gridSizeY = self.options.gridSizeY;
         let height = this.height;
+        let legendY = (self.yLabels.length + 1) * gridSizeY;
 
         let quantiles = self.colorScale.quantiles();
         var legend = self.svg.selectAll(".legend")
@@ -207,7 +208,7 @@ class CellHeatMap {
 
         legend.append("rect")
             .attr("x", function(d, i) { return legendElementWidth * i; })
-            .attr("y", height + self.options.legendOffsetY)
+            .attr("y", legendY + self.options.legendOffsetY)
             .attr("width", legendElementWidth)
             .attr("height", gridSizeY / 2)
             .style("fill", function(d, i) { return self.colors[i]; });
@@ -218,7 +219,7 @@ class CellHeatMap {
                 return "≥ " + Math.round(d);
             })
             .attr("x", function(d, i) { return legendElementWidth * i; })
-            .attr("y", height + gridSizeY + self.options.legendOffsetY);
+            .attr("y", legendY + gridSizeY + self.options.legendOffsetY);
 
         legend.exit().remove();
     }
