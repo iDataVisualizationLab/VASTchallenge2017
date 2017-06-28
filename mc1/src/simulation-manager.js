@@ -19,90 +19,90 @@ SimulationManager.prototype.reset = function reset() {
 
 SimulationManager.prototype.simulateTraffic = function simulateCarMovement (lines) {
 
-    let i =0;
-
-    let startIndex = 0;
-    let myNextStartIndex = 0;
-    let line;
-    let firstCar;
-
-    let myCars;
-
-    let self = this;
-
-    self.timer = d3.interval(function (elapsed) {
-
-        // console.log("time: " + elapsed);
-        myCars = [];
-        // get cars to be executed
-        for(i=startIndex; i< lines.length; i++) {
-            line = lines[i].context;
-
-            if (startIndex == i) {
-                firstCar = lines[i].context;
-            }
-
-            if (line.contextStartTime.getTime() >  elapsed * TIME_RATIO + firstCar.contextStartTime.getTime()) {
-                break;
-            }
-
-            myCars.push(line);
-            myNextStartIndex = i;
-        }
-
-        startIndex = myNextStartIndex + 1;
-        // execute the cars
-        myCars.forEach(function (l) {
-            self.simulateCarMovement(l);
-        });
-
-        if (startIndex >= lines.length) {
-            console.log('finish timer interval');
-            self.timer.stop();
-        }
-
-    }, 30);
+    // let i =0;
+    //
+    // let startIndex = 0;
+    // let myNextStartIndex = 0;
+    // let line;
+    // let firstCar;
+    //
+    // let myCars;
+    //
+    // let self = this;
+    //
+    // self.timer = d3.interval(function (elapsed) {
+    //
+    //     // console.log("time: " + elapsed);
+    //     myCars = [];
+    //     // get cars to be executed
+    //     for(i=startIndex; i< lines.length; i++) {
+    //         line = lines[i].context;
+    //
+    //         if (startIndex == i) {
+    //             firstCar = lines[i].context;
+    //         }
+    //
+    //         if (line.contextStartTime.getTime() >  elapsed * TIME_RATIO + firstCar.contextStartTime.getTime()) {
+    //             break;
+    //         }
+    //
+    //         myCars.push(line);
+    //         myNextStartIndex = i;
+    //     }
+    //
+    //     startIndex = myNextStartIndex + 1;
+    //     // execute the cars
+    //     myCars.forEach(function (l) {
+    //         self.simulateCarMovement(l);
+    //     });
+    //
+    //     if (startIndex >= lines.length) {
+    //         console.log('finish timer interval');
+    //         self.timer.stop();
+    //     }
+    //
+    // }, 30);
 };
 
 
 SimulationManager.prototype.simulateTrafficByTimeBlock = function simulateTrafficByTimeBlock (visits) {
 
-    let i =0;
-
-    let startIndex = 0;
-    let myNextStartIndex = 0;
-    let line;
-    let firstCar;
-
-    let myCars;
-
-    let self = this;
-
-    d3.interval(function (elapsed) {
-
-        console.log("time: " + elapsed);
-        myCars = [];
-        for(i=startIndex; i< visits.length; i++) {
-            line = visits[i];
-
-            if (startIndex == i) {
-                firstCar = visits[i];
-            }
-
-            if (getTimeInDayByMilliseconds(line.startTime) >  elapsed * TIME_RATIO + getTimeInDayByMilliseconds(firstCar.startTime)) {
-                break;
-            }
-
-            myCars.push(line);
-            myNextStartIndex = i;
-        }
-
-        startIndex = myNextStartIndex + 1;
-        myCars.forEach(function (l) {
-            self.simulateCarMovement(l);
-        });
-
-    }, 30);
+    // let i =0;
+    //
+    // let startIndex = 0;
+    // let myNextStartIndex = 0;
+    // let line;
+    // let firstCar;
+    //
+    // let myCars;
+    //
+    // let self = this;
+    //
+    // d3.interval(function (elapsed) {
+    //
+    //     console.log("time: " + elapsed);
+    //     myCars = [];
+    //     for(i=startIndex; i< visits.length; i++) {
+    //         line = visits[i];
+    //
+    //         if (startIndex == i) {
+    //             firstCar = visits[i];
+    //         }
+    //
+    //         if (getTimeInDayByMilliseconds(line.startTime) >  elapsed * TIME_RATIO + getTimeInDayByMilliseconds(firstCar.startTime)) {
+    //             break;
+    //         }
+    //
+    //         myCars.push(line);
+    //         myNextStartIndex = i;
+    //     }
+    //
+    //     startIndex = myNextStartIndex + 1;
+    //     myCars.forEach(function (l) {
+    //         self.simulateCarMovement(l);
+    //     });
+    //
+    // }, 30);
 };
 
 /**
