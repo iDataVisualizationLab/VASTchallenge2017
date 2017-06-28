@@ -130,7 +130,7 @@ mc1.controller.changeGraphType = function(graphType) {
 
             // spatial heat map by week day
             d3.timeout(function () {
-                mc1.weekDayHeatMap = new GateWeekDayHeatMap('weekDayHeatMap', 720, 510);
+                mc1.weekDayHeatMap = new GateWeekDayHeatMap('gateDayHeatMap', 720, 510);
                 mc1.weekDayHeatMap.setData(mc1.parsedVisits);
                 mc1.weekDayHeatMap.render();
             });
