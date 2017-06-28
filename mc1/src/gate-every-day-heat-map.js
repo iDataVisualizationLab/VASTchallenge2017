@@ -124,11 +124,4 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
         return myData;
     }
-
-    onBrushEnd(e) {
-
-        console.log('everyday heat map');
-        console.log(e);
-
-    }
 }

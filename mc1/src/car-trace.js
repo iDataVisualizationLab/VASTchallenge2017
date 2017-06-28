@@ -127,7 +127,7 @@ class CarTraceMap extends TraceMap {
         let self = this;
 
 
-        let paths = line.context.path;
+        let paths = line.path;
         let myTimeData = {};
 
         let day;
