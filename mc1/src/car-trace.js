@@ -150,24 +150,18 @@ class CarTraceMap extends TraceMap {
 
             key = day + '-' + hourMinutes;
 
-            // if (index > 0) {
-            //     preCp = paths[index-1];
-            //     if (cp.getGate().startsWith('entrance') && preCp.getGate().startsWith('entrance')) {
-            //         preDay = '';
-            //         return;
-            //     }
-            // }
-
-            if (skipDay > 2) {
-                return;
-            }
-
-
             if (preDay != day) {
 
                 if (index > 0 && dayDiff(cp.getTime(), paths[index - 1].getTime()) > 1) {
                     skipDay ++;
-                    myYLabels.push('work-' + skipDay);
+
+                    if (cp.getMapPoint().isEntrance()) {
+                        myYLabels.push('away-' + skipDay);
+                    }
+                    else {
+                        myYLabels.push('work-' + skipDay);
+                    }
+
                 }
 
                 myYLabels.push(day);
