@@ -116,9 +116,9 @@ mc1.controller.changeGraphType = function(graphType) {
 
             // density map by day and hour
             d3.timeout(function () {
-                mc1.departHeatMap = new DensityHeatMap('densityHeatMap', 720, 280);
-                mc1.departHeatMap.setData(mc1.parsedVisits);
-                mc1.departHeatMap.render();
+                mc1.densityHeatMap = new DensityHeatMap('densityHeatMap', 720, 280);
+                mc1.densityHeatMap.setData(mc1.parsedVisits);
+                mc1.densityHeatMap.render();
             });
 
             // stop heat map by hour
@@ -130,23 +130,23 @@ mc1.controller.changeGraphType = function(graphType) {
 
             // spatial heat map by week day
             d3.timeout(function () {
-                mc1.gateDayHeatMap = new GateWeekDayHeatMap('gateDayHeatMap', 720, 510);
-                mc1.gateDayHeatMap.setData(mc1.parsedVisits);
-                mc1.gateDayHeatMap.render();
+                mc1.weekDayHeatMap = new GateWeekDayHeatMap('weekDayHeatMap', 720, 510);
+                mc1.weekDayHeatMap.setData(mc1.parsedVisits);
+                mc1.weekDayHeatMap.render();
             });
 
             // spatial heat map by month
             d3.timeout(function () {
-                mc1.gateDayHeatMap = new GateMonthHeatMap('gateMonthHeatMap', 720, 510);
-                mc1.gateDayHeatMap.setData(mc1.parsedVisits);
-                mc1.gateDayHeatMap.render();
+                mc1.monthlyHeatMap = new GateMonthHeatMap('gateMonthHeatMap', 720, 510);
+                mc1.monthlyHeatMap.setData(mc1.parsedVisits);
+                mc1.monthlyHeatMap.render();
             });
 
             // everyday heat map
             d3.timeout(function () {
-                mc1.gateDayHeatMap = new GateEveryDayHeatMap('gateEveryDayHeatMap', 1720, 510);
-                mc1.gateDayHeatMap.setData(mc1.parsedVisits);
-                mc1.gateDayHeatMap.render();
+                mc1.dailyHeatMap = new GateEveryDayHeatMap('gateEveryDayHeatMap', 1720, 510);
+                mc1.dailyHeatMap.setData(mc1.parsedVisits);
+                mc1.dailyHeatMap.render();
             });
     }
 
