@@ -164,7 +164,7 @@ class VisitDuration {
         let line = e.line;
         // let line = {context: mc1.selectedCar};
 
-        self.singleVisit.setData(line);
+        self.singleVisit.setData(line.context);
         self.singleVisit.render();
 
         self.visitChart.highlightSingleVisit(line.context.carId);

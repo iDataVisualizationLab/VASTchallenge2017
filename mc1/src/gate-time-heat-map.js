@@ -174,6 +174,12 @@ class GateTimeHeatMap extends CellHeatMap {
         super.setData(visData);
     }
 
+    reset() {
+        super.reset();
+
+        this.setupDefaultHeatMapData();
+    }
+
     render() {
         super.render();
         super.renderLegends();

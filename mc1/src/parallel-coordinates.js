@@ -124,6 +124,23 @@ ParallelCoordinate.prototype.addDimension = function addDimension(dimension, acc
     this.setDomain();
 };
 
+ParallelCoordinate.prototype.getVisibleLines = function getVisibleLines() {
+
+    let self = this;
+
+    let myLines = [];
+    self.foreground.each(function (l) {
+
+        if (l.display == 'none') {
+            return;
+        }
+
+        myLines.push(l);
+    });
+
+    return myLines;
+};
+
 ParallelCoordinate.prototype.updateYDomain = function updateYDomain(accessKey, newDomain) {
     let self = this;
     let type = self.axisConfig[accessKey].type;
@@ -194,7 +211,7 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
     ;
 
     // Add blue foreground lines for focus.
-    let foreground = self.svg.append("g")
+    self.foreground = self.svg.append("g")
         .attr("class", "foreground")
         .selectAll("path")
         .data(myDataSet)
@@ -353,7 +370,7 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
             });
 
         // update display for parallel coordinates
-        foreground.style("display", function(line) {
+        self.foreground.style("display", function(line) {
 
             let myDp = actives.every(function(dim, i) {
 

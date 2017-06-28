@@ -22,12 +22,22 @@ class TraceMap {
         this.options = options;
 
         this.init();
+    }
 
+    setEventHandler(eventHandler) {
+        this.eventHandler = eventHandler;
     }
 
     init() {
 
         this.calculateGridSize();
+
+        this.setEventHandler(mc1.eventHandler);
+        this.setupEvent();
+    }
+
+    setupEvent() {
+        this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
     }
 
     calculateGridSize() {
@@ -172,6 +182,21 @@ class TraceMap {
         ;
 
         this.renderAxis();
+    }
+
+    reset() {
+        this.svg.selectAll('*').remove();
+    }
+
+    onBrushEnd(e) {
+
+        let lines = mc1.parallel.getVisibleLines();
+
+        this.reset();
+
+        this.setData(lines);
+
+        this.render();
     }
 
 }

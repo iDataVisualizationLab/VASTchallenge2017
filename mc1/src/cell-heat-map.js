@@ -4,7 +4,6 @@ class CellHeatMap extends TraceMap {
         super(divId, width, height, options);
     }
 
-
     handleOptions(options) {
 
         options = super.handleOptions(options);

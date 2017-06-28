@@ -66,7 +66,7 @@ class CarTraceMap extends TraceMap {
 
     static createTimes(line) {
 
-        let paths = line.context.path;
+        let paths = line.path;
 
 
         let minMax = d3.extent(paths, function (cp) {
