@@ -87,6 +87,9 @@ class CarTraceMap extends TraceMap {
 
         let times = [];
         let myTime = new Date(startDate.getTime());
+        myTime.setSeconds(0);
+        myTime.setMilliseconds(0);
+
         let end = endDate.getTime();
 
         do {
@@ -149,7 +152,6 @@ class CarTraceMap extends TraceMap {
             hourMinutes = cpTime.getHours() + '.' + cpTime.getMinutes();
 
             key = day + '-' + hourMinutes;
-
             if (preDay != day) {
 
                 if (index > 0 && dayDiff(cp.getTime(), paths[index - 1].getTime()) > 1) {
@@ -168,7 +170,7 @@ class CarTraceMap extends TraceMap {
             }
 
             if (!myTimeData.hasOwnProperty(key)) {
-                myTimeData[key] = {
+                  myTimeData[key] = {
                     id: key,
                     color: cp.getColor()
                 };
