@@ -14,15 +14,6 @@ class DensityHeatMap extends DayHourHeatMap {
         let tmpData;
 
         visits.forEach(function (l) {
-            // if (l.carType == '2P' || l.camping == false) {
-            //     return;
-            // }
-
-
-            if (l.visitDuration >= 168) { // stay full 7 days
-                // add 1 equal to ignore
-                return;
-            }
 
             let start = new Date(l.startTime.getTime());
             let endTime = l.endTime.getTime();
