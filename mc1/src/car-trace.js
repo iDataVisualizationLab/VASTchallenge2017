@@ -172,7 +172,9 @@ class CarTraceMap extends TraceMap {
             if (!myTimeData.hasOwnProperty(key)) {
                   myTimeData[key] = {
                     id: key,
-                    color: cp.getColor()
+                    color: cp.getColor(),
+                      name: cp.getGate(),
+                      time: cp.getFormattedTime()
                 };
             }
 
@@ -318,8 +320,21 @@ class CarTraceMap extends TraceMap {
 
     render() {
 
+        let self = this;
         this.clear();
        super.render();
+
+       if (!!this.cell) {
+           this.cell
+               .on('mouseover', function (d) {
+
+                   if (!!d.name) {
+                       self.tooltip.render('Gate: ' + d.name + ' <br/> time: ' + d.time);
+
+                   }
+               })
+       }
+
     }
 
     renderAxis() {

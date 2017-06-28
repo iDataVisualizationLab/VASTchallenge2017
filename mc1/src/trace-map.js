@@ -22,6 +22,9 @@ class TraceMap {
         this.options = options;
 
         this.init();
+
+        this.tooltip = new TooltipHelper('tooltip');
+
     }
 
     setEventHandler(eventHandler) {
@@ -157,7 +160,7 @@ class TraceMap {
         let fillKey = self.options.fillKey;
 
 
-        self.svg.selectAll('.card').data(this.data).enter()
+        this.cell = self.svg.selectAll('.card').data(this.data).enter()
             .append('rect')
             .attr("class", function (l) {
                 return "card bordered trace-map-cell-id-" + l.id;
@@ -179,6 +182,9 @@ class TraceMap {
                 return !!d.weekend ? '#990000' : '#E6E6E6';
             })
             .style("stroke-width", self.options.strokeWidth)
+            .on('mouseout', function (d) {
+                self.tooltip.hide();
+            })
         ;
 
         this.renderAxis();
