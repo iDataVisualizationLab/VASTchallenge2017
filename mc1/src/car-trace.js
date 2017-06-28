@@ -20,7 +20,7 @@ class CarTraceMap extends TraceMap {
         options.yKey = 'day';
         options.fillKey = 'color';
 
-        options.strokeWidth = 0.1;
+        options.strokeWidth = 0;
 
         options.margin.left = 80;
         options.margin.right = 0;
@@ -139,7 +139,7 @@ class CarTraceMap extends TraceMap {
 
         let totalPoints = paths.length;
         let nextCp;
-        // let currentTimeData;
+        let preCp;
 
         let skipDay = 0;
 
@@ -149,6 +149,19 @@ class CarTraceMap extends TraceMap {
             hourMinutes = cpTime.getHours() + '.' + cpTime.getMinutes();
 
             key = day + '-' + hourMinutes;
+
+            // if (index > 0) {
+            //     preCp = paths[index-1];
+            //     if (cp.getGate().startsWith('entrance') && preCp.getGate().startsWith('entrance')) {
+            //         preDay = '';
+            //         return;
+            //     }
+            // }
+
+            if (skipDay > 2) {
+                return;
+            }
+
 
             if (preDay != day) {
 
@@ -167,16 +180,10 @@ class CarTraceMap extends TraceMap {
                 };
             }
 
-            // currentTimeData = myTimeData[key];
-
-
-            // currentTimeData['minute'] = self.xLabels.indexOf(hourMinutes);
-            // currentTimeData['day'] = myYLabels.indexOf(day);
-
             if (index < totalPoints - 1) {
                 nextCp = paths[index + 1];
 
-                if (cp.getGate() == nextCp.getGate()) { // stop period
+                if (cp.getGate() == nextCp.getGate() && !cp.getMapPoint().isEntrance()) { // stop period
                     self.updateStopPeriod(cp.getTime(), nextCp.getTime(), myTimeData);
                 }
             }
@@ -236,6 +243,10 @@ class CarTraceMap extends TraceMap {
             }
 
             do {
+                if (start.getTime()>= end) {
+                    break;
+                }
+
                 day = formatDate(start);
                 hourMinutes = start.getHours() + '.' + start.getMinutes();
                 key = day + '-' + hourMinutes;
@@ -245,10 +256,6 @@ class CarTraceMap extends TraceMap {
                         id: key,
                         color: self.options.stopByCellColor
                     };
-                }
-
-                if (start.getTime()>= end) {
-                    break;
                 }
 
                 start.setMinutes(start.getMinutes() + 1);
@@ -294,7 +301,14 @@ class CarTraceMap extends TraceMap {
 
         let myData = this.handleTimeData(line);
 
+        let tmp;
         let visData = Object.keys(myData).map(function (k) {
+
+            tmp = myData[k];
+
+            if (tmp.day == null|| tmp.minute == null) {
+                debugger;
+            }
             return myData[k];
         });
 
