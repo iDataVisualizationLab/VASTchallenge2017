@@ -1,22 +1,40 @@
 'use strict';
-class DayHourHeatMap extends CellHeatMap {
+class DayHourHeatMap extends GateTimeHeatMap {
 
     constructor(divId, width, height, options) {
         super(divId, width, height, options);
     }
 
-    init() {
+    // init() {
+    //
+    //     super.init();
+    //
+    //     let colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
+    //         days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+    //         times = ["1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "10a", "11a", "12a", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p", "10p", "11p", "12p"];
+    //
+    //     super.setColors(colors);
+    //     super.setLabelX(times);
+    //     super.setLabelY(days);
+    //
+    //     this.setupDefaultHeatMapData();
+    //
+    //
+    // }
 
-        super.init();
+    static createTimes() {
+        let times = ["1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "10a", "11a", "12a", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p", "10p", "11p", "12p"];
+        return times;
+    }
 
-        let colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
-            days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
-            times = ["1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "10a", "11a", "12a", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p", "10p", "11p", "12p"];
+    static createGates() {
 
-        super.setColors(colors);
-        super.setLabelX(times);
-        super.setLabelY(days);
+        let days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
+        return days;
+    }
+
+    setupDefaultHeatMapData() {
         let self = this;
         let key;
         let myData = this.objectData = {};
@@ -83,19 +101,25 @@ class DayHourHeatMap extends CellHeatMap {
         return myData;
     }
 
-    setData(visits, depart) {
+    // setData(visits, depart) {
+    //
+    //     let myData = this.handleTimeData(visits, depart);
+    //
+    //     let visData = Object.keys(myData).map(function (k) {
+    //        return myData[k];
+    //     });
+    //
+    //     super.setData(visData);
+    // }
 
-        let myData = this.handleTimeData(visits, depart);
-
-        let visData = Object.keys(myData).map(function (k) {
-           return myData[k];
-        });
-
-        super.setData(visData);
-    }
-
-    render() {
-        super.render();
-        super.renderLegends();
-    }
+    // render() {
+    //     super.render();
+    //     super.renderLegends();
+    // }
+    //
+    // reset() {
+    //     super.reset();
+    //
+    //     this.setupDefaultHeatMapData();
+    // }
 }
