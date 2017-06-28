@@ -207,6 +207,8 @@ class CarTraceMap extends TraceMap {
 
         let start = new Date(startTime.getTime());
         start.setMinutes(start.getMinutes() + 1);
+        start.setSeconds(0); // avoid affecting exiting condition in while loop since we count to minutes only
+        start.setMilliseconds(0);
 
         // let xEndTime = this.parseTime(self.xLabels[self.xLabels.length-1]);
 
@@ -277,6 +279,9 @@ class CarTraceMap extends TraceMap {
             start.setHours(hourMinutes[0]);
             start.setMinutes(hourMinutes[1]);
         }
+
+        start.setSeconds(0);
+        start.setMilliseconds(0);
 
         myEndTime = new Date(endTime.getTime());
         myEndTime.setMinutes(myEndTime.getMinutes() - 1);
