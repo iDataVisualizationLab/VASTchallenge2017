@@ -73,6 +73,7 @@ class CarTraceMap extends TraceMap {
 
             let time = new Date();
             let cpTime = cp.getTime();
+
             time.setHours(cpTime.getHours());
             time.setMinutes(cpTime.getMinutes());
             time.setSeconds(cpTime.getSeconds());
@@ -86,18 +87,15 @@ class CarTraceMap extends TraceMap {
 
         let times = [];
         let myTime = new Date(startDate.getTime());
-
-
         let end = endDate.getTime();
-        do {
-            times.push(myTime.getHours() + '.' + myTime.getMinutes());
 
+        do {
             if (myTime.getTime() > end) {
                 break;
             }
 
+            times.push(myTime.getHours() + '.' + myTime.getMinutes());
             myTime.setMinutes(myTime.getMinutes() + 1);
-
         }
         while (true);
 
