@@ -162,6 +162,7 @@ class VisitDuration {
 
         let self = this;
         let line = e.line;
+        // let line = {context: mc1.selectedCar};
 
         self.singleVisit.setData(line);
         self.singleVisit.render();

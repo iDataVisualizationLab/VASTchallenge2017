@@ -2,6 +2,8 @@
 class CarTraceMap extends TraceMap {
     constructor(divId, width, height, options) {
         super(divId, width, height, options);
+
+        this.parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
     }
 
     init() {
@@ -21,9 +23,10 @@ class CarTraceMap extends TraceMap {
         options.strokeWidth = 0.1;
 
         options.margin.left = 80;
+        options.margin.right = 0;
 
         options.defaultCellColor = '#CCCCCC';
-        options.stopByCellColor = '#444444';
+        options.stopByCellColor = '#000000';
 
         return options;
     }
@@ -43,7 +46,7 @@ class CarTraceMap extends TraceMap {
                         id: key,
                         minute: idX,
                         day: idY,
-                        color: self.options.defaultCellColor
+                        color: ly.startsWith('work') ? self.options.stopByCellColor : self.options.defaultCellColor
                     };
                 }
                else {
@@ -153,7 +156,7 @@ class CarTraceMap extends TraceMap {
 
                 if (index > 0 && dayDiff(cp.getTime(), paths[index - 1].getTime()) > 1) {
                     skipDay ++;
-                    myYLabels.push('skip-day-' + skipDay);
+                    myYLabels.push('work-' + skipDay);
                 }
 
                 myYLabels.push(day);
@@ -204,36 +207,81 @@ class CarTraceMap extends TraceMap {
         let start = new Date(startTime.getTime());
         start.setMinutes(start.getMinutes() + 1);
 
+        // let xEndTime = this.parseTime(self.xLabels[self.xLabels.length-1]);
+
        let myEndTime = new Date(endTime.getTime());
-        myEndTime.setYear(startTime.getYear());
+        myEndTime.setFullYear(startTime.getFullYear());
         myEndTime.setMonth(startTime.getMonth());
         myEndTime.setDate(startTime.getDate());
 
-       myEndTime.setMinutes(myEndTime.getMinutes() - 1);
+        let sameDay = formatDate(startTime) == formatDate(endTime);
+
+        if (!!sameDay) { // same date
+            myEndTime.setMinutes(myEndTime.getMinutes() - 1);
+        }
+        else{ // different date
+            let hourMinutes = self.xLabels[self.xLabels.length-1];
+            hourMinutes = hourMinutes.split('\.');
+            myEndTime.setHours(hourMinutes[0]);
+            myEndTime.setMinutes(hourMinutes[1]);
+        }
+
 
         let end = myEndTime.getTime();
 
 
-        do {
-            day = formatDate(start);
-            hourMinutes = start.getHours() + '.' + start.getMinutes();
-            key = day + '-' + hourMinutes;
+        // update from start time to end time of that day
+        var updateTime = function (start, end) {
 
-            if (!myTimeData.hasOwnProperty(key)) {
-                myTimeData[key] = {
-                    id: key,
-                    color: self.options.stopByCellColor
-                };
+            if(start.getTime() > end) {
+                return;
             }
 
-            if (start.getTime()>= end) {
-                break;
-            }
+            do {
+                day = formatDate(start);
+                hourMinutes = start.getHours() + '.' + start.getMinutes();
+                key = day + '-' + hourMinutes;
 
+                if (!myTimeData.hasOwnProperty(key)) {
+                    myTimeData[key] = {
+                        id: key,
+                        color: self.options.stopByCellColor
+                    };
+                }
+
+                if (start.getTime()>= end) {
+                    break;
+                }
+
+                start.setMinutes(start.getMinutes() + 1);
+            }
+            while(true);
+        };
+
+        updateTime(start, end);
+
+
+        // update for the day of actual end time
+        start = new Date(startTime.getTime());
+        start.setFullYear(endTime.getFullYear());
+        start.setMonth(endTime.getMonth());
+        start.setDate(endTime.getDate());
+
+        if (!!sameDay) {
             start.setMinutes(start.getMinutes() + 1);
         }
-        while(true);
+        else {
+            hourMinutes = self.xLabels[0];
+            hourMinutes = hourMinutes.split('\.');
+            start.setHours(hourMinutes[0]);
+            start.setMinutes(hourMinutes[1]);
+        }
 
+        myEndTime = new Date(endTime.getTime());
+        myEndTime.setMinutes(myEndTime.getMinutes() - 1);
+        end = myEndTime.getTime();
+
+       updateTime(start, end);
 
         return myTimeData;
     }
@@ -251,10 +299,6 @@ class CarTraceMap extends TraceMap {
         let visData = Object.keys(myData).map(function (k) {
             return myData[k];
         });
-
-        if (visData.length > 0 && visData[visData.length-1].color == this.options.defaultCellColor) {
-            visData.pop();
-        }
 
         super.setData(visData);
     }
