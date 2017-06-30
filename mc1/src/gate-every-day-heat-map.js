@@ -35,6 +35,7 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
     handleOptions(options) {
         options = super.handleOptions(options);
         options.margin.top = 100;
+        options.margin.bottom = 0;
 
         return options;
     }
