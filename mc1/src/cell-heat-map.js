@@ -107,7 +107,7 @@ class CellHeatMap extends TraceMap {
                 return "≥ " + Math.round(d);
             })
             .attr("x", function(d, i) { return legendElementWidth * i; })
-            .attr("y", legendY + gridSizeY + self.options.legendOffsetY);
+            .attr("y", legendY + gridSizeY / 2 + self.options.legendOffsetY + 16);
 
         legend.exit().remove();
     }
