@@ -130,14 +130,14 @@ mc1.controller.changeGraphType = function(graphType) {
 
             // spatial heat map by week day
             d3.timeout(function () {
-                mc1.weekDayHeatMap = new GateWeekDayHeatMap('gateDayHeatMap', 720, 510);
+                mc1.weekDayHeatMap = new GateWeekDayHeatMap('gateDayHeatMap', 500, 510);
                 mc1.weekDayHeatMap.setData(mc1.parsedVisits);
                 mc1.weekDayHeatMap.render();
             });
 
             // spatial heat map by month
             d3.timeout(function () {
-                mc1.monthlyHeatMap = new GateMonthHeatMap('gateMonthHeatMap', 720, 510);
+                mc1.monthlyHeatMap = new GateMonthHeatMap('gateMonthHeatMap', 500, 510);
                 mc1.monthlyHeatMap.setData(mc1.parsedVisits);
                 mc1.monthlyHeatMap.render();
             });
