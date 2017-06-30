@@ -1,6 +1,7 @@
 var mc1 = mc1 || {};
 
 mc1.controller = mc1.controller || {};
+mc1.controller.currentHeatMapIndex = 0;
 
 mc1.controller.simulateTraffic = function(self) {
     console.log(self.name + "=" + self.value);
@@ -148,6 +149,8 @@ mc1.controller.changeGraphType = function(graphType) {
                 mc1.dailyHeatMap.setData(mc1.parsedVisits);
                 mc1.dailyHeatMap.render();
             });
+
+            this.viewHeatMap(0);
     }
 
 };
@@ -160,3 +163,21 @@ mc1.controller.viewStopHeatMap = function() {
 };
 
 
+mc1.controller.viewHeatMap = function(idx) {
+    if (idx == null || isNaN(idx)) {
+        idx = 0;
+    }
+    let maps = ['heatmap', 'arrivalHeatMap', 'departureHeatMap'];
+
+    this.currentHeatMapIndex = this.currentHeatMapIndex + idx;
+    this.currentHeatMapIndex = this.currentHeatMapIndex % maps.length;
+
+    let mapType = maps[this.currentHeatMapIndex];
+
+    maps.forEach(function (mapId) {
+        let dp = mapId == mapType ? 'initial' : 'none';
+
+        d3.select('body').select('#' + mapId).style('display', dp);
+    });
+
+};

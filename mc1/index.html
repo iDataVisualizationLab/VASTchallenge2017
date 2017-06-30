@@ -40,6 +40,34 @@
             fill: #FF0000;
         }
 
+        /* Next & previous buttons */
+        .prev, .next {
+            cursor: pointer;
+            /*position: absolute;*/
+            /*top: 50%;*/
+            width: auto;
+            /*margin-top: 110px;*/
+            padding: 16px;
+            color: black;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+        }
+
+        /* Position the "next button" to the right */
+        .next {
+            left: 1740px;
+            border-radius: 3px 0 0 3px;
+
+        }
+
+        /* On hover, add a black background color with a little bit see-through */
+        .prev:hover, .next:hover {
+            background-color: rgba(0,0,0,0.8);
+            color: white;
+
+        }
     </style>
 </head>
 <body>
@@ -90,24 +118,47 @@
     <tr>
 
         <td colspan="2">
+
             <table>
-                <tr valign="top">
+                <tr>
                     <td>
-                        <div>Week day by hour Density Heat Map</div>
-                        <div id="densityHeatMap"></div>
+                        <div class="prev" onclick="mc1.controller.viewHeatMap(-1)">Pre</div>
                     </td>
+                    <td width="100%">
+                        <div id="heatmap">
+                            <table>
+                                <tr valign="top">
+                                    <td>
+                                        <div>Week day by hour Density Heat Map</div>
+                                        <div id="densityHeatMap"></div>
+                                    </td>
 
-                    <td>
-                        <div>Week day heat map</div>
-                        <div id="gateDayHeatMap"></div>
+                                    <td>
+                                        <div>Week day heat map</div>
+                                        <div id="gateDayHeatMap"></div>
+                                    </td>
+
+                                    <td>
+                                        <div>Monthly heat map</div>
+                                        <div id="gateMonthHeatMap"></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id="arrivalHeatMap">
+                            Arrival heat map
+                        </div>
+                        <div id="departureHeatMap">
+                            departure heat map
+                        </div>
                     </td>
-
                     <td>
-                        <div>Monthly heat map</div>
-                        <div id="gateMonthHeatMap"></div>
+                        <div class="next" onclick="mc1.controller.viewHeatMap(+1)">Next</div>
                     </td>
                 </tr>
             </table>
+
+
         </td>
     </tr>
 
