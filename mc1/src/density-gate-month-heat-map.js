@@ -1,12 +1,12 @@
 'use strict';
-class GateWeekDayHeatMap extends GateTimeHeatMap {
+class DensityGateMonthHeatMap extends GateTimeHeatMap {
 
     constructor(divId, width, height, options) {
         super(divId, width, height, options);
     }
 
     static createTimes() {
-        let times = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+        let times = ["Ja", "Fe", "Mar", "Apr", "May", "Jun", "Jul", 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         return times;
     }
 
@@ -15,7 +15,6 @@ class GateWeekDayHeatMap extends GateTimeHeatMap {
         let myData = self.objectData;
         let key;
         let time;
-        let day;
         let gate;
         let tmpData;
 
@@ -50,9 +49,9 @@ class GateWeekDayHeatMap extends GateTimeHeatMap {
                 do {
 
                     myTime = start;
-                    day = myTime.getDay();
+                    time = myTime.getMonth();
 
-                    key = gate + '-' + day;
+                    key = gate + '-' + time;
 
                     if (!myData.hasOwnProperty(key)) {
                         break;
@@ -61,7 +60,7 @@ class GateWeekDayHeatMap extends GateTimeHeatMap {
                     tmpData = myData[key];
                     tmpData.count ++;
 
-                    start.setDate(start.getDate() + 1);
+                    start.setMonth(start.getMonth() + 1);
 
                     if (start.getTime() > end) {
                         break;

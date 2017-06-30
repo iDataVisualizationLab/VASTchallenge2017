@@ -123,21 +123,21 @@ mc1.controller.changeGraphType = function(graphType) {
 
             // density map by day and hour
             d3.timeout(function () {
-                mc1.densityHeatMap = new DensityHeatMap('densityHeatMap', 720, 280);
+                mc1.densityHeatMap = new DensityHourlyGateHeatMap('hourlyLocationDensityHeatMap', 720, 510);
                 mc1.densityHeatMap.setData(mc1.parsedVisits);
                 mc1.densityHeatMap.render();
             });
 
             // spatial heat map by week day
             d3.timeout(function () {
-                mc1.weekDayHeatMap = new GateWeekDayHeatMap('gateDayHeatMap', 500, 510);
+                mc1.weekDayHeatMap = new DensityGateWeekDayHeatMap('weekDayLocationDensityHeatMap', 500, 510);
                 mc1.weekDayHeatMap.setData(mc1.parsedVisits);
                 mc1.weekDayHeatMap.render();
             });
 
             // spatial heat map by month
             d3.timeout(function () {
-                mc1.monthlyHeatMap = new GateMonthHeatMap('gateMonthHeatMap', 500, 510);
+                mc1.monthlyHeatMap = new DensityGateMonthHeatMap('monthlyLocationDensityHeatMap', 500, 510);
                 mc1.monthlyHeatMap.setData(mc1.parsedVisits);
                 mc1.monthlyHeatMap.render();
             });
