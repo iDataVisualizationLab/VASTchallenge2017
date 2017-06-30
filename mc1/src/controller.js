@@ -147,8 +147,14 @@ mc1.controller.changeGraphType = function(graphType) {
             this.viewHeatMap(0);
 
             // arrival week day by hour heat map
+            // d3.timeout(function () {
+            //     mc1.arrivalWdHHeatMap = new ArrivalWeekDayHourHeatMap('weekDayHourArrivalHeatMap', 720, 360);
+            //     mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
+            //     mc1.arrivalWdHHeatMap.render();
+            // });
+
             d3.timeout(function () {
-                mc1.arrivalWdHHeatMap = new ArrivalWeekDayHourHeatMap('weekDayHourArrivalHeatMap', 720, 360);
+                mc1.arrivalWdHHeatMap = new ArrivalHourlyGateHeatMap('hourlyLocationArrivalHeatMap', 720, 510);
                 mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
                 mc1.arrivalWdHHeatMap.render();
             });
@@ -159,6 +165,11 @@ mc1.controller.changeGraphType = function(graphType) {
                 mc1.arrivalWdHHeatMap.render();
             });
 
+            d3.timeout(function () {
+                mc1.arrivalWdHHeatMap = new ArrivalMonthlyGateHeatMap('monthlyLocationArrivalHeatMap', 500, 510);
+                mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
+                mc1.arrivalWdHHeatMap.render();
+            });
             // arrival week day by location
     }
 
