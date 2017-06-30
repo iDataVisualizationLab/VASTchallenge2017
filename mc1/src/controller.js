@@ -170,7 +170,27 @@ mc1.controller.changeGraphType = function(graphType) {
                 mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
                 mc1.arrivalWdHHeatMap.render();
             });
-            // arrival week day by location
+
+
+            // departure heat map
+            d3.timeout(function () {
+                mc1.arrivalWdHHeatMap = new DepartureHourlyGateHeatMap('hourlyLocationDepartureHeatMap', 720, 510);
+                mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
+                mc1.arrivalWdHHeatMap.render();
+            });
+
+            d3.timeout(function () {
+                mc1.arrivalWdHHeatMap = new DepartureWeekDayGateHeatMap('weekDayLocationDepartureHeatMap', 500, 510);
+                mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
+                mc1.arrivalWdHHeatMap.render();
+            });
+
+            d3.timeout(function () {
+                mc1.arrivalWdHHeatMap = new DepartureMonthlyGateHeatMap('monthlyLocationDepartureHeatMap', 500, 510);
+                mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
+                mc1.arrivalWdHHeatMap.render();
+            });
+
     }
 
 };
