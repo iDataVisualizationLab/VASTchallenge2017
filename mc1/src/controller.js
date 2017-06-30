@@ -210,7 +210,8 @@ mc1.controller.viewHeatMap = function(idx) {
     let maps = ['heatmap', 'arrivalHeatMap', 'departureHeatMap'];
 
     this.currentHeatMapIndex = this.currentHeatMapIndex + idx;
-    this.currentHeatMapIndex = this.currentHeatMapIndex % maps.length;
+
+    this.currentHeatMapIndex = Math.abs(this.currentHeatMapIndex) % maps.length;
 
     let mapType = maps[this.currentHeatMapIndex];
 
