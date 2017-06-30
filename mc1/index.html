@@ -129,24 +129,41 @@
                             <table>
                                 <tr valign="top">
                                     <td>
-                                        <div>Week day by hour Density Heat Map</div>
+                                        <div>Week day by hour density Heat Map</div>
                                         <div id="densityHeatMap"></div>
                                     </td>
 
                                     <td>
-                                        <div>Week day heat map</div>
+                                        <div>Week day by location density heat map</div>
                                         <div id="gateDayHeatMap"></div>
                                     </td>
 
                                     <td>
-                                        <div>Monthly heat map</div>
+                                        <div>Monthly by location density heat map</div>
                                         <div id="gateMonthHeatMap"></div>
                                     </td>
                                 </tr>
                             </table>
                         </div>
                         <div id="arrivalHeatMap">
-                            Arrival heat map
+                            <table>
+                                <tr valign="top">
+                                    <td>
+                                        <div>Week day by hour arrival Heat Map</div>
+                                        <div id="weekDayHourArrivalHeatMap"></div>
+                                    </td>
+
+                                    <td>
+                                        <div>Week day by location arrival heat map</div>
+                                        <div id="weekDayLocationArrivalHeatMap"></div>
+                                    </td>
+
+                                    <td>
+                                        <div>Monthly by location arrival heat map</div>
+                                        <div id="monthlyLocationArrivalHeatMap"></div>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                         <div id="departureHeatMap">
                             departure heat map
@@ -178,7 +195,7 @@
 </table>
 
 
-<div id="map"></div>
+<div id="map" style="display: none"></div>
 
 <div id="tooltip"></div>
 
@@ -208,6 +225,10 @@
 <script type="text/javascript" src="src/gate-week-day-heat-map.js"></script>
 <script type="text/javascript" src="src/gate-month-heat-map.js"></script>
 <script type="text/javascript" src="src/gate-every-day-heat-map.js"></script>
+<script type="text/javascript" src="src/arrival-week-day-hour-heat-map.js"></script>
+<script type="text/javascript" src="src/arrival-week-day-gate-heat-map.js"></script>
+
+
 <script type="text/javascript" src="src/visit-chart-2d.js"></script>
 <script type="text/javascript" src="src/spiral-graph.js"></script>
 <script type="text/javascript" src="src/visit-by-day.js"></script>

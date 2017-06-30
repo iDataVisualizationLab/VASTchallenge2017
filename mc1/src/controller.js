@@ -86,6 +86,12 @@ mc1.controller.changeGraphType = function(graphType) {
             //     mc1.dayOfWeekChart.render();
             // });
 
+            // everyday heat map
+            d3.timeout(function () {
+                mc1.dailyHeatMap = new GateEveryDayHeatMap('gateEveryDayHeatMap', 1720, 510);
+                mc1.dailyHeatMap.setData(mc1.parsedVisits);
+                mc1.dailyHeatMap.render();
+            });
 
             // entire year graph
             d3.timeout(function () {
@@ -122,13 +128,6 @@ mc1.controller.changeGraphType = function(graphType) {
                 mc1.densityHeatMap.render();
             });
 
-            // stop heat map by hour
-            // d3.timeout(function () {
-            //     mc1.gateTimetHeatMap = new GateTimeHeatMap('gateTimeHeatMap', 720, 510);
-            //     mc1.gateTimetHeatMap.setData(mc1.parsedVisits);
-            //     mc1.gateTimetHeatMap.render();
-            // });
-
             // spatial heat map by week day
             d3.timeout(function () {
                 mc1.weekDayHeatMap = new GateWeekDayHeatMap('gateDayHeatMap', 500, 510);
@@ -143,14 +142,24 @@ mc1.controller.changeGraphType = function(graphType) {
                 mc1.monthlyHeatMap.render();
             });
 
-            // everyday heat map
-            d3.timeout(function () {
-                mc1.dailyHeatMap = new GateEveryDayHeatMap('gateEveryDayHeatMap', 1720, 510);
-                mc1.dailyHeatMap.setData(mc1.parsedVisits);
-                mc1.dailyHeatMap.render();
-            });
+
 
             this.viewHeatMap(0);
+
+            // arrival week day by hour heat map
+            d3.timeout(function () {
+                mc1.arrivalWdHHeatMap = new ArrivalWeekDayHourHeatMap('weekDayHourArrivalHeatMap', 720, 360);
+                mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
+                mc1.arrivalWdHHeatMap.render();
+            });
+
+            d3.timeout(function () {
+                mc1.arrivalWdHHeatMap = new ArrivalWeekDayGateHeatMap('weekDayLocationArrivalHeatMap', 500, 510);
+                mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
+                mc1.arrivalWdHHeatMap.render();
+            });
+
+            // arrival week day by location
     }
 
 };
