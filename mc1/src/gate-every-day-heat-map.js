@@ -155,7 +155,8 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
             .style("text-anchor", "end")
             // .attr("transform", "rotate(-65)")
             .attr("transform", "translate(-6," + gridSizeY / 1.5 + ")")
-            .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+            // .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); })
+        ;
 
         self.svg.selectAll(".xLabel")
             .data(self.xLabels)
@@ -172,7 +173,7 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
             })
             // .style("text-anchor", "middle")
             .attr("transform", "translate(" + gridSizeX / 2 + ", 0) rotate(-90)")
-            .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+            .attr("class", "weekend-text");
 
     }
 }
