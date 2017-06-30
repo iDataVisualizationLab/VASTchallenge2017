@@ -81,7 +81,7 @@ class CellHeatMap extends TraceMap {
 
     renderLegends() {
         let self = this;
-        let legendElementWidth = (this.width-this.options.margin.left - this.options.margin.right) / (this.colors.length + 1);
+        let legendElementWidth = (this.originalWidth-this.options.margin.left - this.options.margin.right) / (this.colors.length);
         let gridSizeY = self.options.gridSizeY;
         let height = this.height;
         let legendY = (self.yLabels.length + 1) * gridSizeY;
