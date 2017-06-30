@@ -7,6 +7,8 @@ class TraceMap {
         let margin = options.margin;
         this.width = width - margin.left - margin.right;
         this.height =  height - margin.top - margin.bottom;
+        this.originalWidth = width;
+        this.originalHeight = height;
 
         d3.select("#" + divId).selectAll('*').remove();
 

@@ -91,7 +91,7 @@ class GateTimeHeatMap extends CellHeatMap {
         let options = this.options;
 
         if (!options.gridSizeX) {
-            options.gridSizeX = (this.width - options.margin.left - options.margin.right) / this.xLabels.length;
+            options.gridSizeX = (this.originalWidth - options.margin.left - options.margin.right) / this.xLabels.length;
         }
 
         if (!options.gridSizeY) {
