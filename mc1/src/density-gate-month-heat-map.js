@@ -48,23 +48,28 @@ class DensityGateMonthHeatMap extends GateTimeHeatMap {
                 let myTime;
                 do {
 
+                    if (start.getTime() > end) {
+                        break;
+                    }
+
                     myTime = start;
                     time = myTime.getMonth();
 
                     key = gate + '-' + time;
 
                     if (!myData.hasOwnProperty(key)) {
-                        break;
+
+                        if (!self.isItemInIgnoreList(gate)) {
+                            console.error('Key does not exist: ' + key);
+                        }
+                        start.setMonth(start.getMonth() + 1);
+                        continue;
                     }
 
                     tmpData = myData[key];
                     tmpData.count ++;
 
                     start.setMonth(start.getMonth() + 1);
-
-                    if (start.getTime() > end) {
-                        break;
-                    }
 
                 }
                 while(true);

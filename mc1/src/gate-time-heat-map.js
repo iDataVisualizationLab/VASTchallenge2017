@@ -45,17 +45,42 @@ class GateTimeHeatMap extends CellHeatMap {
         });
     }
 
+    ignoreGates() {
+        return ['gate', 'entrance', 'ranger-base', 'general'];
+    }
+
     static createTimes() {
         let times = ["1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "10a", "11a", "12a", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p", "10p", "11p", "12p"];
         return times;
     }
 
+    isItemInIgnoreList(item) {
+        let inList = false;
+        let ignoreGates = this.ignoreGates();
+
+        ignoreGates.forEach(function (d) {
+            if (!inList && item.startsWith(d)) {
+                inList = true;
+            }
+        });
+
+        return inList;
+    }
+
     static createGates() {
+        let self = this;
+        let ignoreGates = ['gate', 'entrance', 'ranger-base', 'general'];
+
         let gates = Object.keys(mc1.parkMap.pointNameMapping)
-            .filter(function (g) {
+            .filter(function (item) {
+                let inIgnore = false;
+                ignoreGates.forEach(function (d) {
+                    if (!inIgnore && item.startsWith(d)) {
+                        inIgnore = true;
+                    }
+                });
 
-
-                return !g.startsWith('gate') && !g.startsWith('entrance') && !g.startsWith('ranger-base') && !g.startsWith('general');
+                return !inIgnore;
             }).sort(function (a, b) {
 
                 if (a == b) {
@@ -137,6 +162,10 @@ class GateTimeHeatMap extends CellHeatMap {
                 let myTime;
                 do {
 
+                    if (start.getTime() > end) {
+                        break;
+                    }
+
                     myTime = start;
                     hour = myTime.getHours();
 
@@ -148,11 +177,6 @@ class GateTimeHeatMap extends CellHeatMap {
                     }
 
                     start.setHours(start.getHours() + 1);
-
-                    if (start.getTime() > end) {
-                        break;
-                    }
-
                 }
                 while(true);
 

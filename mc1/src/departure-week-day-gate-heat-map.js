@@ -45,7 +45,10 @@ class DepartureWeekDayGateHeatMap extends GateTimeHeatMap {
                 key = gate + '-' + day;
 
                 if (!myData.hasOwnProperty(key)) {
-                    throw  new Error('invalid data, double check if it has been initialized');
+                    if (self.isItemInIgnoreList(gate)) {
+                        return;
+                    }
+                    throw new Error('invalid data, double check if it has been initialized: ' + key);
                 }
 
                 tmpData = myData[key];
