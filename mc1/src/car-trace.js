@@ -22,8 +22,9 @@ class CarTraceMap extends TraceMap {
 
         options.strokeWidth = 0;
 
-        options.margin.left = 80;
+        options.margin.left = 100;
         options.margin.right = 0;
+        options.margin.top = 50;
 
         options.defaultCellColor = '#CCCCCC';
         options.stopByCellColor = '#000000';
@@ -380,14 +381,20 @@ class CarTraceMap extends TraceMap {
             .attr("transform", "translate(-6," + gridSizeY / 1.5 + ")")
             .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
 
+
+        let gridPerText = Math.ceil(40 / gridSizeX);
         self.svg.selectAll(".xLabel")
             .data(self.xLabels)
             .enter().append("text")
-            .text(function(d) { return d; })
-            .attr("x", function(d, i) { return i * gridSizeX; })
-            .attr("y", 0)
-            .style("text-anchor", "middle")
-            .attr("transform", "translate(" + gridSizeX / 2 + ", -6)")
+            .text(function(d, index) {
+                return ((index % gridPerText) == 0 || index == (self.xLabels.length-1)) ? d : '';
+            })
+            .attr("x", 0)
+            .attr("y", function (d, i) {
+                return i * gridSizeX;
+            })
+            // .style("text-anchor", "middle")
+            .attr("transform", "translate(7, 0) rotate(-90)")
             .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
     }
