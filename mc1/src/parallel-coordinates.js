@@ -190,6 +190,27 @@ ParallelCoordinate.prototype.clear = function clear() {
     self.svg.selectAll('*').remove();
 };
 
+ParallelCoordinate.prototype.updatePCByTime = function updatePCByTime(startDate, endDate) {
+    let self = this;
+
+    // update display for parallel coordinates
+    self.foreground.style("display", function(line) {
+
+        let myDp = !(line.startTime.getTime() >= endDate.getTime() || line.endTime.getTime() <= startDate.getTime());
+
+        return line.display = (myDp ? null : "none");
+    });
+
+    // update display for other graphs via event dispatching
+    if (!!self.eventHandler) {
+        let event = {
+            name: 'brushEnd'
+        };
+
+        self.eventHandler.fireEvent(event);
+    }
+};
+
 ParallelCoordinate.prototype.renderGraph = function renderGraph() {
 
     let self = this;

@@ -6,12 +6,15 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
         this.parseTime = d3.timeParse("%Y-%m-%d");
 
+        this.x = d3.scaleTime()
+            .domain([this.parseTime('2015-05-01'), this.parseTime('2016-05-31')])
+            .rangeRound([0, this.width]);
     }
 
     static createTimes() {
         let parseTime = d3.timeParse("%Y-%m-%d");
         let startDate = parseTime('2015-05-01');
-        let endDate = parseTime('2016-06-01');
+        let endDate = parseTime('2016-05-31');
         let end = endDate.getTime();
         let myTime;
         let times = [];
@@ -135,6 +138,53 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
         return myData;
     }
 
+    render() {
+        super.render();
+
+        let self = this;
+
+        let gridSizeY = self.options.gridSizeY;
+        let totalHeight = gridSizeY * self.yLabels.length;
+
+        self.brush = d3.brushX()
+            .extent([[0, 0], [self.width, totalHeight]])
+            .on("start", function () {
+                if (!d3.event.sourceEvent) {
+                    return;
+                }
+                d3.event.sourceEvent.stopPropagation();
+            })
+            // .on("brush", brushEnd)
+            .on("end", brushEnd)
+        ;
+
+        this.svg.append("g")
+            .attr("class", "brush")
+            .call(self.brush)
+        ;
+
+
+        function brushEnd() {
+            if (!d3.event.sourceEvent) return; // Only transition after input.
+            if (!d3.event.selection) return; // Ignore empty selections.
+
+            let s = d3.event.selection;
+            let selectedDateRange = s.map(self.x.invert);
+            let d1 = selectedDateRange.map(d3.timeDay.round);
+
+            // If empty when rounded, use floor & ceil instead.
+            if (d1[0] >= d1[1]) {
+                d1[0] = d3.timeDay.floor(d0[0]);
+                d1[1] = d3.timeDay.offset(d1[0]);
+            }
+
+            d3.select(this).transition().call(d3.event.target.move, d1.map(self.x));
+            // display cars who appears in this range
+            mc1.parallel.updatePCByTime(d1[0], d1[1]);
+
+        }
+    }
+
     renderAxis() {
         let self = this;
         let gridSizeY = self.options.gridSizeY;
@@ -175,5 +225,16 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
             .attr("transform", "translate(" + gridSizeX / 2 + ", 0) rotate(-90)")
             .attr("class", "weekend-text");
 
+    }
+
+    onBrushEnd(e) {
+
+        // let lines = mc1.parallel.getVisibleLines();
+        //
+        // this.reset();
+        //
+        // this.setData(lines);
+        //
+        // this.render();
     }
 }
