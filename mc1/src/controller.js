@@ -146,7 +146,7 @@ mc1.controller.changeGraphType = function(graphType) {
             });
 
 
-
+            this.viewDivOption('heatMapStats');
             this.viewHeatMap(0);
 
             // arrival week day by hour heat map
@@ -247,4 +247,15 @@ mc1.controller.viewVisType = function(idx) {
         d3.select('body').select('#' + typeId).style('display', dp);
     });
 
+};
+
+mc1.controller.viewDivOption = function(divId) {
+    let divIds = ['mySingleVisit', 'heatMapStats'];
+    let dp;
+    divIds.forEach(function (id) {
+
+        dp = (id == divId) ? 'initial' : 'none';
+
+        d3.select('body').select('#' + id).style('display', dp);
+    })
 };

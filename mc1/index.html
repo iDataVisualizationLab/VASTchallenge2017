@@ -156,80 +156,81 @@
 
         <td colspan="2">
 
-            <table>
-                <tr>
-                    <td>
-                        <div class="prev" onclick="mc1.controller.viewHeatMap(-1)">&#10094;</div>
-                    </td>
-                    <td width="100%">
-                        <div id="heatmap">
-                            <table>
-                                <tr valign="top">
-                                    <td>
-                                        <div>Hourly Density Heat Map</div>
-                                        <div id="hourlyLocationDensityHeatMap"></div>
-                                    </td>
+            <div id="mySingleVisit"></div>
+            <div id="heatMapStats">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="prev" onclick="mc1.controller.viewHeatMap(-1)">&#10094;</div>
+                        </td>
+                        <td width="100%">
+                            <div id="heatmap">
+                                <table>
+                                    <tr valign="top">
+                                        <td>
+                                            <div>Hourly Density Heat Map</div>
+                                            <div id="hourlyLocationDensityHeatMap"></div>
+                                        </td>
 
-                                    <td>
-                                        <div>Week day Density Heat map</div>
-                                        <div id="weekDayLocationDensityHeatMap"></div>
-                                    </td>
+                                        <td>
+                                            <div>Week day Density Heat map</div>
+                                            <div id="weekDayLocationDensityHeatMap"></div>
+                                        </td>
 
-                                    <td>
-                                        <div>Monthly Density Heat map</div>
-                                        <div id="monthlyLocationDensityHeatMap"></div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div id="arrivalHeatMap">
-                            <table>
-                                <tr valign="top">
-                                    <td>
-                                        <div>Hourly Arrival Heat Map</div>
-                                        <div id="hourlyLocationArrivalHeatMap"></div>
-                                    </td>
+                                        <td>
+                                            <div>Monthly Density Heat map</div>
+                                            <div id="monthlyLocationDensityHeatMap"></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="arrivalHeatMap">
+                                <table>
+                                    <tr valign="top">
+                                        <td>
+                                            <div>Hourly Arrival Heat Map</div>
+                                            <div id="hourlyLocationArrivalHeatMap"></div>
+                                        </td>
 
-                                    <td>
-                                        <div>Week day Arrival Heat map</div>
-                                        <div id="weekDayLocationArrivalHeatMap"></div>
-                                    </td>
+                                        <td>
+                                            <div>Week day Arrival Heat map</div>
+                                            <div id="weekDayLocationArrivalHeatMap"></div>
+                                        </td>
 
-                                    <td>
-                                        <div>Monthly Arrival Heat map</div>
-                                        <div id="monthlyLocationArrivalHeatMap"></div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div id="departureHeatMap">
-                            <table>
-                                <tr valign="top">
-                                    <td>
-                                        <div>Hourly Departure Heat Map</div>
-                                        <div id="hourlyLocationDepartureHeatMap"></div>
-                                    </td>
+                                        <td>
+                                            <div>Monthly Arrival Heat map</div>
+                                            <div id="monthlyLocationArrivalHeatMap"></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="departureHeatMap">
+                                <table>
+                                    <tr valign="top">
+                                        <td>
+                                            <div>Hourly Departure Heat Map</div>
+                                            <div id="hourlyLocationDepartureHeatMap"></div>
+                                        </td>
 
-                                    <td>
-                                        <div>Week day Departure Heat map</div>
-                                        <div id="weekDayLocationDepartureHeatMap"></div>
-                                    </td>
+                                        <td>
+                                            <div>Week day Departure Heat map</div>
+                                            <div id="weekDayLocationDepartureHeatMap"></div>
+                                        </td>
 
-                                    <td>
-                                        <div>Monthly Departure Heat map</div>
-                                        <div id="monthlyLocationDepartureHeatMap"></div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="next" onclick="mc1.controller.viewHeatMap(+1)">&#10095;</div>
-                    </td>
-                </tr>
-            </table>
-
-
+                                        <td>
+                                            <div>Monthly Departure Heat map</div>
+                                            <div id="monthlyLocationDepartureHeatMap"></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="next" onclick="mc1.controller.viewHeatMap(+1)">&#10095;</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </td>
     </tr>
 
@@ -247,14 +248,6 @@
         </td>
     </tr>
 
-    <tr >
-        <!--<td>-->
-        <!--<div id="firstDaySpan"></div>-->
-        <!--</td>-->
-        <td colspan="2">
-            <div id="mySingleVisit"></div>
-        </td>
-    </tr>
 </table>
 
 

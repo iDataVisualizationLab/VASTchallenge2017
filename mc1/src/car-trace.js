@@ -343,6 +343,8 @@ class CarTraceMap extends TraceMap {
                })
        }
 
+       this.show();
+
     }
 
     renderAxis() {
@@ -389,13 +391,14 @@ class CarTraceMap extends TraceMap {
             .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
     }
+
     hide() {
-        // this.singleVisit
-        //     .style('visibility', 'hidden')
-        // ;
+
+        mc1.controller.viewDivOption('heatMapStats');
+
     }
 
     show() {
-
+        mc1.controller.viewDivOption('mySingleVisit');
     }
 }

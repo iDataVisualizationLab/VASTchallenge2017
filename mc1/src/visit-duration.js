@@ -49,6 +49,8 @@ class VisitDuration {
 
         let self = this;
         this.visitChart.bindSvgEvent('click',function () {
+            self.singleVisit.hide();
+
             self.clearSetting();
         });
 

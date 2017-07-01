@@ -61,6 +61,7 @@ d3.json("data/all-car-path.json", function(error, lines) {
     mc1.eventHandler = new EventHandler();
 
     mc1.simulationManager = new SimulationManager(mc1.parkMap);
+    mc1.singleVisit = new CarTraceMap('mySingleVisit', 1720, 220);
 
 
     d3.timeout(function () {
