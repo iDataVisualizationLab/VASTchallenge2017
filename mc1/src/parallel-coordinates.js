@@ -2,7 +2,7 @@ var ParallelCoordinate = function ParallelCoordinate(svg, width, height, dataSet
 
     if (!options) {
         options = {
-            margin: {top: 30, right: 10, bottom: 10, left: 70},
+            margin: {top: 30, right: 10, bottom: 10, left: 30},
             width: width,
             height: height
         };

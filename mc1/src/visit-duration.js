@@ -153,7 +153,7 @@ class VisitDuration {
         this.handleChartContextTime();
 
         this.visitChart.renderChart(this.events);
-        this.visitChart.renderAxis('Time', 'Visits');
+        this.visitChart.renderAxis('Time', 'Visits', '%b');
 
         this.visitChart.updateTimeSelectors();
         this.visitChart.renderTimeRangeSelector();

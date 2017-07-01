@@ -81,39 +81,40 @@
     </tr>
 
     <tr>
-        <td>
-
-
-            <div id="parallelCoordinates"></div>
-
-        </td>
-
-        <td>
-            <div id="visitDuration"></div>
-        </td>
-    </tr>
-    <tr>
         <td colspan="2">
-            <div>
-                <select id="graphType" name="graphType" onchange="mc1.controller.changeGraphType(this.value);">
-                    <option value="hour" >By hour block</option>
-                    <option value="hour-spiral" >By hour block-Sprial</option>
-                    <option value="week-day" selected>By week day</option>
-                    <option value="one-year" >Entire year</option>
-                </select>
-            </div>
+            <table>
+                <tr>
+                    <td>
+                        <div id="parallelCoordinates"></div>
+
+                    </td>
+                    <td>
+                        <div id="visitDuration"></div>
+                    </td>
+                    <td>
+                        <div id="firstDaySpan"></div>
+                    </td>
+                </tr>
+            </table>
+
+
         </td>
 
     </tr>
+    <!--<tr>-->
+        <!--<td colspan="2">-->
+            <!--<div>-->
+                <!--<select id="graphType" name="graphType" onchange="mc1.controller.changeGraphType(this.value);">-->
+                    <!--<option value="hour" >By hour block</option>-->
+                    <!--<option value="hour-spiral" >By hour block-Sprial</option>-->
+                    <!--<option value="week-day" selected>By week day</option>-->
+                    <!--<option value="one-year" >Entire year</option>-->
+                <!--</select>-->
+            <!--</div>-->
+        <!--</td>-->
 
-    <tr>
-        <td>
-            <div id="firstDaySpan"></div>
-        </td>
-        <td>
-            <div id="mySingleVisit"></div>
-        </td>
-    </tr>
+    <!--</tr>-->
+
 
     <tr>
 
@@ -207,6 +208,15 @@
                 <input type="button" value="View Visit Heat Map" name="visit-heat-map" onclick="mc1.controller.viewStopHeatMap()"/>
                 <input type="button" value="Reset" name="reset" onclick="mc1.controller.reset()"/>
             </div>
+        </td>
+    </tr>
+
+    <tr >
+        <!--<td>-->
+        <!--<div id="firstDaySpan"></div>-->
+        <!--</td>-->
+        <td colspan="2">
+            <div id="mySingleVisit"></div>
         </td>
     </tr>
 </table>
