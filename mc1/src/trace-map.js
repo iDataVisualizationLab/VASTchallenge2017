@@ -166,9 +166,9 @@ class TraceMap {
         let fillKey = self.options.fillKey;
 
 
-        this.cell = self.svg.selectAll('.card').data(this.data);
+        this.card = self.svg.selectAll('.card').data(this.data);
 
-        this.cell.enter()
+        this.cell = this.card.enter()
             .append('rect')
             .attr("class", function (l) {
                 return "card bordered trace-map-cell-id-" + l.id;
@@ -195,7 +195,7 @@ class TraceMap {
             })
         ;
 
-        this.cell.exit().remove();
+        this.card.exit().remove();
 
         this.renderAxis();
     }
