@@ -216,6 +216,10 @@ class VisitChart2D extends Chart2D {
 
         let self = this;
 
+        if (isNaN(data)) {
+            data = {};
+        }
+
         let carType = data['carType'];
         let camping = data['camping'];
         let stopCount = data['stopCount'];
