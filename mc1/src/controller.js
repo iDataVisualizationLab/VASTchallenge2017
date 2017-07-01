@@ -88,7 +88,7 @@ mc1.controller.changeGraphType = function(graphType) {
 
             // everyday heat map
             d3.timeout(function () {
-                mc1.dailyHeatMap = new GateEveryDayHeatMap('gateEveryDayHeatMap', 1720, 510);
+                mc1.dailyHeatMap = new GateEveryDayHeatMap('gateEveryDayHeatMap', 1720, 480);
                 mc1.dailyHeatMap.setData(mc1.parsedVisits);
                 mc1.dailyHeatMap.render();
             });
@@ -121,23 +121,25 @@ mc1.controller.changeGraphType = function(graphType) {
             // });
 
 
+            let heatMapHeight = 400;
+
             // density map by day and hour
             d3.timeout(function () {
-                mc1.densityHeatMap = new DensityHourlyGateHeatMap('hourlyLocationDensityHeatMap', 720, 510);
+                mc1.densityHeatMap = new DensityHourlyGateHeatMap('hourlyLocationDensityHeatMap', 720, heatMapHeight);
                 mc1.densityHeatMap.setData(mc1.parsedVisits);
                 mc1.densityHeatMap.render();
             });
 
             // spatial heat map by week day
             d3.timeout(function () {
-                mc1.weekDayHeatMap = new DensityGateWeekDayHeatMap('weekDayLocationDensityHeatMap', 500, 510);
+                mc1.weekDayHeatMap = new DensityGateWeekDayHeatMap('weekDayLocationDensityHeatMap', 500, heatMapHeight);
                 mc1.weekDayHeatMap.setData(mc1.parsedVisits);
                 mc1.weekDayHeatMap.render();
             });
 
             // spatial heat map by month
             d3.timeout(function () {
-                mc1.monthlyHeatMap = new DensityGateMonthHeatMap('monthlyLocationDensityHeatMap', 500, 510);
+                mc1.monthlyHeatMap = new DensityGateMonthHeatMap('monthlyLocationDensityHeatMap', 500, heatMapHeight);
                 mc1.monthlyHeatMap.setData(mc1.parsedVisits);
                 mc1.monthlyHeatMap.render();
             });
@@ -154,19 +156,19 @@ mc1.controller.changeGraphType = function(graphType) {
             // });
 
             d3.timeout(function () {
-                mc1.arrivalWdHHeatMap = new ArrivalHourlyGateHeatMap('hourlyLocationArrivalHeatMap', 720, 510);
+                mc1.arrivalWdHHeatMap = new ArrivalHourlyGateHeatMap('hourlyLocationArrivalHeatMap', 720, heatMapHeight);
                 mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
                 mc1.arrivalWdHHeatMap.render();
             });
 
             d3.timeout(function () {
-                mc1.arrivalWdHHeatMap = new ArrivalWeekDayGateHeatMap('weekDayLocationArrivalHeatMap', 500, 510);
+                mc1.arrivalWdHHeatMap = new ArrivalWeekDayGateHeatMap('weekDayLocationArrivalHeatMap', 500, heatMapHeight);
                 mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
                 mc1.arrivalWdHHeatMap.render();
             });
 
             d3.timeout(function () {
-                mc1.arrivalWdHHeatMap = new ArrivalMonthlyGateHeatMap('monthlyLocationArrivalHeatMap', 500, 510);
+                mc1.arrivalWdHHeatMap = new ArrivalMonthlyGateHeatMap('monthlyLocationArrivalHeatMap', 500, heatMapHeight);
                 mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
                 mc1.arrivalWdHHeatMap.render();
             });
@@ -174,19 +176,19 @@ mc1.controller.changeGraphType = function(graphType) {
 
             // departure heat map
             d3.timeout(function () {
-                mc1.arrivalWdHHeatMap = new DepartureHourlyGateHeatMap('hourlyLocationDepartureHeatMap', 720, 510);
+                mc1.arrivalWdHHeatMap = new DepartureHourlyGateHeatMap('hourlyLocationDepartureHeatMap', 720, heatMapHeight);
                 mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
                 mc1.arrivalWdHHeatMap.render();
             });
 
             d3.timeout(function () {
-                mc1.arrivalWdHHeatMap = new DepartureWeekDayGateHeatMap('weekDayLocationDepartureHeatMap', 500, 510);
+                mc1.arrivalWdHHeatMap = new DepartureWeekDayGateHeatMap('weekDayLocationDepartureHeatMap', 500, heatMapHeight);
                 mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
                 mc1.arrivalWdHHeatMap.render();
             });
 
             d3.timeout(function () {
-                mc1.arrivalWdHHeatMap = new DepartureMonthlyGateHeatMap('monthlyLocationDepartureHeatMap', 500, 510);
+                mc1.arrivalWdHHeatMap = new DepartureMonthlyGateHeatMap('monthlyLocationDepartureHeatMap', 500, heatMapHeight);
                 mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
                 mc1.arrivalWdHHeatMap.render();
             });

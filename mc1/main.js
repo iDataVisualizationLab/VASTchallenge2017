@@ -10,8 +10,8 @@ mc1.mapSvg = d3.select('body').select('#map')
         .attr('height', (MAP_HEIGHT + 1) * ParkMap.CELL_HEIGHT)
     ;
 
-var PARA_WIDTH = 720;
-var PARA_HEIGHT = 500;
+var PARA_WIDTH = 600;
+var PARA_HEIGHT = 400;
 mc1.paraSvg = d3.select('body').select('#parallelCoordinates')
     .append('svg')
 ;
@@ -22,8 +22,8 @@ Util.createMapByteData(MAP_WIDTH, MAP_HEIGHT, mapFile, function (mapByteData) {
 });
 
 var margin = {top: 20, right: 20, bottom: 50, left: 70},
-    width = 720 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    width = 520 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
 
 mc1.visitDurationSvg = d3.select('body').select('#visitDuration').append('svg')
         .attr("width", width + margin.left + margin.right)
@@ -47,10 +47,16 @@ d3.json("data/all-car-path.json", function(error, lines) {
 
     mc1.parsedVisits = visitParser.parse(lines);
     // mc1.parsedVisits = mc1.parsedVisits.slice(0, 100);
-    // mc1.parsedVisits = mc1.parsedVisits.filter(function (visit) {
-    //     return visit.carType != '2P' && visit.camping == false && visit.stopCount > 0;
-    //     // return visit.carType == '2P';
-    // });
+    mc1.parsedVisits = mc1.parsedVisits.filter(function (visit) {
+        // return visit.carType != '2P' && visit.camping == false && visit.stopCount > 0;
+        // return visit.carType != '2P'&& visit.overnight == true;
+
+        if (visit.carId == '20155111035113-452') {
+            mc1.selectedCar = visit;
+        }
+
+        return visit.carType == '2P';
+    });
 
     mc1.eventHandler = new EventHandler();
 
