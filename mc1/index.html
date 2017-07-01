@@ -88,11 +88,47 @@
                         <div id="parallelCoordinates"></div>
 
                     </td>
-                    <td>
-                        <div id="visitDuration"></div>
-                    </td>
-                    <td>
-                        <div id="firstDaySpan"></div>
+                    <td colspan="2">
+                        <table>
+                            <tr>
+                                <td>
+                                    <div class="prev" onclick="mc1.controller.viewVisType(-1)">&#10094;</div>
+                                </td>
+
+                                <td width="100%">
+                                    <div id="timeVis">
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    <div id="visitDuration"></div>
+
+                                                </td>
+                                                <td>
+                                                    <div id="firstDaySpan"></div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <dv id="spatialVis">
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    <div id="map"></div>
+                                                </td>
+                                                <td>
+                                                    Path Network
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </dv>
+                                </td>
+                                <td>
+                                    <div class="next" onclick="mc1.controller.viewVisType(+1)">&#10095;</div>
+                                </td>
+                            </tr>
+                        </table>
+
+
                     </td>
                 </tr>
             </table>
@@ -123,7 +159,7 @@
             <table>
                 <tr>
                     <td>
-                        <div class="prev" onclick="mc1.controller.viewHeatMap(-1)">Pre</div>
+                        <div class="prev" onclick="mc1.controller.viewHeatMap(-1)">&#10094;</div>
                     </td>
                     <td width="100%">
                         <div id="heatmap">
@@ -188,7 +224,7 @@
                         </div>
                     </td>
                     <td>
-                        <div class="next" onclick="mc1.controller.viewHeatMap(+1)">Next</div>
+                        <div class="next" onclick="mc1.controller.viewHeatMap(+1)">&#10095;</div>
                     </td>
                 </tr>
             </table>
@@ -222,7 +258,6 @@
 </table>
 
 
-<div id="map" style="display: none"></div>
 
 <div id="tooltip"></div>
 

@@ -6,7 +6,7 @@ var mapFile = 'data/Lekagul Roadways.bmp';
 
 mc1.mapSvg = d3.select('body').select('#map')
     .append('svg')
-        .attr('width', (MAP_WIDTH + 1) * ParkMap.CELL_WIDTH + 300)
+        .attr('width', (MAP_WIDTH + 1) * ParkMap.CELL_WIDTH )
         .attr('height', (MAP_HEIGHT + 1) * ParkMap.CELL_HEIGHT)
     ;
 
@@ -18,7 +18,7 @@ mc1.paraSvg = d3.select('body').select('#parallelCoordinates')
 
 Util.createMapByteData(MAP_WIDTH, MAP_HEIGHT, mapFile, function (mapByteData) {
     mc1.parkMap = new ParkMap(mapByteData, mc1.mapSvg);
-    // mc1.parkMap.render(true);
+    mc1.parkMap.render(true);
 });
 
 var margin = {top: 20, right: 20, bottom: 50, left: 70},

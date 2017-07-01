@@ -341,8 +341,8 @@ var ParkMap = function ParkMap (byteData, svg) {
     // this.entranceGraph = new EntranceGraph(this.tooltipGraph);
 };
 
-ParkMap.CELL_WIDTH = 3;
-ParkMap.CELL_HEIGHT = 3;
+ParkMap.CELL_WIDTH = 2;
+ParkMap.CELL_HEIGHT = 2;
 ParkMap.SPEED_LIMIT = 25;
 ParkMap.CELL_WIDTH_IN_MILE = 0.06; // mile
 ParkMap.SPEED_LIMIT_EXTRA_10 = 27.5;

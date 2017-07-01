@@ -2,6 +2,7 @@ var mc1 = mc1 || {};
 
 mc1.controller = mc1.controller || {};
 mc1.controller.currentHeatMapIndex = 0;
+mc1.controller.currentVisTypeIndex = 0;
 
 mc1.controller.simulateTraffic = function(self) {
     console.log(self.name + "=" + self.value);
@@ -193,6 +194,8 @@ mc1.controller.changeGraphType = function(graphType) {
                 mc1.arrivalWdHHeatMap.render();
             });
 
+            this.viewVisType(0);
+
     }
 
 };
@@ -221,6 +224,27 @@ mc1.controller.viewHeatMap = function(idx) {
         let dp = mapId == mapType ? 'initial' : 'none';
 
         d3.select('body').select('#' + mapId).style('display', dp);
+    });
+
+};
+
+
+mc1.controller.viewVisType = function(idx) {
+    if (idx == null || isNaN(idx)) {
+        idx = 0;
+    }
+    let visTypes = ['timeVis', 'spatialVis'];
+
+    this.currentVisTypeIndex = this.currentVisTypeIndex + idx;
+
+    this.currentVisTypeIndex = Math.abs(this.currentVisTypeIndex) % visTypes.length;
+
+    let type = visTypes[this.currentVisTypeIndex];
+
+    visTypes.forEach(function (typeId) {
+        let dp = typeId == type ? 'initial' : 'none';
+
+        d3.select('body').select('#' + typeId).style('display', dp);
     });
 
 };
