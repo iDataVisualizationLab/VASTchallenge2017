@@ -316,6 +316,14 @@ class CarTraceMap extends TraceMap {
         });
 
         super.setData(visData);
+
+        this.line = line;
+    }
+
+    getCarId() {
+        if (!!this.line) {
+            return this.line.carId;
+        }
     }
 
     render() {

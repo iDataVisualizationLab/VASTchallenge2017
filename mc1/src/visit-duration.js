@@ -1,6 +1,6 @@
 'use strict';
 class VisitDuration {
-    constructor(visitChart, parkMap, startDate, endDate, eventHandler, simulationManager) {
+    constructor(visitChart, parkMap, startDate, endDate, eventHandler, simulationManager, singleVisit) {
         this.visitChart = visitChart;
         this.parkMap = parkMap;
 
@@ -24,7 +24,11 @@ class VisitDuration {
 
         this.roadHeatMap = new RoadHeatmap(this.parkMap);
 
+        this.singleVisit = singleVisit;
+
         this.init();
+
+
     }
 
     setName(name) {
@@ -33,17 +37,16 @@ class VisitDuration {
 
     init() {
         this.events = [
-            {name: 'mouseover', handler: this.onLineMouseOver, context: this}
+            // {name: 'mouseover', handler: this.onLineMouseOver, context: this}
+            {name: 'mouseover'}
             // {name: 'mouseout'}
         ];
 
         // this.eventHandler.addEvent('mouseout', this.onLineMouseOut, this);
         this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this); // brush end from PC
         this.eventHandler.addEvent('timeChange', this.onBrushEnd, this); // time change from everyday selection
+        this.eventHandler.addEvent('mouseover', this.onLineMouseOver, this);
 
-
-        // this.singleVisit = new SingleVisit('mySingleVisit', this.roadHeatMap, this.eventHandler);
-        this.singleVisit = new CarTraceMap('mySingleVisit', 750, 220);
         let self = this;
         this.visitChart.bindSvgEvent('click',function () {
             self.clearSetting();
@@ -165,13 +168,15 @@ class VisitDuration {
         let line = e.line;
         // let line = {context: mc1.selectedCar};
 
-        self.singleVisit.setData(line.context);
-        self.singleVisit.render();
-
         self.visitChart.highlightSingleVisit(line.context.carId);
 
-        console.log('event mouse over. Simulating: ' + line.context.carId);
+        if (self.singleVisit.getCarId() != line.context.carId) {
+            self.singleVisit.setData(line.context);
+            self.singleVisit.render();
 
+            console.log('event mouse over. rendering: ' + line.context.carId);
+
+        }
     }
 
     onLineMouseOut(e) {

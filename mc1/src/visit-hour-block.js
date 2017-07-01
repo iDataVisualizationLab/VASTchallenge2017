@@ -2,8 +2,8 @@
 // toHour is closed hour that the car get recorded within 24 hours.
 'use strict';
 class VisitTimeBlock extends VisitDuration {
-    constructor(visitChart, parkMap, fromHour, toHour, eventHandler, simulationManager) {
-        super(visitChart, parkMap, fromHour, toHour, eventHandler, simulationManager);
+    constructor(visitChart, parkMap, fromHour, toHour, eventHandler, simulationManager, singleVisit) {
+        super(visitChart, parkMap, fromHour, toHour, eventHandler, simulationManager, singleVisit);
 
         if (!fromHour) {
             fromHour = '00:00:01';
@@ -25,7 +25,6 @@ class VisitTimeBlock extends VisitDuration {
     init() {
 
         super.init();
-        this.eventHandler.addEvent('mouseover', this.onLineMouseOver, this);
 
     }
 
