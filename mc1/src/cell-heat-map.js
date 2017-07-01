@@ -31,7 +31,11 @@ class CellHeatMap extends TraceMap {
         let hKey = self.options.heatKey;
         let totalColors = self.colors.length - 1;
 
-        let minMax = d3.extent(data, function (d) {
+        let tmpData = data.filter(function (d) {
+            return +d[hKey] > 0;
+        });
+
+        let minMax = d3.extent(tmpData, function (d) {
             return +d[hKey];
         });
 
@@ -68,7 +72,7 @@ class CellHeatMap extends TraceMap {
             .attr("width", gridSizeX)
             .attr("height", gridSizeY)
             .style("fill", function (d) {
-                return self.colorScale(d[heatKey]);
+                return d[heatKey] == 0 ? '#f2f1e1' : self.colorScale(d[heatKey]);
             })
             .style("stroke", function (d) {
                 return !!d.weekend ? '#990000' : '#E6E6E6';
@@ -99,12 +103,15 @@ class CellHeatMap extends TraceMap {
             .attr("y", legendY + self.options.legendOffsetY)
             .attr("width", legendElementWidth)
             .attr("height", gridSizeY / 2)
-            .style("fill", function(d, i) { return self.colors[i]; });
+            .style("fill", function(d, i) {
+                return self.colors[i];
+            });
 
         legend.append("text")
             .attr("class", "mono")
             .text(function(d) {
-                return "≥ " + Math.round(d);
+                // return "≥ " + Math.round(d);
+                return d == 0 ? "> " + Math.round(d) : "≥ " + Math.round(d);
             })
             .attr("x", function(d, i) { return legendElementWidth * i; })
             .attr("y", legendY + gridSizeY / 2 + self.options.legendOffsetY + 16);
