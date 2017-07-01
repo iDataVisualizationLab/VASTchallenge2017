@@ -6,9 +6,12 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
         this.parseTime = d3.timeParse("%Y-%m-%d");
 
+        let self = this;
         this.x = d3.scaleTime()
             .domain([this.parseTime('2015-05-01'), this.parseTime('2016-05-31')])
-            .rangeRound([0, this.width]);
+            .rangeRound([self.options.margin.left, self.originalWidth - self.options.margin.right])
+            // .rangeRound([0, this.width])
+        ;
     }
 
     static createTimes() {
@@ -34,6 +37,10 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
         return times;
     }
 
+
+    setupEvent() {
+        this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
+    }
 
     handleOptions(options) {
         options = super.handleOptions(options);
@@ -144,10 +151,15 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
         let self = this;
 
         let gridSizeY = self.options.gridSizeY;
-        let totalHeight = gridSizeY * self.yLabels.length;
+        let totalHeight = gridSizeY * self.yLabels.length + self.options.margin.top;
+        // let totalHeight = self.options.originalHeight - self.options.margin.top - self.options.margin.bottom;
+
+        if (!!self.brush) {
+            return;
+        }
 
         self.brush = d3.brushX()
-            .extent([[0, 0], [self.width, totalHeight]])
+            .extent([[self.options.margin.left, self.options.margin.top], [self.originalWidth - self.options.margin.right, totalHeight]])
             .on("start", function () {
                 if (!d3.event.sourceEvent) {
                     return;
@@ -158,7 +170,7 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
             .on("end", brushEnd)
         ;
 
-        this.svg.append("g")
+        this.nativeSvg.append("g")
             .attr("class", "brush")
             .call(self.brush)
         ;
@@ -166,7 +178,11 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
         function brushEnd() {
             if (!d3.event.sourceEvent) return; // Only transition after input.
-            if (!d3.event.selection) return; // Ignore empty selections.
+            if (!d3.event.selection) {
+                mc1.parallel.updatePCByTime(true);
+
+                return;
+            }
 
             let s = d3.event.selection;
             let selectedDateRange = s.map(self.x.invert);
@@ -181,6 +197,12 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
             d3.select(this).transition().call(d3.event.target.move, d1.map(self.x));
             // display cars who appears in this range
             mc1.parallel.updatePCByTime(d1[0], d1[1]);
+
+            if (!self.filter) {
+                self.filter = {};
+            }
+
+            self.filter['time'] = d1;
 
         }
     }
@@ -228,6 +250,25 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
     }
 
     onBrushEnd(e) {
+
+        super.onBrushEnd(e);
+
+        // let lines = mc1.parallel.getVisibleLines();
+        //
+        // this.setData(lines);
+        //
+        // this.render();
+        //
+        // let self = this;
+        //
+        // if (!!self.filter && self.filter.hasOwnProperty('time')) {
+        //     let time = self.filter['time'];
+        //
+        //     self.svg.select(".brush").call(self.brush.extent([self.x(time[0]), self.x(time[1])]));
+        //
+        //     self.brush(d3.select(".brush").transition());
+        //
+        // }
 
         // let lines = mc1.parallel.getVisibleLines();
         //

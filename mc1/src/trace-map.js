@@ -12,11 +12,14 @@ class TraceMap {
 
         d3.select("#" + divId).selectAll('*').remove();
 
-        var svg = d3.select("#" + divId).append("svg")
+        this.nativeSvg = d3.select("#" + divId).append("svg")
             .attr("width", this.width + margin.left + margin.right)
             .attr("height", this.height + margin.top + margin.bottom)
+        ;
+        var svg = this.nativeSvg
             .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            ;
 
 
         this.svg = svg;
@@ -43,6 +46,7 @@ class TraceMap {
 
     setupEvent() {
         this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
+        this.eventHandler.addEvent('timeChange', this.onBrushEnd, this);
     }
 
     calculateGridSize() {
@@ -162,7 +166,9 @@ class TraceMap {
         let fillKey = self.options.fillKey;
 
 
-        this.cell = self.svg.selectAll('.card').data(this.data).enter()
+        this.cell = self.svg.selectAll('.card').data(this.data);
+
+        this.cell.enter()
             .append('rect')
             .attr("class", function (l) {
                 return "card bordered trace-map-cell-id-" + l.id;
@@ -188,6 +194,8 @@ class TraceMap {
                 self.tooltip.hide();
             })
         ;
+
+        this.cell.exit().remove();
 
         this.renderAxis();
     }

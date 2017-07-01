@@ -190,25 +190,106 @@ ParallelCoordinate.prototype.clear = function clear() {
     self.svg.selectAll('*').remove();
 };
 
+
+ParallelCoordinate.prototype.getSelectionDomain = function getSelectionDomain(dim, context) {
+    let self = this;
+    let selectionDomain = d3.brushSelection(context);
+    if (!selectionDomain) {
+        return null;
+    }
+
+    selectionDomain = selectionDomain.map(function (val) {
+        return self.y[dim].invert(val);
+    });
+
+    return selectionDomain;
+};
+
+
+/**
+ * update by time.
+ * @param startDate: true if the cached date range has to be reset
+ * @param endDate
+ */
 ParallelCoordinate.prototype.updatePCByTime = function updatePCByTime(startDate, endDate) {
     let self = this;
 
+    if (startDate === true) { // force reset start date
+        self.filter = {};
+        startDate = null;
+        endDate = null;
+    }
     // update display for parallel coordinates
-    self.foreground.style("display", function(line) {
+   self.updateByActiveSelection(startDate, endDate);
+   if (isNaN(self.filter)) {
+       self.filter = {};
+   }
 
-        let myDp = !(line.startTime.getTime() >= endDate.getTime() || line.endTime.getTime() <= startDate.getTime());
-
-        return line.display = (myDp ? null : "none");
-    });
+   self.filter['time'] = [startDate, endDate];
 
     // update display for other graphs via event dispatching
     if (!!self.eventHandler) {
         let event = {
-            name: 'brushEnd'
+            name: 'timeChange'
         };
 
         self.eventHandler.fireEvent(event);
     }
+};
+
+ParallelCoordinate.prototype.updateByActiveSelection = function updateByActiveSelection(startTime, endTime) {
+    let self = this;
+    let actives = [];
+    let extents = [];
+
+    let params = {};
+
+    if (!!self.filter && self.filter.hasOwnProperty('time')) {
+        if (!startTime) {
+            let timeRange = self.filter['time'];
+            startTime = timeRange[0];
+            endTime = timeRange[1];
+        }
+    }
+
+    self.svg.selectAll(".brush")
+        .filter(function(d) {
+            return d3.brushSelection(this);
+        })
+        .each(function(d) {
+            actives.push(d);
+            let selectionDomain = self.getSelectionDomain(d, this);
+
+            extents.push(selectionDomain);
+
+            params[d] = selectionDomain;
+
+        });
+
+    // update display for parallel coordinates
+    self.foreground.style("display", function(line) {
+
+        let myDp = actives.every(function(dim, i) {
+
+            let max = extents[i][0];
+            let min = extents[i][1];
+            let val = line[dim];
+
+            let dp = val >= min && val <= max;
+
+            // console.log('min: ' + min + "; max: " + max + "; val: " + val + ";visibility:" + dp);
+
+            return !!dp;
+        });
+
+        if (!!startTime && !!endTime && !!myDp) {
+            myDp = !(line.startTime.getTime() >= endTime.getTime() || line.endTime.getTime() <= startTime.getTime())
+        }
+
+        return line.display = (myDp ? null : "none");
+    });
+
+    return params;
 };
 
 ParallelCoordinate.prototype.renderGraph = function renderGraph() {
@@ -370,45 +451,7 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
 
     // Handles a brush event, toggling the display of foreground lines.
     function brush() {
-
-        let actives = [];
-        let extents = [];
-
-        let params = {};
-
-        self.svg.selectAll(".brush")
-            .filter(function(d) {
-                return d3.brushSelection(this);
-            })
-            .each(function(d) {
-                actives.push(d);
-                let selectionDomain = getSelectionDomain(d, this);
-
-                extents.push(selectionDomain);
-
-                params[d] = selectionDomain;
-
-            });
-
-        // update display for parallel coordinates
-        self.foreground.style("display", function(line) {
-
-            let myDp = actives.every(function(dim, i) {
-
-                let max = extents[i][0];
-                let min = extents[i][1];
-                let val = line[dim];
-
-                let dp = val >= min && val <= max;
-
-                // console.log('min: ' + min + "; max: " + max + "; val: " + val + ";visibility:" + dp);
-
-                return !!dp;
-            });
-
-            return line.display = (myDp ? null : "none");
-        });
-
+        let params = self.updateByActiveSelection();
         // update display for other graphs via event dispatching
         if (!!self.eventHandler) {
             let event = {

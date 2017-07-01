@@ -38,7 +38,8 @@ class VisitDuration {
         ];
 
         // this.eventHandler.addEvent('mouseout', this.onLineMouseOut, this);
-        this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
+        this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this); // brush end from PC
+        this.eventHandler.addEvent('timeChange', this.onBrushEnd, this); // time change from everyday selection
 
 
         // this.singleVisit = new SingleVisit('mySingleVisit', this.roadHeatMap, this.eventHandler);
