@@ -46,12 +46,13 @@ class VisitDuration {
         this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this); // brush end from PC
         this.eventHandler.addEvent('timeChange', this.onBrushEnd, this); // time change from everyday selection
         this.eventHandler.addEvent('mouseover', this.onLineMouseOver, this);
+        this.eventHandler.addEvent('clearSetting', this.clearSetting, this);
 
         let self = this;
         this.visitChart.bindSvgEvent('click',function () {
             self.singleVisit.hide();
 
-            self.clearSetting();
+            self.eventHandler.fireEvent('clearSetting');
         });
 
     }
