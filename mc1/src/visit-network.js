@@ -190,17 +190,23 @@ class VisitNetwork {
         let radius = self.options.nodeRadius;
 
         // render link
-        let link = this.linkGroup
+        let linkSelection = this.linkGroup
             .selectAll(".link")
             .data(this.links)
+            ;
+        let link = linkSelection
             .enter().append("line")
             .attr('class', 'link')
         ;
 
+        linkSelection.exit().remove();
+
         // render node - after link to make sure nodes ontop of links
-        let node = this.nodeGroup
+        let nodeSelection = this.nodeGroup
             .selectAll(".node")
             .data(this.nodes)
+            ;
+        let node = nodeSelection
             .enter().append("circle")
             .attr('class', 'node')
             .attr("r", function (d) {
@@ -212,10 +218,15 @@ class VisitNetwork {
                 .on("end", dragended))
         ;
 
+        nodeSelection.exit().remove();
+
         // label nodes
-        let label = this.nodeLabelGroup
+        let labelSelection = this.nodeLabelGroup
             .selectAll(".node-label")
             .data(this.nodes)
+        ;
+
+        let label = labelSelection
             .enter().append("text")
             .attr('class', 'node-label')
             .text(function(d) {
@@ -227,6 +238,8 @@ class VisitNetwork {
                 .on("end", dragended))
         ;
 
+
+        labelSelection.exit().remove();
 
         this.simulation
             .nodes(this.nodes)
