@@ -110,6 +110,7 @@ class VisitNetwork {
 
         let preNode, tmpNode, tmpLink;
         let preCp;
+        let tmpDuration;
 
         let getNodeName = function (cp, index) {
             let mp = cp.getMapPoint();
@@ -150,7 +151,15 @@ class VisitNetwork {
                 }
 
                 if (preCp.getGate() == gate) {
-                   preCp = cp;
+                    tmpDuration = cp.getTime().getTime() - preCp.getTime().getTime();
+                    preCp = cp;
+
+                    if (!preCp.getMapPoint().isEntrance()) {
+                        tmpNode.addDuration(tmpDuration/ 3600000);
+                    }
+
+                    tmpDuration = 0;
+
                    return; // enter and exit immediately
                 }
 
@@ -175,7 +184,7 @@ class VisitNetwork {
 
 
         let radiusExtent = d3.extent(this.nodes, function (d) {
-            return d.getCount();
+            return d.getDuration();
         });
 
         this.radiusScale = d3.scaleLinear()
@@ -186,10 +195,18 @@ class VisitNetwork {
         let thicknessExtent = d3.extent(this.links, function (d) {
             return d.getCount();
         });
-
         this.linkThicknessScale = d3.scaleLinear()
             .domain(thicknessExtent)
             .range([self.options.linkThickness, self.options.linkThickness + 10])
+        ;
+
+        let strokeExtent = d3.extent(this.nodes, function (d) {
+            return d.getCount();
+        });
+
+        this.strokeWidthScale = d3.scaleLinear()
+            .domain(strokeExtent)
+            .range([0.5, self.options.nodeRadius/2])
         ;
 
     }
@@ -224,8 +241,10 @@ class VisitNetwork {
             .enter().append("circle")
             .attr('class', 'node')
             .attr("r", function (d) {
-                let r =  self.radiusScale(d.getCount());
-                return d.r = r;
+                return d.r = self.radiusScale(d.getDuration());
+            })
+            .style("stroke-width", function (d) {
+                return self.strokeWidthScale(d.getCount());
             })
             .style("fill", function (d) {
                 return d.getData().getColor();
@@ -274,7 +293,7 @@ class VisitNetwork {
             //         return d.getData().getColor();
             //     })
                 .style("stroke", "#969696")
-                .style("stroke-width", "1px")
+                // .style("stroke-width", "1px")
                 .attr("cx", function(d) {
                     let maxX = self.width - endingArea;
                     let minX = startArea;
@@ -333,6 +352,7 @@ class SimpleNode {
         this.data = data;
         this.name = name;
         this.count = 0;
+        this.duration = 0; // hours
     }
 
     increaseCount() {
@@ -353,6 +373,16 @@ class SimpleNode {
 
     getData() {
         return this.data;
+    }
+
+    getDuration() {
+        return this.duration;
+    }
+
+    addDuration(duration) {
+        this.duration += duration;
+
+        return this;
     }
 
     isStartingGate() {
