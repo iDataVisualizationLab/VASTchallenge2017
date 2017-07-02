@@ -172,6 +172,10 @@ MapPoint.prototype.isVisiblePoint = function isVisiblePoint() {
     return this.hasSensorLocated() || this.getIsRoad();
 };
 
+MapPoint.prototype.getShortName = function getShortName() {
+    return this.shortName;
+};
+
 MapPoint.prototype.setName = function setName(entranceIdx, gateIdx, generalGateIdx, rangeStopIdx, campingIdx) {
 
     let n = '';
@@ -235,6 +239,20 @@ MapPoint.prototype.setName = function setName(entranceIdx, gateIdx, generalGateI
     this.label = l;
     if (!this.name) {
         this.name = n;
+
+        let parts = n.split('\-');
+
+        let sName = '';
+        parts.forEach(function (s) {
+            sName += s.charAt(0);
+        });
+
+        let num = this.name.charAt(n.length-1);
+        if (!isNumeric(num)) {
+            num = '';
+        }
+
+        this.shortName = sName + num;
     }
     else {
         console.error('name has been assigned manually');

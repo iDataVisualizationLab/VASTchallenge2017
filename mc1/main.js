@@ -55,13 +55,13 @@ d3.json("data/all-car-path.json", function(error, lines) {
             mc1.selectedCar = visit;
         }
 
-        return visit.carType == '2P';
+        return visit.carType != '2P';
     });
 
     mc1.eventHandler = new EventHandler();
 
     mc1.simulationManager = new SimulationManager(mc1.parkMap);
-    mc1.singleVisit = new CarTraceMap('mySingleVisit', 1720, 220);
+    mc1.singleVisit = new CarTraceMap('mySingleVisit', 1720, 400);
 
 
     d3.timeout(function () {

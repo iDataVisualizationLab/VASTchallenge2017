@@ -271,3 +271,7 @@ function dayDiff(date1, date2) {
 
     return count;
 }
+
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
