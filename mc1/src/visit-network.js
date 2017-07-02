@@ -85,6 +85,10 @@ class VisitNetwork {
             options.offSetY = 0;
         }
 
+        if (!options.nodeRadius) {
+            options.nodeRadius = 15;
+        }
+
         return options;
     }
 
@@ -167,6 +171,7 @@ class VisitNetwork {
     }
 
     render() {
+        let self=  this;
         // render link
         let link = this.linkGroup
             .selectAll(".link")
@@ -182,7 +187,7 @@ class VisitNetwork {
             .enter().append("circle")
             .attr('class', 'node')
             .attr("r", function (d) {
-                return d.r = 6;
+                return d.r = self.options.nodeRadius;
             })
         ;
 
@@ -206,25 +211,29 @@ class VisitNetwork {
 
         function ticked() {
             link
-                .attr("x1", function(d) { return d.source.x; })
-                .attr("y1", function(d) { return d.source.y; })
-                .attr("x2", function(d) { return d.target.x; })
-                .attr("y2", function(d) { return d.target.y; });
+                .attr("x1", function(d) { return d.source.cx; })
+                .attr("y1", function(d) { return d.source.cy; })
+                .attr("x2", function(d) { return d.target.cx; })
+                .attr("y2", function(d) { return d.target.cy; });
 
             node
-                .attr("r", 6)
+                // .attr("r", 6)
                 .style("fill", function (d) {
                     return d.getData().getColor();
                 })
                 .style("stroke", "#969696")
                 .style("stroke-width", "1px")
-                .attr("cx", function (d) { return d.x+6; })
-                .attr("cy", function(d) { return d.y-6; });
+                .attr("cx", function (d) {
+                    return d.cx = d.x + self.options.nodeRadius;
+                })
+                .attr("cy", function(d) {
+                    return d.cy = d.y -self.options.nodeRadius;
+                });
 
             label
-                .attr("x", function(d) { return d.x; })
-                .attr("y", function (d) { return d.y; })
-                .style("font-size", "10px").style("fill", "#4393c3");
+                .attr("x", function(d) { return d.cx - self.options.nodeRadius / 2; })
+                .attr("y", function (d) { return d.cy + self.options.nodeRadius / 4; })
+                .style("font-size", "12px").style("fill", "#4393c3");
         }
     }
 
