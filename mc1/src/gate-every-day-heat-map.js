@@ -180,9 +180,7 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
                 })
                 .attr("width", gridSizeX)
                 .attr("height", gridSizeY)
-                .style("fill", function (d) {
-                    return d.color;
-                })
+                .style("fill-opacity", 0)
                 .style("stroke", '#990000')
                 .style("stroke-width", self.options.strokeWidth)
             ;
