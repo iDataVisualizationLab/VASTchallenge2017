@@ -59,13 +59,13 @@ class CellHeatMap extends TraceMap {
         self.svg.selectAll('.card').data(this.data).enter()
             .append('rect')
             .attr("class", function (l) {
-                return "card bordered heat-map-cell-id-" + l.id;
+                return "card heat-map-cell-id-" + l.id;
             })
             .attr("x", function(d) {
-                return (d[xKey] - self.minX) * gridSizeX + self.options.offSetX;
+                return d.x = (d[xKey] - self.minX) * gridSizeX + self.options.offSetX;
             })
             .attr("y", function(d) {
-                return (d[yKey] - self.minY)* gridSizeY + self.options.offSetY;
+                return d.y = (d[yKey] - self.minY)* gridSizeY + self.options.offSetY;
             })
             // .attr("rx", 4)
             // .attr("ry", 4)
@@ -74,10 +74,8 @@ class CellHeatMap extends TraceMap {
             .style("fill", function (d) {
                 return d[heatKey] == 0 ? '#f2f1e1' : self.colorScale(d[heatKey]);
             })
-            .style("stroke", function (d) {
-                return !!d.weekend ? '#990000' : '#E6E6E6';
-            })
-            .style("stroke-width", 1)
+            .style("stroke", '#E6E6E6')
+            .style("stroke-width", self.options.strokeWidth)
         ;
 
         this.renderAxis();

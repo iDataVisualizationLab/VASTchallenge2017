@@ -46,7 +46,7 @@ class GateTimeHeatMap extends CellHeatMap {
     }
 
     ignoreGates() {
-        return ['gate', 'entrance', 'ranger-base', 'general'];
+        return ['gate', 'entrance', 'ranger-base', 'general', 'ranger-stop0', 'ranger-stop2'];
     }
 
     static createTimes() {
@@ -69,7 +69,7 @@ class GateTimeHeatMap extends CellHeatMap {
 
     static createGates() {
         let self = this;
-        let ignoreGates = ['gate', 'entrance', 'ranger-base', 'general'];
+        let ignoreGates = ['gate', 'entrance', 'ranger-base', 'general', 'ranger-stop0', 'ranger-stop2'];
 
         let gates = Object.keys(mc1.parkMap.pointNameMapping)
             .filter(function (item) {

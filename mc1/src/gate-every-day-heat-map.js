@@ -40,12 +40,14 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
     setupEvent() {
         this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
+        this.eventHandler.addEvent('mouseover', this.highLightVisit, this);
     }
 
     handleOptions(options) {
         options = super.handleOptions(options);
         options.margin.top = 100;
         options.margin.bottom = 0;
+        options.strokeWidth = 0.5;
 
         return options;
     }
@@ -145,8 +147,44 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
         return myData;
     }
 
+    highLightWeekend() {
+
+        let self = this;
+        let gridSizeX = self.options.gridSizeX;
+        let gridSizeY = self.options.gridSizeY;
+        let heatKey = self.options.heatKey;
+
+        let weekends = this.data.filter(function (d) {
+            return !!d.weekend;
+        });
+
+        if (weekends.length > 0) {
+            self.svg.append('g').selectAll('.weekend').data(weekends).enter()
+                .append('rect')
+                .attr("class", function (l) {
+                    return "card weekend heat-map-cell-id-" + l.id;
+                })
+                .attr('x', function (d) {
+                    return  d.x;
+                })
+                .attr('y', function (d) {
+                    return  d.y;
+                })
+                .attr("width", gridSizeX)
+                .attr("height", gridSizeY)
+                .style("fill", function (d) {
+                    return d[heatKey] == 0 ? '#f2f1e1' : self.colorScale(d[heatKey]);
+                })
+                .style("stroke", '#990000')
+                .style("stroke-width", self.options.strokeWidth)
+            ;
+        }
+    }
     render() {
+
         super.render();
+
+        this.highLightWeekend();
 
         let self = this;
 
@@ -249,33 +287,84 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
     }
 
-    onBrushEnd(e) {
+    highLightVisit(e) {
 
-        super.onBrushEnd(e);
+        let visit = e.line.context;
+        let paths = visit.path;
 
-        // let lines = mc1.parallel.getVisibleLines();
-        //
-        // this.setData(lines);
-        //
-        // this.render();
-        //
-        // let self = this;
-        //
-        // if (!!self.filter && self.filter.hasOwnProperty('time')) {
-        //     let time = self.filter['time'];
-        //
-        //     self.svg.select(".brush").call(self.brush.extent([self.x(time[0]), self.x(time[1])]));
-        //
-        //     self.brush(d3.select(".brush").transition());
-        //
-        // }
+        let startDate = new Date(visit.startTime.getTime());
+        let endTime = visit.endTime.getTime();
+        let preCp;
 
-        // let lines = mc1.parallel.getVisibleLines();
-        //
-        // this.reset();
-        //
-        // this.setData(lines);
-        //
-        // this.render();
+        let activeKeys = {};
+        let key;
+
+        let gate;
+        let day;
+
+        paths.forEach(function (cp, index) {
+
+            gate = cp.getGate();
+            day = formatDate(cp.getTime());
+
+            key = gate + '-' + day;
+
+            if (!activeKeys.hasOwnProperty(key)) {
+                activeKeys[key] = true;
+            }
+
+            if (index < 1 || preCp != null && preCp.getGate() != cp.getGate()) {
+                preCp = cp;
+                return;
+            }
+
+            // has delay period
+            startDate = new Date(preCp.getTime().getTime());
+            startDate.setHours(0);
+            startDate.setMinutes(0);
+            startDate.setSeconds(0);
+            startDate.setMilliseconds(0);
+
+            endTime = cp.getTime().getTime();
+
+            do {
+
+                if (startDate.getTime() > endTime) {
+                    break;
+                }
+                day = formatDate(startDate);
+
+                key = gate + '-' + day;
+                activeKeys[key] = true;
+                startDate.setDate(startDate.getDate() + 1);
+            }
+            while(true);
+
+            preCp = cp;
+
+
+        });
+
+        let self = this;
+        let xKey = self.options.xKey;
+        let yKey = self.options.yKey;
+        let xOffset;
+        let yOffset;
+        let stroke;
+
+        self.svg.selectAll('.card')
+            .filter(function (d) {
+                // debugger;
+                xOffset = d[xKey];
+                yOffset = d[yKey];
+
+                gate = self.yLabels[yOffset];
+                day = self.xLabels[xOffset];
+
+                key = gate + '-' + day;
+
+                return activeKeys.hasOwnProperty(key);
+            })
+            .style('fill', '#FFFFFF');
     }
 }
