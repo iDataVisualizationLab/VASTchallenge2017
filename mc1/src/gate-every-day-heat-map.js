@@ -12,6 +12,13 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
             .rangeRound([self.options.margin.left, self.originalWidth - self.options.margin.right])
             // .rangeRound([0, this.width])
         ;
+
+        this.activeKeys = {};
+
+        this.nativeSvg.on('click',function () {
+
+            self.eventHandler.fireEvent('clearSetting');
+        });
     }
 
     static createTimes() {
@@ -41,6 +48,7 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
     setupEvent() {
         this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
         this.eventHandler.addEvent('mouseover', this.highLightVisit, this);
+        this.eventHandler.addEvent('clearSetting', this.clearSetting, this);
     }
 
     handleOptions(options) {
@@ -345,6 +353,12 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
         });
 
+        // clear previous setting
+        this.clearSetting();
+
+        // activate setting
+        this.activeKeys = activeKeys;
+
         let self = this;
         let xKey = self.options.xKey;
         let yKey = self.options.yKey;
@@ -353,7 +367,7 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
         let stroke;
 
         self.svg.selectAll('.card')
-            .style('fill', function (d) {
+            .filter(function (d) {
                 xOffset = d[xKey];
                 yOffset = d[yKey];
 
@@ -362,9 +376,40 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
                 key = gate + '-' + day;
 
-                stroke = activeKeys.hasOwnProperty(key) ? '#969696' : d.color;
-
-                return stroke;
-            });
+                return self.activeKeys.hasOwnProperty(key);
+            })
+            .style('fill', '#969696');
     }
+
+    clearSetting() {
+        let self = this;
+
+        let xKey = self.options.xKey;
+        let yKey = self.options.yKey;
+        let xOffset;
+        let yOffset;
+        let key;
+
+        let gate;
+        let day;
+        self.svg.selectAll('.card')
+            .filter(function (d) {
+                xOffset = d[xKey];
+                yOffset = d[yKey];
+
+                gate = self.yLabels[yOffset];
+                day = self.xLabels[xOffset];
+
+                key = gate + '-' + day;
+
+                return self.activeKeys.hasOwnProperty(key);
+            })
+            .style('fill', function (d) {
+                return d.color;
+            });
+
+
+        self.activeKeys = {};
+    }
+
 }
