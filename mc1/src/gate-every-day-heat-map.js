@@ -181,7 +181,9 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
                 .attr("width", gridSizeX)
                 .attr("height", gridSizeY)
                 .style("fill-opacity", 0)
-                .style("stroke", '#990000')
+                .style("stroke", function (d) {
+                    return d.stroke = '#990000';
+                })
                 .style("stroke-width", self.options.strokeWidth)
             ;
         }
@@ -376,7 +378,9 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
                 return self.activeKeys.hasOwnProperty(key);
             })
-            .style('fill', '#969696');
+            .style('fill', '#000000')
+            // .style('stroke', '#0065FF')
+        ;
     }
 
     clearSetting() {

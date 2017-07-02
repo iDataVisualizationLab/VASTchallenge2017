@@ -72,7 +72,8 @@ class CellHeatMap extends TraceMap {
             .attr("width", gridSizeX)
             .attr("height", gridSizeY)
             .style("fill", function (d) {
-                return d.color = d[heatKey] == 0 ? '#f2f1e1' : self.colorScale(d[heatKey]);
+                // return d.color = d[heatKey] == 0 ? '#a3a3a3' : self.colorScale(d[heatKey]);
+                return d.color = d[heatKey] == 0 ? '#CCCCCC' : self.colorScale(d[heatKey]);
             })
             .style("stroke", '#E6E6E6')
             .style("stroke-width", self.options.strokeWidth)
