@@ -173,7 +173,7 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
                 .attr("width", gridSizeX)
                 .attr("height", gridSizeY)
                 .style("fill", function (d) {
-                    return d[heatKey] == 0 ? '#f2f1e1' : self.colorScale(d[heatKey]);
+                    return d.color;
                 })
                 .style("stroke", '#990000')
                 .style("stroke-width", self.options.strokeWidth)
@@ -353,8 +353,7 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
         let stroke;
 
         self.svg.selectAll('.card')
-            .filter(function (d) {
-                // debugger;
+            .style('fill', function (d) {
                 xOffset = d[xKey];
                 yOffset = d[yKey];
 
@@ -363,8 +362,9 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
                 key = gate + '-' + day;
 
-                return activeKeys.hasOwnProperty(key);
-            })
-            .style('fill', '#FFFFFF');
+                stroke = activeKeys.hasOwnProperty(key) ? '#969696' : d.color;
+
+                return stroke;
+            });
     }
 }
