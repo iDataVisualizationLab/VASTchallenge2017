@@ -202,7 +202,7 @@ mc1.controller.changeGraphType = function(graphType) {
                 mc1.visitNetwork.render();
             });
 
-            this.viewVisType(0);
+            this.viewVisType(1);
 
 
 

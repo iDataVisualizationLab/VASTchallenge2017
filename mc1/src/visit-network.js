@@ -31,13 +31,15 @@ class VisitNetwork {
     
     init() {
         this.simulation = d3.forceSimulation()
-            .force("link", d3.forceLink().distance(10).strength(0.5))
+            .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(30).strength(1))
             .force("charge", d3.forceManyBody())
             .force("center", d3.forceCenter(this.width / 2, this.height / 2))
+            .force("collide",d3.forceCollide( function(d){return d.r + 8 }).iterations(16))
         ;
 
         this.linkGroup = this.svg.append("g")
             .attr('class', 'link-group')
+            .style("stroke", "#aaa")
         ;
 
         this.nodeGroup = this.svg.append('g')
@@ -179,7 +181,9 @@ class VisitNetwork {
             .data(this.nodes)
             .enter().append("circle")
             .attr('class', 'node')
-            .attr("r", 6)
+            .attr("r", function (d) {
+                return d.r = 6;
+            })
         ;
 
         // label nodes
@@ -208,8 +212,10 @@ class VisitNetwork {
                 .attr("y2", function(d) { return d.target.y; });
 
             node
-                .attr("r", 20)
-                .style("fill", "#d9d9d9")
+                .attr("r", 6)
+                .style("fill", function (d) {
+                    return d.getData().getColor();
+                })
                 .style("stroke", "#969696")
                 .style("stroke-width", "1px")
                 .attr("cx", function (d) { return d.x+6; })
@@ -218,7 +224,7 @@ class VisitNetwork {
             label
                 .attr("x", function(d) { return d.x; })
                 .attr("y", function (d) { return d.y; })
-                .style("font-size", "20px").style("fill", "#4393c3");
+                .style("font-size", "10px").style("fill", "#4393c3");
         }
     }
 
@@ -246,6 +252,10 @@ class SimpleNode {
 
     getName() {
         return this.name;
+    }
+
+    getData() {
+        return this.data;
     }
 }
 
