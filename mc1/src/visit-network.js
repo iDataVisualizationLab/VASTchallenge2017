@@ -34,7 +34,7 @@ class VisitNetwork {
             .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(30).strength(1))
             .force("charge", d3.forceManyBody())
             .force("center", d3.forceCenter(this.width / 2, this.height / 2))
-            .force("collide",d3.forceCollide( function(d){return d.r + 8 }).iterations(16))
+            .force("collide",d3.forceCollide( function(d){return d.r + 5; }).iterations(16))
         ;
 
         this.linkGroup = this.svg.append("g")
@@ -86,7 +86,7 @@ class VisitNetwork {
         }
 
         if (!options.nodeRadius) {
-            options.nodeRadius = 15;
+            options.nodeRadius = 12;
         }
 
         return options;
