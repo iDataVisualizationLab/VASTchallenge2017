@@ -333,6 +333,12 @@ class CarTraceMap extends TraceMap {
         this.clear();
        super.render();
 
+
+        let xKey = self.options.xKey;
+        let yKey = self.options.yKey;
+        let dayOffset;
+        let minuteOffset;
+
        if (!!this.cell) {
            this.cell
                .on('mouseover', function (d) {
@@ -340,6 +346,11 @@ class CarTraceMap extends TraceMap {
                    if (!!d.name) {
                        self.tooltip.render('Gate: ' + d.name + ' <br/> time: ' + d.time);
 
+                   }else {
+                       dayOffset = d[yKey];
+                       minuteOffset = d[xKey];
+
+                       self.tooltip.render('Time: ' + self.yLabels[dayOffset] + " " + self.xLabels[minuteOffset]);
                    }
                })
        }
