@@ -31,7 +31,7 @@ class VisitNetwork {
     
     init() {
         this.simulation = d3.forceSimulation()
-            .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(30).strength(1))
+            .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(10).strength(0.6))
             .force("charge", d3.forceManyBody())
             .force("center", d3.forceCenter(this.width / 2, this.height / 2))
             .force("collide",d3.forceCollide( function(d){return d.r + 5; }).iterations(16))
@@ -109,11 +109,12 @@ class VisitNetwork {
         let maxRepeatedNode = 0, maxRepeatedLink = 0;
 
         let getNodeName = function (cp, index) {
-            let nodeName = cp.getMapPoint().getShortName();
-            if (cp.getMapPoint().isRangerBase()) {
+            let mp = cp.getMapPoint();
+            let nodeName = mp.getShortName();
+            if (mp.isRangerBase()) {
                 nodeName = nodeName + (((index + 1) % 2 == 0) ? '-1' : '-2');
             }
-            else if (cp.getMapPoint().isEntrance()) {
+            else if (mp.isEntrance()) {
                 nodeName = nodeName + (((index + 1) % 2 == 0) ? '-1' : '-2');
             }
 
@@ -188,6 +189,8 @@ class VisitNetwork {
     render() {
         let self=  this;
         let radius = self.options.nodeRadius;
+        let startArea = 40;
+        let endingArea = 40;
 
         // render link
         let linkSelection = this.linkGroup
@@ -258,7 +261,18 @@ class VisitNetwork {
                 .style("stroke", "#969696")
                 .style("stroke-width", "1px")
                 .attr("cx", function(d) {
-                    return d.x = Math.max(radius, Math.min(self.width - radius, d.x));
+                    let maxX = self.width - endingArea;
+                    let minX = startArea;
+                    if (d.isStartingGate()) {
+                        maxX = startArea - radius;
+                        minX = 0;
+                    }
+                    else if (d.isEndingGate()) {
+                        maxX = self.width;
+                        minX = self.width - endingArea;
+                    }
+
+                    return d.x = Math.max(minX + radius, Math.min(maxX - radius, d.x));
                 })
                 .attr("cy", function(d) {
                     return d.y = Math.max(radius, Math.min(self.height - radius, d.y));
@@ -324,6 +338,20 @@ class SimpleNode {
 
     getData() {
         return this.data;
+    }
+
+    isStartingGate() {
+
+        let isEntranceOrRangerBase = this.data.isEntrance() || this.data.isRangerBase();
+
+        return isEntranceOrRangerBase && (this.name.charAt(this.name.length-1) == '1');
+    }
+
+    isEndingGate() {
+
+        let isEntranceOrRangerBase = this.data.isEntrance() || this.data.isRangerBase();
+
+        return isEntranceOrRangerBase && (this.name.charAt(this.name.length-1) == '2');
     }
 }
 

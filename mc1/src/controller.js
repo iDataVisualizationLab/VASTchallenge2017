@@ -197,7 +197,7 @@ mc1.controller.changeGraphType = function(graphType) {
 
             // visit network
             d3.timeout(function () {
-                mc1.visitNetwork = new VisitNetwork('visit-network', 480, 410, {});
+                mc1.visitNetwork = new VisitNetwork('visit-network', 520, 410, {});
                 mc1.visitNetwork.setData(mc1.parsedVisits);
                 mc1.visitNetwork.render();
             });
