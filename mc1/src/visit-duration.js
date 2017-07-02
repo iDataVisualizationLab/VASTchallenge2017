@@ -178,7 +178,8 @@ class VisitDuration {
             self.singleVisit.render();
 
             console.log('event mouse over. rendering: ' + line.context.carId);
-
+        }else {
+            self.singleVisit.show();
         }
     }
 

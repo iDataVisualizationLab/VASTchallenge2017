@@ -20,10 +20,10 @@ class CarTraceMap extends TraceMap {
         options.yKey = 'day';
         options.fillKey = 'color';
 
-        options.strokeWidth = 0;
+        options.strokeWidth = 0.2;
 
         options.margin.left = 100;
-        options.margin.right = 0;
+        options.margin.right = 10;
         options.margin.top = 50;
 
         options.defaultCellColor = '#CCCCCC';
@@ -110,11 +110,11 @@ class CarTraceMap extends TraceMap {
         let options = this.options;
 
         if (!options.gridSizeX || !!force) {
-            options.gridSizeX = (this.width - options.margin.left - options.margin.right) / this.xLabels.length;
+            options.gridSizeX = (this.originalWidth - options.margin.left - options.margin.right) / this.xLabels.length;
         }
 
         if (!options.gridSizeY || !!force) {
-            options.gridSizeY = (this.height - options.margin.bottom - options.margin.top)/ this.yLabels.length + 1; // add one for legend
+            options.gridSizeY = (this.originalHeight - options.margin.bottom - options.margin.top)/ this.yLabels.length + 1; // add one for legend
         }
     }
     /**
@@ -331,13 +331,15 @@ class CarTraceMap extends TraceMap {
 
         let self = this;
         this.clear();
-       super.render();
+        super.render();
 
 
         let xKey = self.options.xKey;
         let yKey = self.options.yKey;
         let dayOffset;
         let minuteOffset;
+
+        let dayVal;
 
        if (!!this.cell) {
            this.cell
@@ -349,8 +351,15 @@ class CarTraceMap extends TraceMap {
                    }else {
                        dayOffset = d[yKey];
                        minuteOffset = d[xKey];
+                        dayVal = self.yLabels[dayOffset];
 
-                       self.tooltip.render('Time: ' + self.yLabels[dayOffset] + " " + self.xLabels[minuteOffset]);
+                        if (dayVal != null && !dayVal.startsWith('work') && !dayVal.startsWith('away')) {
+                            self.tooltip.render('Time: ' + self.yLabels[dayOffset] + " " + self.xLabels[minuteOffset]);
+                        }
+                        else {
+                            self.tooltip.render('Minute: ' + self.xLabels[minuteOffset]);
+
+                        }
                    }
                })
        }
@@ -365,13 +374,28 @@ class CarTraceMap extends TraceMap {
         let gridSizeX = self.options.gridSizeX;
         let dateParser = d3.timeParse('%Y-%m-%d');
 
+        let daysPerlabel = Math.ceil(20 / gridSizeY);
+
         self.svg.selectAll(".yLabel")
             .data(self.yLabels)
             .enter().append("text")
-            .text(function (d) {
-                if (d.startsWith('work') || d.startsWith('away')) {
+            .text(function (d, i) {
+                // if (d.startsWith('away')) {
+                //     return '';
+                // }
+
+                if (i % daysPerlabel != 0) {
                     return '';
                 }
+
+                if (d.startsWith('work')) {
+                    return 'Camping';
+                }
+
+                if (d.startsWith('away')) {
+                    return 'Working';
+                }
+
 
                 let curDate = dateParser(d);
 

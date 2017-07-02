@@ -13,9 +13,10 @@ class TraceMap {
         d3.select("#" + divId).selectAll('*').remove();
 
         this.nativeSvg = d3.select("#" + divId).append("svg")
-            .attr("width", this.width + margin.left + margin.right)
-            .attr("height", this.height + margin.top + margin.bottom)
+            .attr("width", this.originalWidth)
+            .attr("height", this.originalHeight)
         ;
+
         var svg = this.nativeSvg
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
