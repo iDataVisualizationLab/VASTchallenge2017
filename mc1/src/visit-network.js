@@ -102,11 +102,23 @@ class VisitNetwork {
         let addedNodes = {};
         let addedLinks = {};
 
-        let gate, linkName;
+        let gate, nodeName, preNodeName, linkName;
 
         let preNode, tmpNode, tmpLink;
         let preCp;
         let maxRepeatedNode = 0, maxRepeatedLink = 0;
+
+        let getNodeName = function (cp, index) {
+            let nodeName = cp.getMapPoint().getShortName();
+            if (cp.getMapPoint().isRangerBase()) {
+                nodeName = nodeName + (((index + 1) % 2 == 0) ? '-1' : '-2');
+            }
+            else if (cp.getMapPoint().isEntrance()) {
+                nodeName = nodeName + (((index + 1) % 2 == 0) ? '-1' : '-2');
+            }
+
+            return nodeName;
+        };
 
         visits.forEach(function (line) {
             paths = line.path;
@@ -115,14 +127,16 @@ class VisitNetwork {
 
                 gate = cp.getGate();
 
-                if (!addedNodes.hasOwnProperty(gate)) {
-                    tmpNode = new SimpleNode(self.nodes.length, cp.getMapPoint(), cp.getMapPoint().getShortName());
+                nodeName = getNodeName(cp, index);
+
+                if (!addedNodes.hasOwnProperty(nodeName)) {
+                    tmpNode = new SimpleNode(self.nodes.length, cp.getMapPoint(), nodeName);
                     self.nodes.push(tmpNode);
 
-                    addedNodes[gate] = tmpNode;
+                    addedNodes[nodeName] = tmpNode;
                 }
 
-                tmpNode = addedNodes[gate];
+                tmpNode = addedNodes[nodeName];
                 tmpNode.increaseCount();
 
                 if (tmpNode.getCount() > maxRepeatedNode) {
@@ -144,9 +158,10 @@ class VisitNetwork {
                     return; // enter and exit immediately
                 }
 
-                preNode = addedNodes[preCp.getGate()];
+                preNodeName = getNodeName(preCp, index-1);
+                preNode = addedNodes[preNodeName];
 
-                linkName = preCp.getGate() + '-' + cp.getGate();
+                linkName = preNodeName + '-' + nodeName;
                 if (!addedLinks.hasOwnProperty(linkName)) {
                     tmpLink = new SimpleLink(self.links.length, preNode.getId(), tmpNode.getId(), linkName);
                     self.links.push(tmpLink);
@@ -172,6 +187,8 @@ class VisitNetwork {
 
     render() {
         let self=  this;
+        let radius = self.options.nodeRadius;
+
         // render link
         let link = this.linkGroup
             .selectAll(".link")
@@ -187,8 +204,12 @@ class VisitNetwork {
             .enter().append("circle")
             .attr('class', 'node')
             .attr("r", function (d) {
-                return d.r = self.options.nodeRadius;
+                return d.r = radius;
             })
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
         ;
 
         // label nodes
@@ -199,7 +220,12 @@ class VisitNetwork {
             .attr('class', 'node-label')
             .text(function(d) {
                 return d.getName();
-            });
+            })
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended))
+        ;
 
 
         this.simulation
@@ -210,30 +236,50 @@ class VisitNetwork {
             .links(this.links);
 
         function ticked() {
-            link
-                .attr("x1", function(d) { return d.source.cx; })
-                .attr("y1", function(d) { return d.source.cy; })
-                .attr("x2", function(d) { return d.target.cx; })
-                .attr("y2", function(d) { return d.target.cy; });
 
             node
-                // .attr("r", 6)
+            // .attr("r", 6)
                 .style("fill", function (d) {
                     return d.getData().getColor();
                 })
                 .style("stroke", "#969696")
                 .style("stroke-width", "1px")
-                .attr("cx", function (d) {
-                    return d.cx = d.x + self.options.nodeRadius;
+                .attr("cx", function(d) {
+                    return d.x = Math.max(radius, Math.min(self.width - radius, d.x));
                 })
                 .attr("cy", function(d) {
-                    return d.cy = d.y -self.options.nodeRadius;
+                    return d.y = Math.max(radius, Math.min(self.height - radius, d.y));
                 });
 
+            link
+                .attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });
+
+
+
             label
-                .attr("x", function(d) { return d.cx - self.options.nodeRadius / 2; })
-                .attr("y", function (d) { return d.cy + self.options.nodeRadius / 4; })
+                .attr("x", function(d) { return d.x - self.options.nodeRadius / 2; })
+                .attr("y", function (d) { return d.y + self.options.nodeRadius / 4; })
                 .style("font-size", "12px").style("fill", "#4393c3");
+        }
+
+        function dragstarted(d) {
+            if (!d3.event.active) self.simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(d) {
+            d.fx = d3.event.x;
+            d.fy = d3.event.y;
+        }
+
+        function dragended(d) {
+            if (!d3.event.active) self.simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
         }
     }
 
