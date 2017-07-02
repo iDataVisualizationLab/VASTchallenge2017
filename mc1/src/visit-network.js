@@ -89,6 +89,10 @@ class VisitNetwork {
             options.nodeRadius = 12;
         }
 
+        if (!options.linkThickness) {
+            options.linkThickness = 1;
+        }
+
         return options;
     }
 
@@ -106,7 +110,6 @@ class VisitNetwork {
 
         let preNode, tmpNode, tmpLink;
         let preCp;
-        let maxRepeatedNode = 0, maxRepeatedLink = 0;
 
         let getNodeName = function (cp, index) {
             let mp = cp.getMapPoint();
@@ -140,10 +143,6 @@ class VisitNetwork {
                 tmpNode = addedNodes[nodeName];
                 tmpNode.increaseCount();
 
-                if (tmpNode.getCount() > maxRepeatedNode) {
-                    maxRepeatedNode = tmpNode.getCount();
-                }
-
                 if (index < 1) {
                     preCp = cp;
 
@@ -151,12 +150,8 @@ class VisitNetwork {
                 }
 
                 if (preCp.getGate() == gate) {
-                   if (!cp.getMapPoint().isEntrance()) {
-                       tmpNode.increaseCount();
-                   }
-
                    preCp = cp;
-                    return; // enter and exit immediately
+                   return; // enter and exit immediately
                 }
 
                 preNodeName = getNodeName(preCp, index-1);
@@ -172,17 +167,30 @@ class VisitNetwork {
 
                 tmpLink = addedLinks[linkName];
                 tmpLink.increaseCount();
-                if (tmpLink.getCount() > maxRepeatedLink) {
-                    maxRepeatedLink = tmpLink.getCount();
-                }
 
                 preCp = cp;
 
             });
         });
 
-        this.maxRepeatedNodeCount = maxRepeatedNode;
-        this.maxRepeatedLinkCount = maxRepeatedLink;
+
+        let radiusExtent = d3.extent(this.nodes, function (d) {
+            return d.getCount();
+        });
+
+        this.radiusScale = d3.scaleLinear()
+            .domain(radiusExtent)
+            .range([self.options.nodeRadius, self.options.nodeRadius + 15])
+        ;
+
+        let thicknessExtent = d3.extent(this.links, function (d) {
+            return d.getCount();
+        });
+
+        this.linkThicknessScale = d3.scaleLinear()
+            .domain(thicknessExtent)
+            .range([self.options.linkThickness, self.options.linkThickness + 10])
+        ;
 
     }
 
@@ -200,6 +208,9 @@ class VisitNetwork {
         let link = linkSelection
             .enter().append("line")
             .attr('class', 'link')
+            .style('stroke-width', function (d) {
+                return self.linkThicknessScale(d.getCount());
+            })
         ;
 
         linkSelection.exit().remove();
@@ -213,7 +224,11 @@ class VisitNetwork {
             .enter().append("circle")
             .attr('class', 'node')
             .attr("r", function (d) {
-                return d.r = radius;
+                let r =  self.radiusScale(d.getCount());
+                return d.r = r;
+            })
+            .style("fill", function (d) {
+                return d.getData().getColor();
             })
             .call(d3.drag()
                 .on("start", dragstarted)
@@ -255,9 +270,9 @@ class VisitNetwork {
 
             node
             // .attr("r", 6)
-                .style("fill", function (d) {
-                    return d.getData().getColor();
-                })
+            //     .style("fill", function (d) {
+            //         return d.getData().getColor();
+            //     })
                 .style("stroke", "#969696")
                 .style("stroke-width", "1px")
                 .attr("cx", function(d) {
