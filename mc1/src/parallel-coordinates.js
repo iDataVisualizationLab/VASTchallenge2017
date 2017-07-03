@@ -210,17 +210,23 @@ ParallelCoordinate.prototype.getSelectionDomain = function getSelectionDomain(di
  * update by time.
  * @param startDate
  * @param endDate
+ * @param stops
  */
-ParallelCoordinate.prototype.updatePCByTime = function updatePCByTime(startDate, endDate) {
+ParallelCoordinate.prototype.updatePCByTime = function updatePCByTime(startDate, endDate, stops) {
 
     let self = this;
     // update display for parallel coordinates
-   self.updateByActiveSelection(startDate, endDate);
+   self.updateByActiveSelection(startDate, endDate, stops);
    if (isNaN(self.filter)) {
        self.filter = {};
    }
 
-   self.filter['time'] = [startDate, endDate];
+   if (!!startDate && !!endDate) {
+       self.filter['time'] = [startDate, endDate];
+   }
+
+    self.filter['stops'] = stops;
+
 
     // update display for other graphs via event dispatching
     if (!!self.eventHandler) {
@@ -232,13 +238,17 @@ ParallelCoordinate.prototype.updatePCByTime = function updatePCByTime(startDate,
     }
 };
 
-ParallelCoordinate.prototype.removeTimeConstraint = function removeTimeConstraint() {
+/**
+ *
+ * @param stops
+ */
+ParallelCoordinate.prototype.removeTimeConstraint = function removeTimeConstraint(stops) {
     let self = this;
 
     // update display for parallel coordinates
     self.filter = {}; // !Important - remove cached values, otherwise updateByActiveSelection will pick the cached ones
 
-    self.updateByActiveSelection(null, null);
+    self.updateByActiveSelection(null, null, stops);
 
     // update display for other graphs via event dispatching
     if (!!self.eventHandler) {
@@ -254,9 +264,10 @@ ParallelCoordinate.prototype.removeTimeConstraint = function removeTimeConstrain
  *
  * @param startTime get from cached filter if null
  * @param endTime
+ * @param stops
  * @return {{}}
  */
-ParallelCoordinate.prototype.updateByActiveSelection = function updateByActiveSelection(startTime, endTime) {
+ParallelCoordinate.prototype.updateByActiveSelection = function updateByActiveSelection(startTime, endTime, stops) {
     let self = this;
     let actives = [];
     let extents = [];
@@ -303,6 +314,13 @@ ParallelCoordinate.prototype.updateByActiveSelection = function updateByActiveSe
 
         if (!!startTime && !!endTime && !!myDp) {
             myDp = !(line.startTime.getTime() >= endTime.getTime() || line.endTime.getTime() <= startTime.getTime())
+        }
+
+        if (!!myDp && !!stops && stops.length > 0  && !!line.stops) {
+
+            myDp = Object.keys(line.stops).some(function (st) {
+                return stops.indexOf(st) >= 0;
+            });
         }
 
         return line.display = (myDp ? null : "none");

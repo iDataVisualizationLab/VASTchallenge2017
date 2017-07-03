@@ -229,7 +229,12 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
         function brushEnd() {
             if (!d3.event.sourceEvent) return; // Only transition after input.
             if (!d3.event.selection) {
-                mc1.parallel.removeTimeConstraint();
+                let stops = [];
+                if (!!self.filter) {
+                    stops = self.getStopsFromFilter();
+                }
+
+                mc1.parallel.removeTimeConstraint(stops);
 
                 return;
             }
@@ -245,8 +250,6 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
             }
 
             d3.select(this).transition().call(d3.event.target.move, d1.map(self.x));
-            // display cars who appears in this range
-            mc1.parallel.updatePCByTime(d1[0], d1[1]);
 
             if (!self.filter) {
                 self.filter = {};
@@ -254,7 +257,23 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
             self.filter['time'] = d1;
 
+            self.handleFilter();
+
         }
+    }
+
+
+    getStopsFromFilter() {
+        let self = this;
+        let stops = [];
+
+        Object.keys(this.filter).forEach(function (k) {
+            if (k != 'time' && !!self.filter[k].selected) {
+                stops.push(k);
+            }
+        });
+
+        return stops;
     }
 
     handleFilter() {
@@ -262,17 +281,8 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
         let self = this;
         let time, fromTime, toTime;
 
-        let stops = [];
-
-        Object.keys(this.filter).forEach(function (k) {
-              if (k == 'time') {
-                  time = self.filter[k];
-              }
-              else if (!!self.filter[k].selected) {
-                  stops.push(k);
-              }
-        });
-
+        let stops = self.getStopsFromFilter();
+        time  =  self.filter['time'];
         if (time != null && time.length > 1) {
             fromTime = time[0];
             toTime = time[1];
@@ -317,6 +327,8 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
                 d3.select(this).style('font-weight', function (e) {
                     return !!selected ? 'bold' : 'normal';
                 });
+
+                self.handleFilter();
             })
         ;
 
