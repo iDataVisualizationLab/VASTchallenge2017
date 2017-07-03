@@ -200,11 +200,11 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
         let totalHeight = gridSizeY * self.yLabels.length + self.options.margin.top;
         // let totalHeight = self.options.originalHeight - self.options.margin.top - self.options.margin.bottom;
 
-        if (!!self.brush) {
+        if (!!self.brushX) {
             return;
         }
 
-        self.brush = d3.brushX()
+        self.brushX = d3.brushX()
             .extent([[self.options.margin.left, self.options.margin.top], [self.originalWidth - self.options.margin.right, totalHeight]])
             .on("start", function () {
                 if (!d3.event.sourceEvent) {
@@ -218,7 +218,7 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
         this.nativeSvg.append("g")
             .attr("class", "brush")
-            .call(self.brush)
+            .call(self.brushX)
         ;
 
 
