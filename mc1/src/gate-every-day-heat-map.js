@@ -329,6 +329,8 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
                 });
 
                 self.handleFilter();
+
+                self.onBrushEnd(); // update the every day heat map graph
             })
         ;
 

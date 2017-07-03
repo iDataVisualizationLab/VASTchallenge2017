@@ -147,6 +147,7 @@ class VisitNetwork {
             return nodeName;
         };
 
+        let tl;
         visits.forEach(function (line) {
             paths = line.path;
 
@@ -155,7 +156,7 @@ class VisitNetwork {
             paths.forEach(function (cp, index) {
 
                 gate = cp.getGate();
-
+                tl = line;
                 if (cp.getMapPoint().isRangerBase() || cp.getMapPoint().isEntrance()) {
                     passingCount ++;
                 }
@@ -174,7 +175,7 @@ class VisitNetwork {
 
                 if (index < 1) {
                     preCp = cp;
-
+                    preNode = tmpNode;
                     return;
                 }
 
@@ -182,17 +183,22 @@ class VisitNetwork {
                     tmpDuration = cp.getTime().getTime() - preCp.getTime().getTime();
                     preCp = cp;
 
-                    if (!preCp.getMapPoint().isEntrance()) {
+                    if (!preCp.getMapPoint().isEntrance() && !preCp.getMapPoint().isRangerBase() || (preNode.getCount() % 2 == 1)) { // count duration if same gate. if entrance, must make sure it is from enter to exit; not from "away" period which is from exit to enter
                         tmpNode.addDuration(tmpDuration/ 3600000);
+
                     }
 
-                    tmpDuration = 0;
+                    if (!preCp.getMapPoint().isEntrance() && !preCp.getMapPoint().isRangerBase() || (preNode.getCount() % 2 == 0)) {
+                        tmpDuration = 0;
+                        preNode = tmpNode;
 
-                   return; // enter and exit immediately
+                        return; // enter and exit immediately; there is no link if inside the Preserve or this is "away" period
+                    }
+                    // add a link if this is entrance or ranger base
                 }
 
-                preNodeName = getNodeName(preCp, passingCount);
-                preNode = addedNodes[preNodeName];
+                preNodeName = preNode.getName();
+                // preNode = addedNodes[preNodeName];
 
                 linkName = preNodeName + '-' + nodeName;
                 if (!addedLinks.hasOwnProperty(linkName)) {
@@ -206,6 +212,7 @@ class VisitNetwork {
                 tmpLink.increaseCount();
 
                 preCp = cp;
+                preNode = tmpNode;
 
             });
         });
@@ -278,7 +285,9 @@ class VisitNetwork {
             ;
         let link = linkSelection
             .enter().append("line")
-            .attr('class', 'link')
+            .attr('class', function (d) {
+                return "link link-" + d.getName();
+            })
             .style('stroke-width', function (d) {
                 return self.linkThicknessScale(d.getCount());
             })
