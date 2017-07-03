@@ -61,6 +61,7 @@ class VisitNetwork {
 
     setupEvent() {
         this.eventHandler.addEvent('brushEnd', this.refreshNetwork, this); // brush end then update this network
+        this.eventHandler.addEvent('timeChange', this.refreshNetwork, this); // time change from everyday selection
 
     }
 
