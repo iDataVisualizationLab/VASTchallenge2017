@@ -236,7 +236,12 @@ ParallelCoordinate.prototype.updatePCByTime = function updatePCByTime(startDate,
         self.eventHandler.fireEvent(event);
     }
 };
-
+/**
+ *
+ * @param startTime get from cached filter if null
+ * @param endTime
+ * @return {{}}
+ */
 ParallelCoordinate.prototype.updateByActiveSelection = function updateByActiveSelection(startTime, endTime) {
     let self = this;
     let actives = [];
