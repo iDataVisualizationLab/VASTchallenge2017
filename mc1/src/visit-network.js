@@ -28,9 +28,13 @@ class VisitNetwork {
 
         this.eventHandler = eventHandler;
 
+
         this.init();
 
         this.setupEvent();
+
+        this.tooltip = new TooltipHelper('tooltip');
+
     }
     
     init() {
@@ -121,14 +125,16 @@ class VisitNetwork {
         let preCp;
         let tmpDuration;
 
-        let getNodeName = function (cp, index) {
+        let passingCount;
+
+        let getNodeName = function (cp, count) {
             let mp = cp.getMapPoint();
             let nodeName = mp.getShortName();
             if (mp.isRangerBase()) {
-                nodeName = nodeName + (((index + 1) % 2 == 0) ? '-1' : '-2');
+                nodeName = nodeName + ((count % 2 != 0) ? '-1' : '-2');
             }
             else if (mp.isEntrance()) {
-                nodeName = nodeName + (((index + 1) % 2 == 0) ? '-1' : '-2');
+                nodeName = nodeName + ((count % 2 != 0) ? '-1' : '-2');
             }
 
             return nodeName;
@@ -137,11 +143,17 @@ class VisitNetwork {
         visits.forEach(function (line) {
             paths = line.path;
 
+            passingCount = 0;
+
             paths.forEach(function (cp, index) {
 
                 gate = cp.getGate();
 
-                nodeName = getNodeName(cp, index);
+                if (cp.getMapPoint().isRangerBase() || cp.getMapPoint().isEntrance()) {
+                    passingCount ++;
+                }
+
+                nodeName = getNodeName(cp, passingCount);
 
                 if (!addedNodes.hasOwnProperty(nodeName)) {
                     tmpNode = new SimpleNode(self.nodes.length, cp.getMapPoint(), nodeName);
@@ -172,7 +184,7 @@ class VisitNetwork {
                    return; // enter and exit immediately
                 }
 
-                preNodeName = getNodeName(preCp, index-1);
+                preNodeName = getNodeName(preCp, passingCount);
                 preNode = addedNodes[preNodeName];
 
                 linkName = preNodeName + '-' + nodeName;
@@ -236,6 +248,14 @@ class VisitNetwork {
         this.nodeLabelGroup.selectAll('*').remove();
     }
 
+    generateTooltipForNode(d) {
+        return 'Pass Count: ' + d3.format(',')(d.getCount()) + '<br/> Stay Duration: ' + d3.format(',.2f')(d.getDuration()) + ' (hrs)';
+    }
+
+    generateTooltipForLink(link) {
+        return "Count: " + link.getCount();
+    }
+
     render() {
         let self=  this;
         let radius = self.options.nodeRadius;
@@ -252,6 +272,13 @@ class VisitNetwork {
             .attr('class', 'link')
             .style('stroke-width', function (d) {
                 return self.linkThicknessScale(d.getCount());
+            })
+            .on('mouseover', function (d) {
+                self.tooltip.render(self.generateTooltipForLink(d));
+            })
+
+            .on('mouseout', function (d) {
+                self.tooltip.hide();
             })
         ;
 
@@ -274,6 +301,12 @@ class VisitNetwork {
             .style("fill", function (d) {
                 return d.getData().getColor();
             })
+            .on('mouseover', function (d) {
+                self.tooltip.render(self.generateTooltipForNode(d));
+            })
+            .on('mouseout', function (d) {
+                self.tooltip.hide();
+            })
             .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -293,6 +326,9 @@ class VisitNetwork {
             .attr('class', 'node-label')
             .text(function(d) {
                 return d.getName();
+            })
+            .on('mouseover', function (d) {
+                self.tooltip.render(self.generateTooltipForNode(d));
             })
             .call(d3.drag()
                 .on("start", dragstarted)
@@ -448,5 +484,13 @@ class SimpleLink {
 
     getName() {
         return this.name;
+    }
+
+    getSource() {
+        return this.source;
+    }
+
+    getTarget() {
+        return this.target;
     }
 }
