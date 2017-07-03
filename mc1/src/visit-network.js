@@ -131,7 +131,7 @@ class VisitNetwork {
             let mp = cp.getMapPoint();
             let nodeName = mp.getShortName();
             if (mp.isRangerBase()) {
-                nodeName = nodeName + ((count % 2 != 0) ? '-1' : '-2');
+                nodeName = nodeName + ((count % 2 != 0) ? '1' : '2');
             }
             else if (mp.isEntrance()) {
                 nodeName = nodeName + ((count % 2 != 0) ? '-1' : '-2');
