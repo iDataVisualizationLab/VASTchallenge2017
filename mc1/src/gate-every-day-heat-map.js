@@ -14,6 +14,9 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
         ;
 
         this.activeKeys = {};
+        if (!self.filter) {
+            self.filter = {};
+        }
 
         this.nativeSvg.on('click',function () {
 
@@ -273,7 +276,22 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
             .style("text-anchor", "end")
             // .attr("transform", "rotate(-65)")
             .attr("transform", "translate(-6," + gridSizeY / 1.5 + ")")
-            // .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); })
+            .on('click', function (d) {
+                if (!self.filter.hasOwnProperty(d)) {
+                    self.filter[d] = {
+                        selected: true
+                    };
+                }
+                else {
+                    self.filter[d].selected = !self.filter[d].selected;
+                }
+
+                let selected = self.filter[d].selected;
+
+                d3.select(this).style('font-weight', function (e) {
+                    return !!selected ? 'bold' : 'normal';
+                })
+            })
         ;
 
         self.svg.selectAll(".xLabel")

@@ -38,12 +38,9 @@ class VisitNetwork {
     }
     
     init() {
-        this.simulation = d3.forceSimulation()
-            .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(10).strength(0.6))
-            .force("charge", d3.forceManyBody())
-            .force("center", d3.forceCenter(this.width / 2, this.height / 2))
-            .force("collide",d3.forceCollide( function(d){return d.r + 5; }).iterations(16))
-        ;
+
+
+        this.createSimulation();
 
         this.linkGroup = this.svg.append("g")
             .attr('class', 'link-group')
@@ -56,6 +53,15 @@ class VisitNetwork {
 
         this.nodeLabelGroup = this.svg.append('g')
             .attr('class', 'node-label-group')
+        ;
+    }
+
+    createSimulation() {
+        this.simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(10).strength(0.6))
+            .force("charge", d3.forceManyBody())
+            .force("center", d3.forceCenter(this.width / 2, this.height / 2))
+            .force("collide",d3.forceCollide( function(d){return d.r + 5; }).iterations(16))
         ;
     }
 
@@ -236,6 +242,8 @@ class VisitNetwork {
     refreshNetwork(e) {
 
         this.clear();
+        this.createSimulation();
+
         let lines = mc1.parallel.getVisibleLines();
 
         this.setData(lines);
