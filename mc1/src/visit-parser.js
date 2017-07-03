@@ -21,6 +21,7 @@ VisitParser.prototype.parse = function (visits) {
         line.endTime = self.parseTime(line.endTime);
         line.startDay = line.startTime.getDay();
         line.endDay = line.endTime.getDay();
+        line.stops = {};
 
         let path = line.path.map(function (timeGate, index) {
             let carPoint;
@@ -31,6 +32,10 @@ VisitParser.prototype.parse = function (visits) {
                 if (prePoint.gate == timeGate.gate) {
                     // stop point
                     mapPoint.increaseStopCount();
+                    if (!prePoint.gate.startsWith('entrance')) {
+                        line.stops[prePoint.gate] = index;
+
+                    }
 
                     if(!prePoint.gate.startsWith('camp')) {
                         console.log('Stop at: ' + prePoint.gate + "; count:" + mapPoint.getStopCount());

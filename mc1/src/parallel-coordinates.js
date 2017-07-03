@@ -208,17 +208,12 @@ ParallelCoordinate.prototype.getSelectionDomain = function getSelectionDomain(di
 
 /**
  * update by time.
- * @param startDate: true if the cached date range has to be reset
+ * @param startDate
  * @param endDate
  */
 ParallelCoordinate.prototype.updatePCByTime = function updatePCByTime(startDate, endDate) {
-    let self = this;
 
-    if (startDate === true) { // force reset start date
-        self.filter = {};
-        startDate = null;
-        endDate = null;
-    }
+    let self = this;
     // update display for parallel coordinates
    self.updateByActiveSelection(startDate, endDate);
    if (isNaN(self.filter)) {
@@ -236,6 +231,25 @@ ParallelCoordinate.prototype.updatePCByTime = function updatePCByTime(startDate,
         self.eventHandler.fireEvent(event);
     }
 };
+
+ParallelCoordinate.prototype.removeTimeConstraint = function removeTimeConstraint() {
+    let self = this;
+
+    // update display for parallel coordinates
+    self.filter = {}; // !Important - remove cached values, otherwise updateByActiveSelection will pick the cached ones
+
+    self.updateByActiveSelection(null, null);
+
+    // update display for other graphs via event dispatching
+    if (!!self.eventHandler) {
+        let event = {
+            name: 'timeChange'
+        };
+
+        self.eventHandler.fireEvent(event);
+    }
+};
+
 /**
  *
  * @param startTime get from cached filter if null

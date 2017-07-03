@@ -191,6 +191,7 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
             ;
         }
     }
+
     render() {
 
         super.render();
@@ -228,7 +229,7 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
         function brushEnd() {
             if (!d3.event.sourceEvent) return; // Only transition after input.
             if (!d3.event.selection) {
-                mc1.parallel.updatePCByTime(true);
+                mc1.parallel.removeTimeConstraint();
 
                 return;
             }
@@ -239,7 +240,7 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
             // If empty when rounded, use floor & ceil instead.
             if (d1[0] >= d1[1]) {
-                d1[0] = d3.timeDay.floor(d0[0]);
+                d1[0] = d3.timeDay.floor(selectedDateRange[0]);
                 d1[1] = d3.timeDay.offset(d1[0]);
             }
 
@@ -254,6 +255,31 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
             self.filter['time'] = d1;
 
         }
+    }
+
+    handleFilter() {
+
+        let self = this;
+        let time, fromTime, toTime;
+
+        let stops = [];
+
+        Object.keys(this.filter).forEach(function (k) {
+              if (k == 'time') {
+                  time = self.filter[k];
+              }
+              else if (!!self.filter[k].selected) {
+                  stops.push(k);
+              }
+        });
+
+        if (time != null && time.length > 1) {
+            fromTime = time[0];
+            toTime = time[1];
+        }
+
+        mc1.parallel.updatePCByTime(fromTime, toTime, stops);
+
     }
 
     renderAxis() {
@@ -290,7 +316,7 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
                 d3.select(this).style('font-weight', function (e) {
                     return !!selected ? 'bold' : 'normal';
-                })
+                });
             })
         ;
 
