@@ -1,7 +1,7 @@
 'use strict';
 class VisitNetwork {
 
-    constructor(divId, width, height, options) {
+    constructor(divId, width, height, options, eventHandler) {
 
         this.originalWidth = width;
         this.originalHeight = height;
@@ -25,8 +25,12 @@ class VisitNetwork {
 
         this.nodes = [];
         this.links = [];
-        
+
+        this.eventHandler = eventHandler;
+
         this.init();
+
+        this.setupEvent();
     }
     
     init() {
@@ -49,6 +53,11 @@ class VisitNetwork {
         this.nodeLabelGroup = this.svg.append('g')
             .attr('class', 'node-label-group')
         ;
+    }
+
+    setupEvent() {
+        this.eventHandler.addEvent('brushEnd', this.refreshNetwork, this); // brush end then update this network
+
     }
 
     handleOptions(options) {
@@ -209,6 +218,22 @@ class VisitNetwork {
             .range([0.5, self.options.nodeRadius/2])
         ;
 
+    }
+
+    refreshNetwork(e) {
+
+        this.clear();
+        let lines = mc1.parallel.getVisibleLines();
+
+        this.setData(lines);
+
+        this.render();
+    }
+
+    clear() {
+        this.nodeGroup.selectAll('*').remove();
+        this.linkGroup.selectAll('*').remove();
+        this.nodeLabelGroup.selectAll('*').remove();
     }
 
     render() {
