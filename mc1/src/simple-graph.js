@@ -21,6 +21,8 @@ class SimpleGraph {
         }
     }
 
+
+
     /**
      *
      * @param fromNode is a SimpleNode object
