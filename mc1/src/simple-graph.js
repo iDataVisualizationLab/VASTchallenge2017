@@ -60,6 +60,14 @@ class SimpleGraph {
         return [this.nodes[0], this.nodes[this.nodes.length - 1]];
     }
 
+    getFirstNode() {
+        return this.nodes[0];
+    }
+
+    getLastNode() {
+        return this.nodes[this.nodes.length - 1];
+    }
+
     getLinks() {
         return this.links;
     }

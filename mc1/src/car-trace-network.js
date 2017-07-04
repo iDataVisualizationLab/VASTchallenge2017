@@ -13,7 +13,7 @@ class CarTraceNetwork extends BaseNetwork {
 
         options = super.handleOptions(options);
 
-        options.margin.top = 80;
+        options.margin.top = 5;
         options.margin.left = 100;
         options.margin.right = 50;
 
@@ -47,7 +47,7 @@ class CarTraceNetwork extends BaseNetwork {
                 specialGateCount ++;
             }
 
-            if (index < 1) {
+            if (index < 1 || !preCp) {
                 preCp = cp;
                 preNode = tmpNode;
 
@@ -57,7 +57,17 @@ class CarTraceNetwork extends BaseNetwork {
 
             if (preCp.getGate() != cp.getGate()) {
                 graph.addLink(preNode, tmpNode);
+
+                if (mp.isEntrance() || mp.isRangerBase()) {
+                    self.graphs.push(graph);
+                    graph = new SimpleGraph();
+                    preNode = null;
+                    preCp = null;
+                    specialGateCount = 0;
+                    return;
+                }
             }
+
 
             if (preCp.getGate() == cp.getGate() && ( (mp.isEntrance() || mp.isRangerBase()) && specialGateCount % 2 == 0)) {
 
@@ -67,8 +77,13 @@ class CarTraceNetwork extends BaseNetwork {
 
                 graph = new SimpleGraph();
             }
+            else if (preCp.getGate() != cp.getGate() || (preCp.getGate() == cp.getGate() && !mp.isRangerBase() && !mp.isEntrance())) {
+                graph.addLink(preNode, tmpNode);
+            }
 
             preNode = tmpNode;
+            preCp = cp;
+
         });
 
 
@@ -86,9 +101,10 @@ class CarTraceNetwork extends BaseNetwork {
 
         this.options.nodeDistance = this.width / maxNodeCount;
 
-        let graphCount = this.graphs.length < 1 ? 1 : this.graphs.length;
+        // let graphCount = this.graphs.length < 1 ? 1 : this.graphs.length;
+        // let graphDistance = this.height / graphCount;
 
-        this.options.graphDistance = this.height / graphCount;
+        this.options.graphDistance = 22;
         this.options.graphOffsetY = 20;
         this.options.graphOffsetX = 10;
 
@@ -138,6 +154,13 @@ class CarTraceNetwork extends BaseNetwork {
                 .attr("y1", function(d) { return d.source.y; })
                 .attr("x2", function(d) { return d.target.x; })
                 .attr("y2", function(d) { return d.target.y; })
+                .style("stroke-dasharray", function (l) {
+
+                    let sourceMp = l.getSource().getData().getMapPoint();
+                    let targetMp = l.getTarget().getData().getMapPoint();
+
+                    return sourceMp.getName() == targetMp.getName() && !sourceMp.isRangerBase() && !sourceMp.isEntrance() ? ("3, 3") : null;
+                })
             ;
 
             linkSelection.exit().remove();
@@ -162,46 +185,46 @@ class CarTraceNetwork extends BaseNetwork {
 
             visitGroupSelection.exit().remove();
 
-            // let yearSelection =  visitGroup.selectAll('.node-time-label-year').data(graph.getEndingNodes());
-            //
-            // yearSelection.enter().append('text')
-            //     .attr('class', 'node-time-label-hour')
-            //     .text(function (d) {
-            //         let cp = d.getData();
-            //         // return formatDate(cp.getTime());
-            //         return  formatDate(cp.getTime(), '%a %b %d');
-            //     })
-            //     .attr("x", function(d) { return d.x ; })
-            //     .attr("y", function (d) { return d.y - 20; })
-            //     // .attr("transform", "rotate(-90)")
-            //     // .style("font-size", "11px")
-            //     .style("fill", function (d) {
-            //         let day = d.getData().getTime().getDay();
-            //         return  (day == 6  || day == 0) ? '#990000' : 'black';
-            //     })
-            //
-            // ;
-            //
-            // yearSelection.exit().remove();
 
+            let firstNode = graph.getFirstNode();
+            let firstNodeTime = firstNode.getData().getTime();
 
-            let timeSelection =  visitGroup.selectAll('.node-time-label-time').data(graph.getEndingNodes());
+            visitGroup.append('text')
+                    .text( formatDateTime(firstNodeTime, '%a %b %d'))
+                    .attr("x", firstNode.x - 13)
+                    .attr("y", firstNode.y - 4)
+                    .style("font-size", "12px")
+                    .style("text-anchor", "end")
+                ;
+            visitGroup.append('text')
+                .text( formatDateTime(firstNodeTime, '%H:%M:%S'))
+                .attr("x", firstNode.x - 13)
+                .attr("y", firstNode.y + 7)
+                .style("font-size", "12px")
+                .style("text-anchor", "end")
+            ;
+            firstNode = null;
+            firstNodeTime = null;
 
-            timeSelection.enter().append('text')
-                .attr('class', 'node-time-label-hour')
-                .text(function (d) {
-                    let cp = d.getData();
-                    return formatDateTime(cp.getTime(), '%a %b %d, %H:%M:%S');
-                    // return  formatDate(cp.getTime(), '%a %b %d');
-                })
-                .attr("x", function(d) { return d.x - 70; })
-                .attr("y", function (d, index) { return d.y - 20; })
-                // .attr("transform", "rotate(-90)")
-                // .style("font-size", "11px")
+            let lastNode = graph.getLastNode();
+            let lastNodeTime = lastNode.getData().getTime();
 
+            visitGroup.append('text')
+                .text( formatDateTime(lastNodeTime, '%a %b %d'))
+                .attr("x", lastNode.x + 13)
+                .attr("y", lastNode.y - 4)
+                .style("font-size", "12px")
+            ;
+            visitGroup.append('text')
+                .text( formatDateTime(lastNodeTime, '%H:%M:%S'))
+                .attr("x", lastNode.x + 13)
+                .attr("y", lastNode.y + 7)
+                .style("font-size", "12px")
             ;
 
-            timeSelection.exit().remove();
+            lastNode = null;
+            lastNodeTime = null;
+
 
             let gateSelection =  visitGroup.selectAll('.node-label').data(graph.getNodes());
             gateSelection.enter().append('text')
