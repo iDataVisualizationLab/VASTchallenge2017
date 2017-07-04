@@ -275,3 +275,7 @@ function dayDiff(date1, date2) {
 function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
+
+function isWeekend(dateTime) {
+    return dateTime.getDay() == 0 || dateTime.getDay() == 6;
+}

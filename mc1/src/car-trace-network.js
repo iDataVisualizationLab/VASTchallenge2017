@@ -111,7 +111,25 @@ class CarTraceNetwork extends BaseNetwork {
         this.line = line;
     }
 
+    handleMouseOverNode(d) {
 
+        let self = this;
+        let cp = d.getData();
+
+        self.tooltip.render("Gate: " + cp.getGate() + "</br>Time: " + formatDateTime(cp.getTime()));
+    }
+
+    handleMouseOverLink(link) {
+
+        let self = this;
+        let sourceTime = link.getSource().getData().getTime();
+        let targetTime = link.getTarget().getData().getTime();
+
+        let duration = (targetTime.getTime() - sourceTime.getTime()) / 3600000
+        let formatTime = d3.format(',.3f');
+
+        self.tooltip.render("Duration: " + formatTime(duration));
+    }
 
     render() {
 
@@ -161,6 +179,12 @@ class CarTraceNetwork extends BaseNetwork {
 
                     return sourceMp.getName() == targetMp.getName() && !sourceMp.isRangerBase() && !sourceMp.isEntrance() ? ("3, 3") : null;
                 })
+                .on('mouseover', function (l) {
+                    self.handleMouseOverLink(l);
+                })
+                .on('mouseout', function (d) {
+                    self.tooltip.hide();
+                })
             ;
 
             linkSelection.exit().remove();
@@ -181,6 +205,13 @@ class CarTraceNetwork extends BaseNetwork {
                 .attr("cy", function(d, nIndex) {
                     return d.y;
                 })
+                .on('mouseover', function (d) {
+                    self.handleMouseOverNode(d);
+                })
+                .on('mouseout', function (d) {
+                    self.tooltip.hide();
+                })
+
             ;
 
             visitGroupSelection.exit().remove();
@@ -195,13 +226,17 @@ class CarTraceNetwork extends BaseNetwork {
                     .attr("y", firstNode.y - 4)
                     .style("font-size", "12px")
                     .style("text-anchor", "end")
-                ;
+                .attr('class', isWeekend(firstNodeTime) ? 'weekend-text' : '')
+
+            ;
             visitGroup.append('text')
                 .text( formatDateTime(firstNodeTime, '%H:%M:%S'))
                 .attr("x", firstNode.x - 13)
                 .attr("y", firstNode.y + 7)
                 .style("font-size", "12px")
                 .style("text-anchor", "end")
+                .attr('class', isWeekend(firstNodeTime) ? 'weekend-text' : '')
+
             ;
             firstNode = null;
             firstNodeTime = null;
@@ -214,12 +249,14 @@ class CarTraceNetwork extends BaseNetwork {
                 .attr("x", lastNode.x + 13)
                 .attr("y", lastNode.y - 4)
                 .style("font-size", "12px")
+                .attr('class', isWeekend(lastNodeTime) ? 'weekend-text' : '')
             ;
             visitGroup.append('text')
                 .text( formatDateTime(lastNodeTime, '%H:%M:%S'))
                 .attr("x", lastNode.x + 13)
                 .attr("y", lastNode.y + 7)
                 .style("font-size", "12px")
+                .attr('class', isWeekend(lastNodeTime) ? 'weekend-text' : '')
             ;
 
             lastNode = null;
@@ -236,6 +273,14 @@ class CarTraceNetwork extends BaseNetwork {
                 .attr("x", function(d) { return d.x - 6; })
                 .attr("y", function (d) { return d.y + 3; })
                 .style("font-size", "11px")
+                .on('mouseover', function (d) {
+                    self.handleMouseOverNode(d);
+                })
+                .on('mouseout', function (d) {
+                    self.tooltip.hide();
+                })
+
+
             ;
 
             gateSelection.exit().remove();
