@@ -183,12 +183,16 @@ class VisitNetwork {
                     tmpDuration = cp.getTime().getTime() - preCp.getTime().getTime();
                     preCp = cp;
 
-                    if (!preCp.getMapPoint().isEntrance() && !preCp.getMapPoint().isRangerBase() || (preNode.getCount() % 2 == 1)) { // count duration if same gate. if entrance, must make sure it is from enter to exit; not from "away" period which is from exit to enter
+                    if (!preCp.getMapPoint().isEntrance() && !preCp.getMapPoint().isRangerBase() || ((preCp.getMapPoint().isEntrance() || preCp.getMapPoint().isRangerBase()) && passingCount % 2 == 0)) { // count duration if same gate. if entrance, must make sure it is from enter to exit; not from "away" period which is from exit to enter
                         tmpNode.addDuration(tmpDuration/ 3600000);
+
+                        if (preCp.getMapPoint().isEntrance() || preCp.getMapPoint().isRangerBase()) {
+                            preNode.setDuration(tmpNode.getDuration());
+                        }
 
                     }
 
-                    if (!preCp.getMapPoint().isEntrance() && !preCp.getMapPoint().isRangerBase() || (preNode.getCount() % 2 == 0)) {
+                    if (!preCp.getMapPoint().isEntrance() && !preCp.getMapPoint().isRangerBase() || ((preCp.getMapPoint().isEntrance() || preCp.getMapPoint().isRangerBase()) && passingCount == 1)) {
                         tmpDuration = 0;
                         preNode = tmpNode;
 
@@ -265,7 +269,7 @@ class VisitNetwork {
     }
 
     generateTooltipForNode(d) {
-        return 'Pass Count: ' + d3.format(',')(d.getCount()) + '<br/> Stay Duration: ' + d3.format(',.2f')(d.getDuration()) + ' (hrs)';
+        return 'Pass Count: ' + d3.format(',')(d.getCount()) + '<br/> Stay Duration: ' + d3.format(',.3f')(d.getDuration()) + ' (hrs)';
     }
 
     generateTooltipForLink(link) {
@@ -460,6 +464,12 @@ class SimpleNode {
 
     addDuration(duration) {
         this.duration += duration;
+
+        return this;
+    }
+
+    setDuration(duration) {
+        this.duration = duration;
 
         return this;
     }
