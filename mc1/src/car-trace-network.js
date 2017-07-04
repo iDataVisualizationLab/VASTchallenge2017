@@ -166,11 +166,17 @@ class CarTraceNetwork extends BaseNetwork {
                 .attr('class', 'node-time-label-hour')
                 .text(function (d) {
                     let cp = d.getData();
-                    return formatDate(cp.getTime());
+                    // return formatDate(cp.getTime());
+                    return  formatDate(cp.getTime(), '%a %b %d');
                 })
-                .attr("x", function(d) { return d.y - 130 ; })
+                .attr("x", function(d) { return d.y - 105 ; })
                 .attr("y", function (d, index) { return d.x + 5; })
                 .attr("transform", "rotate(-90)")
+                .style("font-size", "11px")
+                .style("fill", function (d) {
+                    let day = d.getData().getTime().getDay();
+                    return  (day == 6  || day == 0) ? '#990000' : 'black';
+                })
 
             ;
 
@@ -184,14 +190,31 @@ class CarTraceNetwork extends BaseNetwork {
                 .text(function (d) {
                     let cp = d.getData();
                     return formatDateTime(cp.getTime(), '%H:%M:%S');
+                    // return  formatDate(cp.getTime(), '%a %b %d');
                 })
                 .attr("x", function(d) { return d.y - 23 ; })
                 .attr("y", function (d, index) { return d.x + 5; })
                 .attr("transform", "rotate(-90)")
+                .style("font-size", "11px")
 
             ;
 
             timeSelection.exit().remove();
+
+            let gateSelection =  visitGroup.selectAll('.node-label').data(graph.getNodes());
+            gateSelection.enter().append('text')
+                .attr('class', 'node-label')
+                .text(function (d) {
+                    let cp = d.getData();
+                    return cp.getMapPoint().getShortName();
+                })
+                .attr("x", function(d) { return d.x - 6; })
+                .attr("y", function (d) { return d.y + 3; })
+                .style("font-size", "11px")
+            ;
+
+            gateSelection.exit().remove();
+
 
         });
     }
