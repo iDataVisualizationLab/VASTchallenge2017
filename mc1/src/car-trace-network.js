@@ -14,6 +14,7 @@ class CarTraceNetwork extends BaseNetwork {
         options = super.handleOptions(options);
 
         options.margin.top = 80;
+        options.margin.left = 100;
 
         return options;
     }
@@ -71,7 +72,7 @@ class CarTraceNetwork extends BaseNetwork {
 
 
         if (graph.countNodes() > 0) { // for ones who never exit
-            self.visits.push(graph);
+            self.graphs.push(graph);
         }
 
         let maxNodeCount = d3.max(self.graphs, function (g) {
@@ -160,42 +161,42 @@ class CarTraceNetwork extends BaseNetwork {
 
             visitGroupSelection.exit().remove();
 
-            let yearSelection =  visitGroup.selectAll('.node-time-label-year').data(graph.getNodes());
+            // let yearSelection =  visitGroup.selectAll('.node-time-label-year').data(graph.getEndingNodes());
+            //
+            // yearSelection.enter().append('text')
+            //     .attr('class', 'node-time-label-hour')
+            //     .text(function (d) {
+            //         let cp = d.getData();
+            //         // return formatDate(cp.getTime());
+            //         return  formatDate(cp.getTime(), '%a %b %d');
+            //     })
+            //     .attr("x", function(d) { return d.x ; })
+            //     .attr("y", function (d) { return d.y - 20; })
+            //     // .attr("transform", "rotate(-90)")
+            //     // .style("font-size", "11px")
+            //     .style("fill", function (d) {
+            //         let day = d.getData().getTime().getDay();
+            //         return  (day == 6  || day == 0) ? '#990000' : 'black';
+            //     })
+            //
+            // ;
+            //
+            // yearSelection.exit().remove();
 
-            yearSelection.enter().append('text')
-                .attr('class', 'node-time-label-hour')
-                .text(function (d) {
-                    let cp = d.getData();
-                    // return formatDate(cp.getTime());
-                    return  formatDate(cp.getTime(), '%a %b %d');
-                })
-                .attr("x", function(d) { return d.y - 105 ; })
-                .attr("y", function (d, index) { return d.x + 5; })
-                .attr("transform", "rotate(-90)")
-                .style("font-size", "11px")
-                .style("fill", function (d) {
-                    let day = d.getData().getTime().getDay();
-                    return  (day == 6  || day == 0) ? '#990000' : 'black';
-                })
 
-            ;
-
-            yearSelection.exit().remove();
-
-
-            let timeSelection =  visitGroup.selectAll('.node-time-label-time').data(graph.getNodes());
+            let timeSelection =  visitGroup.selectAll('.node-time-label-time').data(graph.getEndingNodes());
 
             timeSelection.enter().append('text')
                 .attr('class', 'node-time-label-hour')
                 .text(function (d) {
                     let cp = d.getData();
-                    return formatDateTime(cp.getTime(), '%H:%M:%S');
+                    return formatDateTime(cp.getTime(), '%a %b %d, %H:%M:%S');
                     // return  formatDate(cp.getTime(), '%a %b %d');
                 })
-                .attr("x", function(d) { return d.y - 23 ; })
-                .attr("y", function (d, index) { return d.x + 5; })
-                .attr("transform", "rotate(-90)")
-                .style("font-size", "11px")
+                .attr("x", function(d) { return d.x - 70; })
+                .attr("y", function (d, index) { return d.y - 20; })
+                // .attr("transform", "rotate(-90)")
+                // .style("font-size", "11px")
 
             ;
 

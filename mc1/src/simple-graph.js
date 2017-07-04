@@ -52,6 +52,14 @@ class SimpleGraph {
         return this.nodes;
     }
 
+    getEndingNodes() {
+        if (this.nodes.length < 2) {
+            return this.nodes;
+        }
+
+        return [this.nodes[0], this.nodes[this.nodes.length - 1]];
+    }
+
     getLinks() {
         return this.links;
     }
