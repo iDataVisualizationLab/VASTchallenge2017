@@ -15,6 +15,7 @@ class CarTraceNetwork extends BaseNetwork {
 
         options.margin.top = 80;
         options.margin.left = 100;
+        options.margin.right = 50;
 
         return options;
     }
