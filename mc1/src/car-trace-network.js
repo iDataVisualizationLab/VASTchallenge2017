@@ -16,6 +16,9 @@ class CarTraceNetwork extends BaseNetwork {
         options.margin.top = 5;
         options.margin.left = 100;
         options.margin.right = 50;
+        options.graphDistance = 22;
+        options.graphOffsetY = 20;
+        options.graphOffsetX = 10;
 
         return options;
     }
@@ -99,14 +102,16 @@ class CarTraceNetwork extends BaseNetwork {
             maxNodeCount = 1;
         }
 
-        this.options.nodeDistance = this.width / maxNodeCount;
+        let nodeDistance = this.width / maxNodeCount;
+        if (nodeDistance > 130) {
+            nodeDistance = 130;
+        }
+        this.options.nodeDistance = nodeDistance;
 
         // let graphCount = this.graphs.length < 1 ? 1 : this.graphs.length;
         // let graphDistance = this.height / graphCount;
 
-        this.options.graphDistance = 22;
-        this.options.graphOffsetY = 20;
-        this.options.graphOffsetX = 10;
+
 
         this.line = line;
     }
@@ -138,13 +143,19 @@ class CarTraceNetwork extends BaseNetwork {
         let self = this;
         let nodeDistance = this.options.nodeDistance;
         let graphDistance = this.options.graphDistance;
-        let graphOffsetY = this.options.graphOffsetY;
+        let graphOffsetY = self.options.margin.top + this.options.graphOffsetY;
         let graphOffsetX = this.options.graphOffsetX;
 
         let visitSelection = self.svg.selectAll('.visit').data(this.graphs);
 
         let visits = visitSelection.enter().append('g').attr('class', 'graph');
 
+        this.svg.append('text')
+            .text('Car: ' + this.line.carId + ' (Type: ' + this.line.carType + ')')
+            .attr("x", 0)
+            .attr("y", self.options.margin.top + 2)
+            .style("font-size", "14px")
+        ;
         // setup position
         this.graphs.forEach(function (graph, gIndex) {
             let nodes = graph.getNodes();
