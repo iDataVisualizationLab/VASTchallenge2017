@@ -208,7 +208,7 @@ class VisitChart2D extends Chart2D {
         ;
 
         self.svg.selectAll('.passing-gate')
-            .attr('r', 0.5)
+            .attr('r', this.options.defaultGateRadius)
         ;
 
         // increase opacity for ones we want to highlight

@@ -157,6 +157,11 @@ class VisitTimeBlock extends VisitDuration {
                 }
             }
 
+            if (tmpPath.length > 0) { // no exit situation
+                tmpPaths.push(tmpPath);
+                tmpPath = [];
+            }
+
             let multiEntrance = tmpPaths.length > 1;
             let l;
 

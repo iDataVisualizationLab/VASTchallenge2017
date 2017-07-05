@@ -174,7 +174,7 @@ class VisitDuration {
 
         let myHighlightedLines = self.visitChart.highlightSingleVisit(line.context.carId);
 
-        if (!!myHighlightedLines && myHighlightedLines.length < 2 && self.singleVisit.getCarId() != line.context.carId) { // render when picking full line; not partial line from hourly graph
+        if (!!myHighlightedLines && myHighlightedLines.length == 1 && self.singleVisit.getCarId() != line.context.carId) { // render when picking full line; not partial line from hourly graph
             self.singleVisit.setData(myHighlightedLines[0].context);
             self.singleVisit.render();
 

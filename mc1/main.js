@@ -46,17 +46,24 @@ d3.json("data/all-car-path.json", function(error, lines) {
     mc1.visitParser = visitParser;
 
     mc1.parsedVisits = visitParser.parse(lines);
-    // mc1.parsedVisits = mc1.parsedVisits.slice(0, 100);
-    mc1.parsedVisits = mc1.parsedVisits.filter(function (visit) {
-        // return visit.carType != '2P' && visit.camping == false && visit.stopCount > 0;
-        // return visit.carType != '2P'&& visit.overnight == true;
-
-        if (visit.carId == '20155111035113-452') {
-            mc1.selectedCar = visit;
-        }
-
-        return visit.carType != '2P';
-    });
+    // mc1.parsedVisits = mc1.parsedVisits.filter(function (visit) {
+    //     // return visit.carType != '2P' && visit.camping == false && visit.stopCount > 0;
+    //     // return visit.carType != '2P'&& visit.overnight == true;
+    //
+    //     if (visit.carId == '20155111035113-452') {
+    //         mc1.selectedCar = visit;
+    //     }
+    //
+    //     // return visit.carType != '2P' && visit.stopCount == 2 && visit.camping == false;
+    //     // return visit.carId == '20150322080300-861';
+    //     // return visit.carId == '20154519024544-322';
+    //     // return visit.carId == '20161008061012-639';
+    //     // return visit.carId == '20150204100226-134';
+    //     // return visit.carId == '20153427103455-30';
+    //     return visit.carId == "20155705025759-63";
+    //     // return visit.carId == '20162904122951-717' || visit.carId == '20150322080300-861' || visit.carId == '20154519024544-322';
+    //     // return visit.carType != '2P';
+    // });
 
     mc1.eventHandler = new EventHandler();
 

@@ -14,7 +14,7 @@ class CarTraceNetwork extends BaseNetwork {
         options = super.handleOptions(options);
 
         options.margin.top = 5;
-        options.margin.left = 100;
+        options.margin.left = 60;
         options.margin.right = 50;
         options.graphDistance = 22;
         options.graphOffsetY = 20;
@@ -120,7 +120,7 @@ class CarTraceNetwork extends BaseNetwork {
             });
         });
 
-        this.nodeDistanceScale = d3.scaleLinear().domain([minDuration, maxDuration]).range([2*this.options.nodeRadius, nodeDistance]);
+        this.nodeDistanceScale = d3.scaleLinear().domain([minDuration, maxDuration]).range([this.options.nodeRadius, nodeDistance]);
 
         this.options.nodeDistance = nodeDistance;
 
