@@ -375,13 +375,13 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
 
             key = gate + '-' + day;
 
-            if (!activeKeys.hasOwnProperty(key)) {
-                activeKeys[key] = true;
-            }
-
             if (index < 1 || preCp != null && preCp.getGate() != cp.getGate()) {
                 preCp = cp;
                 return;
+            }
+
+            if (!activeKeys.hasOwnProperty(key)) {
+                activeKeys[key] = true;
             }
 
             // has delay period
