@@ -115,12 +115,17 @@ class VisitChart2D extends Chart2D {
         self.myLine.each(function (line) {
 
             let gates = line.context.carType == '2P' ? gateInternal : gateVisiting;
+            let startingPoints = [];
             let myEndPoints = line.data.filter(function (cp) {
 
                 for(let i=0; i< gates.length; i++) {
-                    if (cp.getVirtual() == false && cp.getGate().startsWith(gates[i])) {
+                    if (cp.getVirtual() == false && cp.getGate().startsWith(gates[i]) && !cp.getMapPoint().isEntrance() && !cp.getMapPoint().isRangerBase()) {
                         return true;
                     }
+                }
+
+                if (cp.getMapPoint().isEntrance() || cp.getMapPoint().isRangerBase()) {
+                    startingPoints.push((cp));
                 }
 
                 return false;
@@ -148,6 +153,33 @@ class VisitChart2D extends Chart2D {
                     self.tooltip.hide();
                 })
             ;
+
+            d3.select(this).selectAll('.starting-gate').data(startingPoints).enter()
+                .append('circle')
+                .attr('class', 'starting-gate gate-car-id-' + line.context.carId)
+                .attr('r', self.options.defaultGateRadius)
+                .attr('cx', function (d) {
+                    let xKey = line.x;
+                    return self.x(d[xKey]) + self.options.offSetX;
+                })
+                .attr('cy', function (d) {
+                    let yKey = line.y;
+                    return self.y(d[yKey]) + self.options.offSetY;
+                })
+                .style('fill', function (d) {
+                    return d.mapPoint.getColor();
+                })
+                .on('mouseover', function (cp) {
+                    self.tooltip.render(createGateTooltipHtml(cp));
+                })
+                .on('mouseout', function (d) {
+                    self.tooltip.hide();
+                })
+            ;
+
+
+
+
         });
     }
 
@@ -207,7 +239,7 @@ class VisitChart2D extends Chart2D {
             })
         ;
 
-        self.svg.selectAll('.passing-gate')
+        self.svg.selectAll('.passing-gate, .starting-gate')
             .attr('r', 0.5)
         ;
     }

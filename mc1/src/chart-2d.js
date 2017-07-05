@@ -1,6 +1,6 @@
 'use strict';
 
-class Chart2D {
+class  Chart2D {
     constructor(svg, width, height, options) {
 
 
