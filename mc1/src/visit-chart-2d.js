@@ -8,7 +8,7 @@ class VisitChart2D extends Chart2D {
         let op = this.options;
 
         if (!op.defaultGateRadius) {
-            op.defaultGateRadius = 0.5;
+            op.defaultGateRadius = 1.5;
         }
 
         if (!op.gatesForVisitingCars) {
@@ -187,6 +187,8 @@ class VisitChart2D extends Chart2D {
 
         let self = this;
 
+        let lines = [];
+
         // reduce opacity first
         self.myLine.filter(function (d) {
             return d.visibility == 'visible';
@@ -210,6 +212,7 @@ class VisitChart2D extends Chart2D {
         // increase opacity for ones we want to highlight
         self.svg.selectAll('.car-id-' + carId)
             .style('opacity', function (d) {
+                lines.push(d);
                 return d.opacity = 1;
             })
             .each(function (d) {
@@ -223,6 +226,8 @@ class VisitChart2D extends Chart2D {
         self.svg.selectAll('.gate-car-id-' + carId)
             .attr('r', 3)
         ;
+
+        return lines;
     }
 
     clearSetting () {
@@ -240,7 +245,7 @@ class VisitChart2D extends Chart2D {
         ;
 
         self.svg.selectAll('.passing-gate, .starting-gate')
-            .attr('r', 0.5)
+            .attr('r', self.options.defaultGateRadius)
         ;
     }
 

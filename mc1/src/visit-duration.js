@@ -172,10 +172,10 @@ class VisitDuration {
         let line = e.line;
         // let line = {context: mc1.selectedCar};
 
-        self.visitChart.highlightSingleVisit(line.context.carId);
+        let myHighlightedLines = self.visitChart.highlightSingleVisit(line.context.carId);
 
-        if (self.singleVisit.getCarId() != line.context.carId) {
-            self.singleVisit.setData(line.context);
+        if (!!myHighlightedLines && myHighlightedLines.length < 2 && self.singleVisit.getCarId() != line.context.carId) { // render when picking full line; not partial line from hourly graph
+            self.singleVisit.setData(myHighlightedLines[0].context);
             self.singleVisit.render();
 
             console.log('event mouse over. rendering: ' + line.context.carId);

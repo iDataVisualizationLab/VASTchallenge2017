@@ -46,7 +46,7 @@ class  Chart2D {
         this.y = d3.scaleLinear().range([height, 0]);
 
         if (!this.options.defaultLineWidth) {
-            this.options.defaultLineWidth = 0.2;
+            this.options.defaultLineWidth = 0.8;
         }
 
         this.filters = {};

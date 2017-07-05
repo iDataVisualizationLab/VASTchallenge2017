@@ -80,7 +80,7 @@ class CarTraceNetwork extends BaseNetwork {
 
                 graph = new SimpleGraph();
             }
-            else if (preCp.getGate() != cp.getGate() || (preCp.getGate() == cp.getGate() && !mp.isRangerBase() && !mp.isEntrance())) {
+            else if (preCp.getGate() == cp.getGate() && !mp.isRangerBase() && !mp.isEntrance()) {
                 graph.addLink(preNode, tmpNode);
             }
 
