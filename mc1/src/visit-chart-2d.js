@@ -216,7 +216,7 @@ class VisitChart2D extends Chart2D {
 
         let self = this;
 
-        if (isNaN(data)) {
+        if (!data) {
             data = {};
         }
 

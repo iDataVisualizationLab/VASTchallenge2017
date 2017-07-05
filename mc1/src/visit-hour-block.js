@@ -30,9 +30,61 @@ class VisitTimeBlock extends VisitDuration {
 
 
     setVisits (visits) {
-        let lines = visits.map(function (l) {
-            return l;
-        });
+        // let lines = visits.map(function (l) {
+        //     return l;
+        // });
+
+        let lines = [];
+        let tmpVisit;
+
+        let  preCp, preMp, mp, j =0, countEntrance = 0;
+        let myVisit, paths;
+
+        for(let i=0; i< visits.length; i++) {
+            tmpVisit = visits[i];
+            if (tmpVisit.entranceCount < 3) {
+                lines.push(tmpVisit);
+                continue;
+            }
+
+            // break multi entrance lines here
+
+            paths = [];
+            tmpVisit.path.forEach(function (cp, index) {
+
+
+                mp = cp.getMapPoint();
+
+                if (mp.isEntrance()) {
+                    countEntrance ++;
+                }
+
+                if (mp.isEntrance() && countEntrance % 2 == 1) { // enter
+                    paths = [cp];
+                }
+
+                if (!mp.isEntrance()) {
+                    paths.push(cp);
+                }
+
+
+                if (cp.getGate() && mp.isEntrance() && countEntrance % 2 == 0) { // exit
+                    paths.push(cp);
+
+                    myVisit = Object.assign({}, tmpVisit); // clone object
+                    myVisit.startTime = paths[0].getTime();
+                    myVisit.endTime = cp.getTime();
+
+                    myVisit.path = paths;
+                    lines.push(myVisit);
+                    paths = []; // reset
+                }
+
+                preCp = cp;
+
+            })
+
+        }
 
         lines.sort(function (l1, l2) {
             return getTimeInDayBySeconds(l1.startTime) - getTimeInDayBySeconds(l2.startTime);
@@ -154,6 +206,7 @@ class VisitTimeBlock extends VisitDuration {
     render() {
         // parse the date / time
         this.handleChartContextTime();
+        // this.visitChart.sortData();
 
 
         this.visitChart.renderChart(this.events);

@@ -106,6 +106,23 @@ class Chart2D {
         self.lineData.push( {valueLine: valueLine, data: dataArray, context: context, x: xKey, y: yKey});
     }
 
+    sortData() { // for hourly graph
+        // lines.sort(function (l1, l2) {
+        //     return getTimeInDayBySeconds(l1.startTime) - getTimeInDayBySeconds(l2.startTime);
+        // });
+
+
+        this.lineData.sort(function (d1, d2) {
+            let l1 = d1.context;
+            let l2 = d2.context;
+
+            let t1 = getTimeInDayBySeconds(l1.contextStartTime);
+            let t2 = getTimeInDayBySeconds(l2.contextStartTime);
+            return  (t1- t2);
+        });
+
+    }
+
     renderChart(events) {
 
         let self = this;
