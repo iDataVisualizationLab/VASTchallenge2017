@@ -16,7 +16,7 @@ class VisitDuration {
         let maxDate = parseTime(endDate);
 
         this.visitChart.setXDomain(minDate, maxDate);
-        this.visitChart.setYDomain(0, 20000);
+        // this.visitChart.setYDomain(0, 20000);
         this.eventHandler = eventHandler;
 
         this.visitChart.setEventHandler(this.eventHandler);
@@ -85,7 +85,7 @@ class VisitDuration {
 
         this.lines = visits;
 
-        this.visitChart.setYDomain(0, Math.ceil(visits.length + 0.05*visits.length));
+        this.visitChart.setYDomain(0, 1 + Math.ceil(visits.length + 0.05*visits.length));
 
     }
 
@@ -97,7 +97,7 @@ class VisitDuration {
         lines.forEach(function(line, index) {
 
             line.path.forEach(function (carPoint) {
-                carPoint.y = 50 + index; // the same y coordinate for the same car 'index' (individual car). So we have horizontal line
+                carPoint.y = 1 + index; // the same y coordinate for the same car 'index' (individual car). So we have horizontal line
             });
 
             let timeContext = d3.extent(line.path, function (carPoint) {

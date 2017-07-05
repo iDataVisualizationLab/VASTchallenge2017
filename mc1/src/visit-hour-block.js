@@ -66,7 +66,7 @@ class VisitTimeBlock extends VisitDuration {
             for(let i=0; i< line.path.length; i++) {
                 // carPoint = line.path[i].clone();
                 carPoint = line.path[i];
-                carPoint.y = 50 + index; // the same y coordinate for the same car 'index' (individual car). So we have horizontal line
+                carPoint.y = 1 + index; // the same y coordinate for the same car 'index' (individual car). So we have horizontal line
 
                 if (i==0) {
                     firstDayInMilliseconds = carPoint.getTimeInMiliseconds();
