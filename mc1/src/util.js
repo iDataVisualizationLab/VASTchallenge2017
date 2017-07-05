@@ -204,9 +204,17 @@ function splitPathWithStopByGate(line, path) {
                 smallPaths = [nextCPoint];
             }
             else {
-                // get out of park (two consecutive entrances
+                // get out of park (two consecutive entrances)
+                smallPaths.push(nextCPoint);
+                resultPaths.push({context: line, path: smallPaths});
                 i ++;
-                smallPaths = [tmpPath[i]]; // reset
+
+                if (i < tmpPath.length) {
+                    smallPaths = [tmpPath[i]]; // reset
+                }
+                else {
+                    smallPaths = [];
+                }
             }
 
 

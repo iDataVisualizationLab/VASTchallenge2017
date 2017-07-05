@@ -58,17 +58,24 @@ class VisitTimeBlock extends VisitDuration {
             //     return;
             // }
             let tmpPath = [];
-            let carPoint;
+            let carPoint, mp;
             let firstDayInMilliseconds;
             let endDayInMilliseconds;
             let d;
             let maxEndDate;
+            let specialGateCount = 0;
+            let tmpPaths = []; // multiple entrances on multiple days
+
             for(let i=0; i< line.path.length; i++) {
                 // carPoint = line.path[i].clone();
                 carPoint = line.path[i];
-                carPoint.y = 1 + index; // the same y coordinate for the same car 'index' (individual car). So we have horizontal line
+                carPoint.y = 1 + index + tmpPaths.length; // the same y coordinate for the same car 'index' (individual car). So we have horizontal line
+                mp = carPoint.getMapPoint();
+                if (mp.isEntrance() || mp.isRangerBase()) {
+                    specialGateCount ++;
+                }
 
-                if (i==0) {
+                if ((mp.isEntrance() || mp.isRangerBase()) && specialGateCount % 2 == 1) { // enter Preserve
                     firstDayInMilliseconds = carPoint.getTimeInMiliseconds();
                     maxEndDate = new Date(firstDayInMilliseconds);
                     maxEndDate.setHours(23);
@@ -91,42 +98,57 @@ class VisitTimeBlock extends VisitDuration {
                         tmpPath.push(carPoint);
                     }
                 }
+
+                if ((mp.isEntrance() || mp.isRangerBase()) && specialGateCount % 2 == 0) { // exit Preserve
+                    tmpPaths.push(tmpPath);
+                    tmpPath = [];
+                }
             }
 
-            // lengthen the line to tell overnight cars
-            //
-            if (tmpPath.length < line.path.length) {
+            let multiEntrance = tmpPaths.length > 1;
+            let l;
 
+            tmpPaths.forEach(function (tmpPath) {
+                // lengthen the line to tell overnight cars
+                //
+                count ++;
+                l = !!multiEntrance ? Object.assign({}, line) : line;
                 let lastCarPoint = tmpPath[tmpPath.length-1];
-                let nextCarPoint = line.path[tmpPath.length];
-                let carPoint = new CarPoint(nextCarPoint.getMapPoint(), maxEndDate, lastCarPoint.velocity, null);
-                carPoint.setVirtual(true);
 
-                let d = carPoint.getTimeInDayAsString();
-                carPoint.x = self.parseTime(d);
-                carPoint.y = lastCarPoint.y;
+                if (tmpPath.length < l.path.length && !lastCarPoint.getMapPoint().isEntrance() && !lastCarPoint.getMapPoint().isRangerBase()) {
 
-                tmpPath.push(carPoint);
-            }
+                    let nextCarPoint = l.path[tmpPath.length];
+                    let carPoint = new CarPoint(nextCarPoint.getMapPoint(), maxEndDate, lastCarPoint.velocity, null);
+                    carPoint.setVirtual(true);
 
-            // split paths
-            // self.visitChart.addData(line, tmpPath);
-            let timeContext = d3.extent(tmpPath, function (cp) {
-                return cp.x;
-            });
+                    let d = carPoint.getTimeInDayAsString();
+                    carPoint.x = self.parseTime(d);
+                    carPoint.y = lastCarPoint.y;
 
-            line.contextStartTime = timeContext[0];
-            line.contextEndTime = timeContext[1];
+                    tmpPath.push(carPoint);
+                }
 
-            let detailLines = splitPathWithStopByGate(line, tmpPath);
-            if (detailLines.length > 0) {
-                detailLines.forEach(function (l) {
-
-                    self.visitChart.addData(line, l.path, 'x', 'y');
-
+                // split paths
+                // self.visitChart.addData(line, tmpPath);
+                let timeContext = d3.extent(tmpPath, function (cp) {
+                    return cp.x;
                 });
-            }
+
+                l.contextStartTime = timeContext[0];
+                l.contextEndTime = timeContext[1];
+
+                let detailLines = splitPathWithStopByGate(l, tmpPath);
+                if (detailLines.length > 0) {
+                    detailLines.forEach(function (splitPath) {
+
+                        self.visitChart.addData(l, splitPath.path, 'x', 'y');
+
+                    });
+                }
+            })
         });
+
+        this.setYDomain(0, 1 + Math.ceil(1.05 * count));
     }
 
     render() {
