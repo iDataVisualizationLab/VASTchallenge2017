@@ -45,6 +45,12 @@ class SimpleGraph {
         tmpLink = this.linkMap[linkedId];
         tmpLink.increaseCount();
 
+        let sourceTime = fromNode.getData().getTime();
+        let targetTime = toNode.getData().getTime();
+
+        let duration = (targetTime.getTime() - sourceTime.getTime()) / 3600000;
+        tmpLink.addDuration(duration);
+
         return tmpLink;
     }
 
@@ -70,6 +76,10 @@ class SimpleGraph {
 
     getLinks() {
         return this.links;
+    }
+
+    getLinkByName(name) {
+        return this.linkMap[name];
     }
 
     countNodes() {
@@ -145,6 +155,7 @@ class SimpleLink {
         this.target = target;
         this.name = name;
         this.count = 0;
+        this.duration = 0;
     }
 
     increaseCount() {
@@ -169,5 +180,21 @@ class SimpleLink {
 
     getTarget() {
         return this.target;
+    }
+
+    getDuration() {
+        return this.duration;
+    }
+
+    addDuration(duration) {
+        this.duration += duration;
+
+        return this;
+    }
+
+    setDuration(duration) {
+        this.duration = +duration;
+
+        return this;
     }
 }

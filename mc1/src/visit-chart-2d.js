@@ -189,6 +189,8 @@ class VisitChart2D extends Chart2D {
 
         let lines = [];
 
+        this.clearSetting();
+
         // reduce opacity first
         self.myLine.filter(function (d) {
             return d.visibility == 'visible';

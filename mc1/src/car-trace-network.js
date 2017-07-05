@@ -19,6 +19,7 @@ class CarTraceNetwork extends BaseNetwork {
         options.graphDistance = 22;
         options.graphOffsetY = 20;
         options.graphOffsetX = 10;
+        options.nodeRadius = 10;
 
         return options;
     }
@@ -106,6 +107,21 @@ class CarTraceNetwork extends BaseNetwork {
         if (nodeDistance > 130) {
             nodeDistance = 130;
         }
+
+        let minDuration = d3.min(this.graphs, function (graph) {
+            return d3.min(graph.getLinks(), function (l) {
+                return l.getDuration();
+            });
+        });
+
+        let maxDuration = d3.max(this.graphs, function (graph) {
+            return d3.max(graph.getLinks(), function (l) {
+                return l.getDuration();
+            });
+        });
+
+        this.nodeDistanceScale = d3.scaleLinear().domain([minDuration, maxDuration]).range([2*this.options.nodeRadius, nodeDistance]);
+
         this.options.nodeDistance = nodeDistance;
 
         // let graphCount = this.graphs.length < 1 ? 1 : this.graphs.length;
@@ -130,7 +146,7 @@ class CarTraceNetwork extends BaseNetwork {
         let sourceTime = link.getSource().getData().getTime();
         let targetTime = link.getTarget().getData().getTime();
 
-        let duration = (targetTime.getTime() - sourceTime.getTime()) / 3600000
+        let duration = (targetTime.getTime() - sourceTime.getTime()) / 3600000;
         let formatTime = d3.format(',.3f');
 
         self.tooltip.render("Duration: " + formatTime(duration));
@@ -145,6 +161,9 @@ class CarTraceNetwork extends BaseNetwork {
         let graphDistance = this.options.graphDistance;
         let graphOffsetY = self.options.margin.top + this.options.graphOffsetY;
         let graphOffsetX = this.options.graphOffsetX;
+        let nodeRadius = this.options.nodeRadius;
+        let preNode;
+        let linkName, l;
 
         let visitSelection = self.svg.selectAll('.visit').data(this.graphs);
 
@@ -161,6 +180,16 @@ class CarTraceNetwork extends BaseNetwork {
             let nodes = graph.getNodes();
             nodes.forEach(function (node, nIndex) {
                 node.x = nIndex * nodeDistance + graphOffsetX;
+
+                if (nIndex > 0) {
+                    linkName = preNode.getId() + '-' + node.getId();
+                    l = graph.getLinkByName(linkName);
+
+                    node.x = preNode.x + (1 + self.nodeDistanceScale(l.getDuration())) + graphOffsetX;
+
+                }
+
+                preNode = node;
                 node.y = gIndex * graphDistance + graphOffsetY;
             });
         });
@@ -205,7 +234,7 @@ class CarTraceNetwork extends BaseNetwork {
 
             visitGroupSelection.enter().append('circle')
                 .attr('class', 'node-point')
-                .attr("r", 10)
+                .attr("r", nodeRadius)
                 .style("stroke-width", 1)
                 .style("fill", function (d) {
                     return d.getData().getColor();
