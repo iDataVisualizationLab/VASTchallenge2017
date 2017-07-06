@@ -114,7 +114,8 @@ ParallelCoordinate.prototype.addDimension = function addDimension(dimension, acc
         label: dimension,
         type: type,
         options: self.types[type],
-        domain: domain
+        domain: domain,
+        counts: this.getDensityValues(accessKey, domain, type)
     };
 
     self.updateYDomain(accessKey, domain);
@@ -122,6 +123,66 @@ ParallelCoordinate.prototype.addDimension = function addDimension(dimension, acc
     self.dimensions.push(accessKey);
 
     this.setDomain();
+};
+
+ParallelCoordinate.prototype.getDensityValues = function getDensityValues(accessKey, domain, type) {
+
+    let counts = {};
+    let val;
+
+    if (!type) {
+        type = 'Number';
+    }
+
+    if (type != 'Number') {
+        this.dataSet.forEach(function (d) {
+            val = d[accessKey];
+
+            if (!counts.hasOwnProperty(val)) {
+                counts[val] = 0;
+            }
+
+            counts[val] ++;
+        });
+    }
+    else {
+
+        let numPoints = 100, min = domain[0], max = domain[1];
+        let step = (max - min) / numPoints;
+        let p, k, i = 0;
+        let keys = [];
+
+        do {
+            p = step * i + min;
+            if (p > domain[1]) {
+                break;
+            }
+
+            counts[p] = 0;
+            keys.push(p);
+            i ++;
+        }
+        while(true);
+
+        this.dataSet.forEach(function (d) {
+            val = d[accessKey];
+
+            for(let i=0; i < keys.length; i++) {
+                k = keys[i];
+
+                if (val <= k) {
+                    counts[k] ++;
+                    break;
+                }
+            }
+
+
+        })
+    }
+
+
+
+    return counts;
 };
 
 ParallelCoordinate.prototype.getVisibleLines = function getVisibleLines() {
@@ -366,33 +427,6 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
         .enter().append("g")
         .attr("class", "dimension")
         .attr("transform", function(d) { return "translate(" + self.x(d) + ")"; })
-        // .call(d3.drag()
-        //     .subject(function(d) {
-        //         let t = {x: self.x(d)};
-        //         return {x: self.x(d)};
-        //     })
-        //     .on("start", function(d) {
-        //         dragging[d] = x(d);
-        //         background.attr("visibility", "hidden");
-        //     })
-        //     .on("drag", function(d) {
-        //         self.dragging[d] = Math.min(self.width, Math.max(0, d3.event.x));
-        //         foreground.attr("d", path);
-        //         self.dimensions.sort(function(a, b) { return position(a) - position(b); });
-        //         self.x.domain(self.dimensions);
-        //         g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
-        //     })
-        //     .on("end", function(d) {
-        //         delete self.dragging[d];
-        //         transition(d3.select(this)).attr("transform", "translate(" + self.x(d) + ")");
-        //         transition(foreground).attr("d", path);
-        //         background
-        //             .attr("d", path)
-        //             .transition()
-        //             .delay(500)
-        //             .duration(0)
-        //             .attr("visibility", null);
-        //     }))
         ;
 
     // Add an axis and title.
