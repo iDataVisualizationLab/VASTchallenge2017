@@ -259,6 +259,7 @@ class VisitChart2D extends Chart2D {
             data = {};
         }
 
+        let publicCar = data['publicCar'];
         let carType = data['carType'];
         let camping = data['camping'];
         let stopCount = data['stopCount'];
@@ -267,6 +268,7 @@ class VisitChart2D extends Chart2D {
         let visitDuration = data['visitDuration'];
         let overnight = data['overnight'];
 
+        self.filters['publicCar'] = publicCar;
         self.filters['entranceType'] = entranceType;
         self.filters['carType'] = carType;
         self.filters['camping'] = camping;
@@ -303,6 +305,7 @@ class VisitChart2D extends Chart2D {
 
     highLightVisits() {
         let self = this;
+        let publicCar = self.filters['publicCar'];
         let carType = self.filters['carType'];
         let camping = self.filters['camping'];
         let stopCount = self.filters['stopCount'];
@@ -321,6 +324,10 @@ class VisitChart2D extends Chart2D {
 
             // car type criteria
             if (!!carType && carType.indexOf(ctx.carType) < 0) {
+                return line.visibility = 'hidden';
+            }
+
+            if (!!publicCar && publicCar.indexOf(ctx.carType != '2P') < 0 ) {
                 return line.visibility = 'hidden';
             }
 
