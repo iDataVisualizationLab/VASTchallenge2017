@@ -120,14 +120,7 @@ mc1.controller.changeGraphType = function(graphType) {
 
 
 
-            //delete mc1.firstDayDuration;
-
             // heatmap
-            // d3.timeout(function () {
-            //     mc1.arrivalHeatMap = new DayHourHeatMap('arrivalHeatMap', 720, 360);
-            //     mc1.arrivalHeatMap.setData(mc1.parsedVisits);
-            //     mc1.arrivalHeatMap.render();
-            // });
 
 
             let heatMapHeight = 400;
@@ -158,11 +151,6 @@ mc1.controller.changeGraphType = function(graphType) {
             this.viewHeatMap(0);
 
             // arrival week day by hour heat map
-            // d3.timeout(function () {
-            //     mc1.arrivalWdHHeatMap = new ArrivalWeekDayHourHeatMap('weekDayHourArrivalHeatMap', 720, 360);
-            //     mc1.arrivalWdHHeatMap.setData(mc1.parsedVisits);
-            //     mc1.arrivalWdHHeatMap.render();
-            // });
 
             d3.timeout(function () {
                 mc1.arrivalWdHHeatMap = new ArrivalHourlyGateHeatMap('hourlyLocationArrivalHeatMap', 720, heatMapHeight);

@@ -66,22 +66,21 @@ class WorkDuration extends BaseClass {
 
         let paths;
         let preCp;
-
-        let passingCount;
-
         let self = this;
 
 
         let gates = this.constructor.createGates();
         let gateDuration = {};
         let tmpDuration, mp;
+        let passingCount = 0;
 
-        visits.forEach(function (line) {
+        visits.forEach(function (line, lIndex) {
             paths = line.path;
 
             passingCount = 0;
+            preCp = null;
 
-            paths.forEach(function (cp) {
+            paths.forEach(function (cp, cIndex) {
 
                 let gate = cp.getGate();
                 mp = cp.getMapPoint();
@@ -90,6 +89,7 @@ class WorkDuration extends BaseClass {
                     return;
                 }
 
+                passingCount ++;
                 if (!preCp) {
                     preCp = cp;
                     return;
@@ -100,6 +100,7 @@ class WorkDuration extends BaseClass {
                     return;
                 }
 
+
                 if (!gateDuration.hasOwnProperty(gate)) {
                     gateDuration[gate] = 0;
                 }
@@ -107,6 +108,11 @@ class WorkDuration extends BaseClass {
                 tmpDuration = (cp.getTime().getTime() - preCp.getTime().getTime()) / 3600000;
 
                 gateDuration[gate] += tmpDuration;
+
+                if ( (mp.isCamping() || mp.isRangerStop()) && passingCount % 2 == 0) { // exit
+                    preCp = null; // reset
+                }
+
 
             });
         });
@@ -135,7 +141,7 @@ class WorkDuration extends BaseClass {
             .attr("y", function(d) { return self.y(d.gate); })
             .attr("height", self.y.bandwidth())
             .on('mouseover', function (d) {
-                self.tooltip.render("Duration: " + d.duration.toFixed(2) + ' (hrs)', 0, 20);
+                self.tooltip.render("Duration: " + d.duration.toFixed(3) + ' (hrs)', 0, 20);
             })
             .on('mouseout', function (d) {
                 self.tooltip.hide();
