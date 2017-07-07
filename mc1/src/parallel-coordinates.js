@@ -430,10 +430,50 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
         ;
 
     // Add an axis and title.
+
+    var area = d3.area()
+        .x(function(d) { return x(d.date); })
+        .y1(function(d) { return y(d.close); });
+
+    let sizes = {};
+    let myData = [];
     g.append("g")
-        .attr("class", "axis")
-        .each(function(d) {
+        .attr("class", function (d) {
+            return "axis axis-" + d;
+        })
+        .each(function(d, index) {
                    d3.select(this).call(self.axis.scale(self.y[d]));
+
+                   if (self.axisConfig[d].type != 'Number') {
+                       d3.select(this).selectAll('.tick').each(function (d) {
+                           d3.select(this).select('line')
+                               .attr("x2", function (tf, index) {
+
+                                   let xTranslate = 100 + 80 * Math.random();
+
+                                   sizes[index] = xTranslate;
+
+                                   return xTranslate;
+                               })
+                               .attr('transform', function (d, index) {
+                                   let xTranslate = sizes[index];
+
+                                   return "translate(-" + xTranslate/ 2 + ",0)";
+                               })
+                           ;
+                       })
+                       ;
+                   }
+                   else {
+                       // area chart
+
+                       d3.select(this)
+                            .append("path")
+                               .datum(myData)
+                               .attr("fill", "steelblue")
+                               .attr("d", area);
+                   }
+
         })
         .append("text")
         .style("text-anchor", "middle")
