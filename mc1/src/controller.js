@@ -3,6 +3,7 @@ var mc1 = mc1 || {};
 mc1.controller = mc1.controller || {};
 mc1.controller.currentHeatMapIndex = 0;
 mc1.controller.currentVisTypeIndex = 0;
+mc1.controller.everyDayHeatMapIndex = 0;
 
 mc1.controller.simulateTraffic = function(self) {
     console.log(self.name + "=" + self.value);
@@ -88,11 +89,11 @@ mc1.controller.changeGraphType = function(graphType) {
             // });
 
             // everyday heat map
-            // d3.timeout(function () {
-            //     mc1.dailyHeatMap = new GateEveryDayHeatMap('gateEveryDayHeatMap', 1720, 480);
-            //     mc1.dailyHeatMap.setData(mc1.parsedVisits);
-            //     mc1.dailyHeatMap.render();
-            // });
+            d3.timeout(function () {
+                mc1.dailyHeatMap = new GateEveryDayHeatMap('gateEveryDayHeatMap', 1720, 480);
+                mc1.dailyHeatMap.setData(mc1.parsedVisits);
+                mc1.dailyHeatMap.render();
+            });
 
             // gate duration
             d3.timeout(function () {
@@ -102,6 +103,7 @@ mc1.controller.changeGraphType = function(graphType) {
             });
 
 
+            this.viewEverydaytHeatMapOption(0);
             // entire year graph
             d3.timeout(function () {
                 let firstDaySpanChart = new VisitChart2D(mc1.firstDaySpanSvg, width, height, {id: 2, margin: margin, timeChart: true});
@@ -264,4 +266,23 @@ mc1.controller.viewDivOption = function(divId) {
 
         d3.select('body').select('#' + id).style('display', dp);
     })
+};
+
+mc1.controller.viewEverydaytHeatMapOption = function(idx) {
+    if (idx == null || isNaN(idx)) {
+        idx = 0;
+    }
+    let viss = ['gateEveryDayHeatMap', 'workDuration'];
+
+    this.everyDayHeatMapIndex = this.everyDayHeatMapIndex + idx;
+
+    this.everyDayHeatMapIndex = Math.abs(this.everyDayHeatMapIndex) % viss.length;
+
+    let vis = viss[this.everyDayHeatMapIndex];
+
+    viss.forEach(function (vId) {
+        let dp = vId == vis ? 'initial' : 'none';
+
+        d3.select('body').select('#' + vId).style('display', dp);
+    });
 };
