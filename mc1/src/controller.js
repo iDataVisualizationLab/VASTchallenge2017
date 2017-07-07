@@ -88,11 +88,19 @@ mc1.controller.changeGraphType = function(graphType) {
             // });
 
             // everyday heat map
+            // d3.timeout(function () {
+            //     mc1.dailyHeatMap = new GateEveryDayHeatMap('gateEveryDayHeatMap', 1720, 480);
+            //     mc1.dailyHeatMap.setData(mc1.parsedVisits);
+            //     mc1.dailyHeatMap.render();
+            // });
+
+            // gate duration
             d3.timeout(function () {
-                mc1.dailyHeatMap = new GateEveryDayHeatMap('gateEveryDayHeatMap', 1720, 480);
-                mc1.dailyHeatMap.setData(mc1.parsedVisits);
-                mc1.dailyHeatMap.render();
+                mc1.workDuration = new WorkDuration('workDuration', 1420, 400);
+                mc1.workDuration.setData(mc1.parsedVisits);
+                mc1.workDuration.render();
             });
+
 
             // entire year graph
             d3.timeout(function () {

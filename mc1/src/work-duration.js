@@ -20,8 +20,21 @@ class WorkDuration extends BaseClass {
             .range([0, this.width]);
     }
 
+    handleOptions(options) {
+
+        options = super.handleOptions(options);
+
+        let margin = options.margin;
+        margin.left = 80;
+        margin.top = 20;
+        margin.bottom = 50;
+        margin.right = 100;
+
+
+        return options;
+    }
+
     static createGates() {
-        let self = this;
         let ignoreGates = ['gate', 'entrance', 'ranger-base', 'general', 'ranger-stop0', 'ranger-stop2'];
 
         let gates = Object.keys(mc1.parkMap.pointNameMapping)
@@ -49,26 +62,88 @@ class WorkDuration extends BaseClass {
 
     setData(visits) {
 
+        let paths;
+        let preCp;
 
-        let maxTotalDuration = d3.max(visits, function (d) {
+        let passingCount;
 
-        });
+        let self = this;
+
 
         let gates = this.constructor.createGates();
+        let gateDuration = {};
+        let tmpDuration, mp;
 
-        x.domain([0, maxTotalDuration]);
-        y.domain(gates);
+        visits.forEach(function (line) {
+            paths = line.path;
+
+            passingCount = 0;
+
+            paths.forEach(function (cp) {
+
+                let gate = cp.getGate();
+                mp = cp.getMapPoint();
+
+                if (!mp.isCamping() && !mp.isRangerStop()) {
+                    return;
+                }
+
+                if (!preCp) {
+                    preCp = cp;
+                    return;
+                }
+
+                if (preCp.getGate() != gate) {
+                    preCp = cp;
+                    return;
+                }
+
+                if (!gateDuration.hasOwnProperty(gate)) {
+                    gateDuration[gate] = 0;
+                }
+
+                tmpDuration = (cp.getTime().getTime() - preCp.getTime().getTime()) / 3600000;
+
+                gateDuration[gate] += tmpDuration;
+
+            });
+        });
+
+        this.myData = [];
+
+        let maxTotalDuration = d3.max(Object.keys(gateDuration), function (k) {
+            self.myData.push({gate: k, duration:  gateDuration[k]});
+            return gateDuration[k];
+        });
+
+        self.x.domain([0, maxTotalDuration]);
+        self.y.domain(gates);
     }
 
     render() {
+        let self = this;
+
+        // append the rectangles for the bar chart
+        self.svg.selectAll(".bar")
+            .data(self.myData)
+            .enter().append("rect")
+            .attr("class", "bar")
+            //.attr("x", function(d) { return x(d.sales); })
+            .attr("width", function(d) {return self.x(d.duration); } )
+            .attr("y", function(d) { return self.y(d.gate); })
+            .attr("height", self.y.bandwidth())
+        ;
+
         // add the x Axis
-        svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x));
+        self.svg.append("g")
+            .attr("transform", "translate(0," + self.height + ")")
+            .call(d3.axisBottom(self.x))
+        ;
 
         // add the y Axis
-        svg.append("g")
-            .call(d3.axisLeft(y));
+        self.svg.append("g")
+            .call(d3.axisLeft(self.y))
+        ;
     }
 
 }
