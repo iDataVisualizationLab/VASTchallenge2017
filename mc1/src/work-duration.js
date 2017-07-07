@@ -18,6 +18,8 @@ class WorkDuration extends BaseClass {
 
         this.x = d3.scaleLinear()
             .range([0, this.width]);
+
+        this.tooltip = new TooltipHelper('tooltip');
     }
 
     handleOptions(options) {
@@ -132,6 +134,12 @@ class WorkDuration extends BaseClass {
             .attr("width", function(d) {return self.x(d.duration); } )
             .attr("y", function(d) { return self.y(d.gate); })
             .attr("height", self.y.bandwidth())
+            .on('mouseover', function (d) {
+                self.tooltip.render("Duration: " + d.duration.toFixed(2) + ' (hrs)', 0, 20);
+            })
+            .on('mouseout', function (d) {
+                self.tooltip.hide();
+            })
         ;
 
         // add the x Axis
