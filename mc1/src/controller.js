@@ -97,7 +97,7 @@ mc1.controller.changeGraphType = function(graphType) {
 
             // gate duration
             d3.timeout(function () {
-                mc1.workDuration = new WorkDuration('workDuration', 1420, 400);
+                mc1.workDuration = new WorkDuration('workDuration', 1420, 400, null, mc1.eventHandler);
                 mc1.workDuration.setData(mc1.parsedVisits);
                 mc1.workDuration.render();
             });

@@ -20,6 +20,12 @@ class WorkDuration extends BaseClass {
             .range([0, this.width]);
 
         this.tooltip = new TooltipHelper('tooltip');
+
+        this.setupEvent();
+    }
+
+    setupEvent() {
+        this.eventHandler.addEvent('brushEnd', this.refreshNetwork, this); // brush end then update this network
     }
 
     handleOptions(options) {
@@ -55,12 +61,26 @@ class WorkDuration extends BaseClass {
                     return 0;
                 }
 
-                return a > b ? 1 : -1;
+                return a > b ? -1 : 1;
             });
 
         return gates;
     }
 
+    refreshNetwork() {
+
+        this.clear();
+        let lines = mc1.parallel.getVisibleLines();
+
+        this.setData(lines);
+
+        this.render();
+    }
+
+    clear() {
+        let self = this;
+        self.svg.selectAll('*').remove();
+    }
 
     setData(visits) {
 
@@ -73,6 +93,8 @@ class WorkDuration extends BaseClass {
         let gateDuration = {};
         let tmpDuration, mp;
         let passingCount = 0;
+
+        let ignoreGates = ['gate', 'entrance', 'ranger-base', 'general', 'ranger-stop0', 'ranger-stop2'];
 
         visits.forEach(function (line, lIndex) {
             paths = line.path;
@@ -89,6 +111,9 @@ class WorkDuration extends BaseClass {
                     return;
                 }
 
+                if (ignoreGates.indexOf(cp.getGate()) > -1) { // ignore gates
+                    return;
+                }
                 passingCount ++;
                 if (!preCp) {
                     preCp = cp;
@@ -111,6 +136,7 @@ class WorkDuration extends BaseClass {
 
                 if ( (mp.isCamping() || mp.isRangerStop()) && passingCount % 2 == 0) { // exit
                     preCp = null; // reset
+                    passingCount = 0;
                 }
 
 
