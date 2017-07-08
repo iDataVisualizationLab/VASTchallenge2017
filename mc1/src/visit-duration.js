@@ -1,6 +1,6 @@
 'use strict';
 class VisitDuration {
-    constructor(visitChart, parkMap, startDate, endDate, eventHandler, simulationManager, singleVisit) {
+    constructor(visitChart, parkMap, startDate, endDate, eventHandler, simulationManager, singleVisit, roadHeatMap) {
         this.visitChart = visitChart;
         this.parkMap = parkMap;
 
@@ -22,7 +22,7 @@ class VisitDuration {
         this.visitChart.setEventHandler(this.eventHandler);
         this.simulationManager = simulationManager;
 
-        this.roadHeatMap = new RoadHeatmap(this.parkMap);
+        this.roadHeatMap = roadHeatMap;
 
         this.singleVisit = singleVisit;
 

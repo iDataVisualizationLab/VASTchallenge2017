@@ -1,10 +1,26 @@
-var RoadHeatmap = function RoadHeatmap(partMap, rawData) {
+var RoadHeatmap = function RoadHeatmap(partMap, rawData, eventHandler) {
   this.parkMap = partMap;
   this.rawData = rawData;
   this.parseTime = d3.timeParse("%Y-%m-%d %H:%M:%S");
   this.visitedCells = {};
+  this.eventHandler = eventHandler;
+
+    this.eventHandler.addEvent('brushEnd', this.renderRoadHeatMap, this); // brush end from PC
+};
+
+RoadHeatmap.prototype.renderRoadHeatMap = function renderRoadHeatMap () {
+    this.clearMap();
+
+    let self = this;
+    d3.timeout(function () {
+        let lines = mc1.parallel.getVisibleLines();
+
+        self.renderHeatMap(lines);
+    });
 
 };
+
+
 //
 // RoadHitmap.prototype.getVisitsByTimePeriod = function getVisitsByTimePeriod (endTime, startTime) {
 //     let startTimeInMiliseconds = startTime.getTime();
@@ -71,8 +87,9 @@ RoadHeatmap.prototype.getVisitedRoadCellHeatMap = function getVisitedRoadCellHea
 
     lines.forEach(function (line) {
 
-        let lineColor = line.context.color;
-        let paths = !!options.fullPath ? line.context.path : line.data;
+        // let lineColor = !!line.context ? line.context.color : line.color;
+        let lineColor = '#444444';
+        let paths = !!line.context ? line.context.path : line.path;
         paths.forEach(function (carPoint) {
 
             if (!carPoint.path) {

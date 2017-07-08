@@ -2,8 +2,8 @@
 // toHour is closed hour that the car get recorded within 24 hours.
 'use strict';
 class VisitTimeBlock extends VisitDuration {
-    constructor(visitChart, parkMap, fromHour, toHour, eventHandler, simulationManager, singleVisit) {
-        super(visitChart, parkMap, fromHour, toHour, eventHandler, simulationManager, singleVisit);
+    constructor(visitChart, parkMap, fromHour, toHour, eventHandler, simulationManager, singleVisit, roadHeatMap) {
+        super(visitChart, parkMap, fromHour, toHour, eventHandler, simulationManager, singleVisit, roadHeatMap);
 
         if (!fromHour) {
             fromHour = '00:00:01';
