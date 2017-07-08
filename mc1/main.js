@@ -60,9 +60,9 @@ d3.json("data/all-car-path.json", function(error, lines) {
     //     // return visit.carId == '20161008061012-639';
     //     // return visit.carId == '20150204100226-134';
     //     // return visit.carId == '20153427103455-30';
-    //     return visit.carId == "20155705025759-63";
-    //     // return visit.carId == '20162904122951-717' || visit.carId == '20150322080300-861' || visit.carId == '20154519024544-322';
-    //     // return visit.carType != '2P';
+    //     // return visit.carId == "20155705025759-63";
+    //     // return visit.carId == '20162904122951-717' || visit.carId == '20150322080300-861' ;
+    //     return visit.carType == '2P';
     // });
 
     mc1.eventHandler = new EventHandler();
@@ -70,7 +70,7 @@ d3.json("data/all-car-path.json", function(error, lines) {
     mc1.simulationManager = new SimulationManager(mc1.parkMap);
     // mc1.singleVisit = new CarTraceMap('mySingleVisit', 1720, 400);
     mc1.singleVisit = new CarTraceNetwork('mySingleVisit', 1720, 415);
-
+    mc1.roadHeatMap = new RoadHeatmap(mc1.parkMap, null, mc1.eventHandler);
 
     d3.timeout(function () {
         renderParallelCoordinate();
@@ -93,10 +93,10 @@ d3.json("data/all-car-path.json", function(error, lines) {
 function renderParallelCoordinate() {
     let dimensions = {
         // startTime: {label: "Start Time"},
-        publicCar: {label: 'Public Car', type: 'String'},
+        // publicCar: {label: 'Public Car', type: 'String'},
         carType:  { label: 'Car Type', type: 'String'},
         camping: {label: 'Camping', type: 'String'},
-        stopCount: {label: 'Stop Count'},
+        stopCount: {label: 'Stop Count', type: 'String'},
         stopDuration: {label: 'Stop Duration (hrs)'},
         overnight: {label: 'Overnight', type: 'String'},
         visitDuration: {label: 'Visit Duration (hrs)' },

@@ -217,6 +217,10 @@ ParallelCoordinate.prototype.updateYDomain = function updateYDomain(accessKey, n
         ;
     }
     else {
+        if (accessKey == 'carType') {
+            newDomain = ["6", "5", "4", "3", "2", "1", "2P"];
+        }
+
         let myScale = d3.scalePoint()
                 .domain(newDomain)
                 .range([0, self.height])
@@ -444,35 +448,35 @@ ParallelCoordinate.prototype.renderGraph = function renderGraph() {
         .each(function(d, index) {
                    d3.select(this).call(self.axis.scale(self.y[d]));
 
-                   if (self.axisConfig[d].type != 'Number') {
-                       d3.select(this).selectAll('.tick').each(function (d) {
-                           d3.select(this).select('line')
-                               .attr("x2", function (tf, index) {
-
-                                   let xTranslate = 100 + 80 * Math.random();
-
-                                   sizes[index] = xTranslate;
-
-                                   return xTranslate;
-                               })
-                               .attr('transform', function (d, index) {
-                                   let xTranslate = sizes[index];
-
-                                   return "translate(-" + xTranslate/ 2 + ",0)";
-                               })
-                           ;
-                       })
-                       ;
-                   }
-                   else {
-                       // area chart
-
-                       d3.select(this)
-                            .append("path")
-                               .datum(myData)
-                               .attr("fill", "steelblue")
-                               .attr("d", area);
-                   }
+                   // if (self.axisConfig[d].type != 'Number') {
+                   //     d3.select(this).selectAll('.tick').each(function (d) {
+                   //         d3.select(this).select('line')
+                   //             .attr("x2", function (tf, index) {
+                   //
+                   //                 let xTranslate = 100 + 80 * Math.random();
+                   //
+                   //                 sizes[index] = xTranslate;
+                   //
+                   //                 return xTranslate;
+                   //             })
+                   //             .attr('transform', function (d, index) {
+                   //                 let xTranslate = sizes[index];
+                   //
+                   //                 return "translate(-" + xTranslate/ 2 + ",0)";
+                   //             })
+                   //         ;
+                   //     })
+                   //     ;
+                   // }
+                   // else {
+                   //     // area chart
+                   //
+                   //     d3.select(this)
+                   //          .append("path")
+                   //             .datum(myData)
+                   //             .attr("fill", "steelblue")
+                   //             .attr("d", area);
+                   // }
 
         })
         .append("text")
