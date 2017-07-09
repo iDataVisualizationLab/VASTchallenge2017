@@ -104,7 +104,8 @@ class SensorHeatMap extends CellHeatMap {
         options = super.handleOptions(options);
 
         options.margin.left = 100;
-        // options.margin.bottom = 10;
+        options.margin.top = 350;
+        options.margin.bottom = 10;
         options.xKey = 'time';
         options.yKey = 'chemical';
         options.heatKey = 'count';

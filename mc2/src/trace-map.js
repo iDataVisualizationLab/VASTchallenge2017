@@ -125,17 +125,22 @@ class TraceMap {
         let self = this;
         let gridSizeY = self.options.gridSizeY;
         let gridSizeX = self.options.gridSizeX;
-        self.svg.selectAll(".yLabel")
+
+        self.svg.append('g')
+            .attr('class', 'ylabel')
+            .selectAll(".yLabel")
             .data(self.yLabels)
             .enter().append("text")
             .text(function (d) { return d; })
             .attr("x", 0)
             .attr("y", function (d, i) { return (i)* gridSizeY; })
             .style("text-anchor", "end")
-            .attr("transform", "translate(-6," + gridSizeY / 1.5 + ")")
-            .attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "dayLabel mono axis axis-workweek" : "dayLabel mono axis"); });
+            .attr("transform", "translate(-6," + gridSizeY + ")")
+        ;
 
-        self.svg.selectAll(".xLabel")
+        self.svg.append('g')
+            .attr('class', 'xlabel')
+            .selectAll(".xLabel")
             .data(self.xLabels)
             .enter().append("text")
             .text(function(d) { return d; })
@@ -143,7 +148,7 @@ class TraceMap {
             .attr("y", 0)
             .style("text-anchor", "middle")
             .attr("transform", "translate(" + gridSizeX / 2 + ", -6)")
-            .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+        ;
 
     }
 
@@ -157,7 +162,7 @@ class TraceMap {
         let fillKey = self.options.fillKey;
 
 
-        this.card = self.svg.selectAll('.card').data(this.data);
+        this.card = self.svg.append('g').attr('class', 'heat-map').selectAll('.card').data(this.data);
 
         this.cell = this.card.enter()
             .append('rect')

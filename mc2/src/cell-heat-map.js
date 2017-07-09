@@ -36,8 +36,10 @@ class CellHeatMap extends TraceMap {
         let yKey = self.options.yKey;
         let heatKey = self.options.heatKey;
 
+        let colors = ['#FF0000', '#00FF00', '#0000FF', '#969696'];
 
-        self.svg.selectAll('.card').data(this.data).enter()
+
+        self.svg.append('g').attr('class', 'heat-map').selectAll('.card').data(this.data).enter()
             .append('rect')
             .attr("class", function (l) {
                 return "card heat-map-cell-id-" + l.id;
@@ -52,10 +54,11 @@ class CellHeatMap extends TraceMap {
             // .attr("ry", 4)
             .attr("width", gridSizeX)
             .attr("height", gridSizeY)
-            // .style("fill", function (d) {
-            //     // return d.color = d[heatKey] == 0 ? '#a3a3a3' : self.colorScale(d[heatKey]);
-            //     return d.color = d[heatKey] == 0 ? '#CCCCCC' : self.colorScale(d[heatKey]);
-            // })
+            .style("fill", function (d) {
+
+                let color = colors[d.chemical];
+                return d.count > 0 ? d.color = color : '#000000';
+            })
             .style("stroke", '#E6E6E6')
             .style("stroke-width", self.options.strokeWidth)
         ;
