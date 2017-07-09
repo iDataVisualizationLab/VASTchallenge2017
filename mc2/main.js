@@ -3,7 +3,7 @@ d3.csv("data/sensorData.csv", function(error, data) {
 
     let parser = new SensorReadingParser(data);
 
-    let sensorHeatMap = new SensorHeatMap("sensorHeatMap", 720, 480);
+    let sensorHeatMap = new SensorHeatMap("sensorHeatMap", 1720, 480);
     sensorHeatMap.setData(parser.getSensorReadings());
 
     sensorHeatMap.render();

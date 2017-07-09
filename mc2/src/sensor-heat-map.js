@@ -3,6 +3,7 @@ class SensorHeatMap extends CellHeatMap {
 
     constructor(divId, width, height, options) {
         super(divId, width, height, options);
+
     }
 
     init() {
@@ -22,6 +23,8 @@ class SensorHeatMap extends CellHeatMap {
 
         super.init();
 
+        this.dataSensors = {};
+
         this.setupDefaultHeatMapData();
 
     }
@@ -29,9 +32,11 @@ class SensorHeatMap extends CellHeatMap {
     setupDefaultHeatMapData() {
         let self = this;
         let key;
-        let myData = this.objectData = {};
+        let myData;
 
         self.zLabels.forEach(function (lz, idZ) {
+
+            myData = {};
 
             self.yLabels.forEach(function (ly, idY) {
 
@@ -51,6 +56,8 @@ class SensorHeatMap extends CellHeatMap {
                 });
 
             });
+
+            self.dataSensors[lz] = myData;
         });
 
     }
@@ -103,8 +110,8 @@ class SensorHeatMap extends CellHeatMap {
     handleOptions(options) {
         options = super.handleOptions(options);
 
-        options.margin.left = 100;
-        options.margin.top = 350;
+        options.margin.left = 130;
+        options.margin.top = 35;
         options.margin.bottom = 10;
         options.xKey = 'time';
         options.yKey = 'chemical';
@@ -123,20 +130,22 @@ class SensorHeatMap extends CellHeatMap {
         }
 
         if (!options.gridSizeY) {
-            options.gridSizeY = (this.originalHeight - options.margin.bottom - options.margin.top)/ this.yLabels.length + 1; // add one for legend
+            options.gridSizeY = (this.originalHeight - options.margin.bottom - options.margin.top)/ (this.zLabels.length * this.yLabels.length + 1); // add one for legend
         }
     }
 
     handleTimeData(data) {
         let self = this;
-        let myData = self.objectData;
+        let myData;
         let key;
 
         let tmpData;
 
 
         data.forEach(function (sr) {
-            if( sr.getSensor() != 1) {
+            myData = self.dataSensors[sr.getSensor()];
+            if (!myData) {
+                console.log('No data for Sensor: ' + sr.getSensor());
                 return;
             }
 
@@ -152,16 +161,30 @@ class SensorHeatMap extends CellHeatMap {
 
         });
 
-        return myData;
+        return self.dataSensors;
     }
 
     setData(visits, depart) {
 
         let myData = this.handleTimeData(visits, depart);
 
-        let visData = Object.keys(myData).map(function (k) {
-            return myData[k];
-        });
+        let visData = [];
+        
+        let tmp;
+        let singleSensorData;
+
+        for(let k in myData) {
+            if (!myData.hasOwnProperty(k)) {
+                continue;
+            }
+            
+            tmp = myData[k];
+            singleSensorData = Object.keys(tmp).map(function (k2) {
+                return tmp[k2];
+            });
+
+            visData.push(singleSensorData);
+        }
 
         super.setData(visData);
     }
@@ -172,10 +195,54 @@ class SensorHeatMap extends CellHeatMap {
         this.setupDefaultHeatMapData();
     }
 
-    render() {
+    render(visData) {
+
+        if (!visData) {
+            visData = this.data;
+        }
+        let self = this;
+        let gridSizeX = self.options.gridSizeX;
+        let gridSizeY = self.options.gridSizeY;
+        let xKey = self.options.xKey;
+        let yKey = self.options.yKey;
+        let heatKey = self.options.heatKey;
+
+        let colors = ['#FF0000', '#00FF00', '#0000FF', '#969696'];
 
 
-        super.render();
-        // super.renderLegends();
+        let sensorHeatmaps = self.svg.selectAll('.heat-map').data(visData).enter()
+            .append('g')
+            .attr('class', 'heat-map')
+        ;
+
+        let singleSensorMapHeight = gridSizeY * self.yLabels.length;
+
+        sensorHeatmaps.each(function (singleSensorData, index) {
+            d3.select(this).selectAll('.card').data(singleSensorData).enter()
+                .append('rect')
+                .attr("class", function (l) {
+                    return "card heat-map-cell-id-" + l.id;
+                })
+                .attr("x", function(d) {
+                    return d.x = (d[xKey]) * gridSizeX + self.options.offSetX;
+                })
+                .attr("y", function(d) {
+                    return d.y = (d[yKey])* gridSizeY + self.options.offSetY + singleSensorMapHeight*index;
+                })
+                // .attr("rx", 4)
+                // .attr("ry", 4)
+                .attr("width", gridSizeX)
+                .attr("height", gridSizeY)
+                .style("fill", function (d) {
+
+                    let color = colors[d.chemical];
+                    return d.count > 0 ? d.color = color : '#000000';
+                })
+                .style("stroke", '#E6E6E6')
+                .style("stroke-width", self.options.strokeWidth)
+            ;
+        });
+
+        this.renderAxis();
     }
 }

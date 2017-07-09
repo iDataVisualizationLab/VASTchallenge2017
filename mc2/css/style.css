@@ -35,9 +35,7 @@ p{
 	margin-left: 90px;
 	position: relative;
 }
-svg{
-	margin-top: -220px;
-}
+
 .d3-tip{
 	width: 350px;
 	margin-left: 25px;
