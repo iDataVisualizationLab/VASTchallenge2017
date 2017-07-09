@@ -131,7 +131,9 @@ class Chart2D {
                 return line.valueLine(line.data);
             })
             .style('stroke-width', self.options.defaultLineWidth)
-            .style('stroke', '#000000')
+            .style('stroke', function (line) {
+                return line.context.color;
+            })
             .style('fill', 'none')
         ;
 

@@ -32,10 +32,22 @@ class ChemicalChart2D extends Chart2D {
             sensorLine.push(sensorData);
         });
 
+        let xDomain = d3.extent(chemicalData, function (d) {
+            return d.getTime().getTime();
+        });
 
-        Object.keys(sensorLines).forEach(function (sensor) {
+        let yDomain = d3.extent(chemicalData, function (d) {
+            return d.getReading();
+        });
+
+        this.setXDomain(xDomain[0], xDomain[1]);
+        this.setYDomain(yDomain[0], yDomain[1]);
+
+        let colorFunction = d3.scaleOrdinal(d3.schemeCategory10);
+
+        Object.keys(sensorLines).forEach(function (sensor, index) {
             sensorLine = sensorLines[sensor];
-            self.addData({id: sensor, sensor: sensor, chemical: chemicalName}, sensorLine, 'time', 'reading');
+            self.addData({id: sensor, color: colorFunction(index), chemical: chemicalName}, sensorLine, 'time', 'reading');
 
         });
     }
