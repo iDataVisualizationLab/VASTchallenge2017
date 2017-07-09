@@ -60,13 +60,24 @@ class ChemicalChart2D extends Chart2D {
         this.renderLegends();
     }
 
+    highlightSensor(sensor) {
+
+        this.lineData.forEach(function (line) {
+            line.context.opacity = line.context.id == sensor ? 1 : 0.1;
+
+        });
+
+        this.updateData();
+    }
+
     renderLegends() {
         let self = this;
-        let g = this.nativeSvg.append('g').attr('class', 'legend');
+        this.legend = this.nativeSvg.append('g').attr('class', 'legend');
         let legendWidth = 60;
 
-        g.selectAll('.sensor-legend').data(this.lineData).enter()
+        this.legend.selectAll('.sensor-legend').data(this.lineData).enter()
             .append('rect')
+            .attr('class', 'sensor-legend')
             .attr('x', function (d, index) {
                 return (legendWidth + 10) * index + self.options.margin.left;
             })
@@ -76,11 +87,15 @@ class ChemicalChart2D extends Chart2D {
             .style('fill', function (d) {
                 return d.context.color;
             })
+            .on('mouseover', function (d) {
+                self.highlightSensor(d.context.id);
+            })
         ;
 
         // text
-        g.selectAll('.sensor-legend-text').data(this.lineData).enter()
+        this.legend.selectAll('.sensor-legend-text').data(this.lineData).enter()
             .append('text')
+            .attr('class', 'sensor-legend-text')
             .attr('x', function (d, index) {
                 return (legendWidth + 10) * index + self.options.margin.left;
             })
@@ -89,5 +104,19 @@ class ChemicalChart2D extends Chart2D {
                 return 'Sensor ' + d.context.id;
             })
 
+    }
+
+    updateData() {
+        this.legend.selectAll('.sensor-legend')
+            .style('opacity', function (line) {
+                return line.context.opacity;
+            })
+        ;
+
+        this.svg.selectAll('.line-graph')
+            .style('opacity', function (line) {
+                return line.context.opacity;
+            })
+        ;
     }
 }

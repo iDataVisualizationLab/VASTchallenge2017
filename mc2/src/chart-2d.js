@@ -115,10 +115,10 @@ class Chart2D {
                 return 'line-graph car-id-' + l.context.id;
             })
             .style('visibility', function (line) {
-                return line.visibility = 'visible';
+                return line.context.visibility = 'visible';
             })
             .style('opacity', function (line) {
-                return line.opacity = 1;
+                return line.context.opacity = 1;
             })
         ;
 
