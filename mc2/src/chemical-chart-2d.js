@@ -20,17 +20,8 @@ class ChemicalChart2D extends Chart2D {
 
         let sensorLines = {};
         let sensor;
-        let sensorLine;
-
-        chemicalData.forEach(function (sensorData) {
-            sensor = sensorData.getSensor();
-            if (!sensorLines.hasOwnProperty(sensor)) {
-                sensorLines[sensor] = [];
-            }
-
-            sensorLine = sensorLines[sensor];
-            sensorLine.push(sensorData);
-        });
+        let sensorLine, preS, preT, time, end;
+        let preSensorData = {};
 
         let xDomain = d3.extent(chemicalData, function (d) {
             return d.getTime().getTime();
@@ -41,7 +32,39 @@ class ChemicalChart2D extends Chart2D {
         });
 
         this.setXDomain(xDomain[0], xDomain[1]);
-        this.setYDomain(yDomain[0], yDomain[1]);
+        this.setYDomain(-1* yDomain[1], yDomain[1]);
+
+
+        chemicalData.forEach(function (sensorData, index) {
+            sensor = sensorData.getSensor();
+            if (!sensorLines.hasOwnProperty(sensor)) {
+                sensorLines[sensor] = [];
+            }
+
+            sensorLine = sensorLines[sensor];
+
+            preS = preSensorData[sensor];
+            if (!!preS) {
+                time = new Date(preS.getTime());
+                end = sensorData.getTime().getTime();
+                // push missing time value
+                do {
+                    time.setHours(time.getHours() + 1);
+                    if (time >= end) {
+                        break;
+                    }
+
+                    sensorLine.push(new SensorReading(chemicalName, sensor, new Date(time.getTime()), -yDomain[1]));
+
+                }
+                while(true);
+            }
+
+            sensorLine.push(sensorData);
+
+            preSensorData[sensor] = sensorData;
+        });
+
 
         let colorFunction = d3.scaleOrdinal(d3.schemeCategory10);
 
