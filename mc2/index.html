@@ -9,44 +9,28 @@
 
 </head>
 <body>
-	<div class="inputArea">
-		<div id="senSelDiv">
-				<input type="checkbox" class="sensor_selection" id="checkall" />
-				<label for="checkall">All Sensors</label>
-				<div id="sensorOptions"> 
-					<label><input type="checkbox" class="sensor_selection" name="sensorSelection" id="S1"><text>1</text><br></label>
-					<label><input type="checkbox" class="sensor_selection" name="sensorSelection" id="S2"><text>2</text><br></label>
-					<label><input type="checkbox" class="sensor_selection" name="sensorSelection" id="S3"><text>3</text><br></label>
-					<label><input type="checkbox" class="sensor_selection" name="sensorSelection" id="S4"><text>4</text><br></label>
-					<label><input type="checkbox" class="sensor_selection" name="sensorSelection" id="S5"><text>5</text><br></label>
-					<label><input type="checkbox" class="sensor_selection" name="sensorSelection" id="S6"><text>6</text><br></label>
-					<label><input type="checkbox" class="sensor_selection" name="sensorSelection" id="S7"><text>7</text><br></label>
-					<label><input type="checkbox" class="sensor_selection" name="sensorSelection" id="S8"><text>8</text><br></label>
-					<label><input type="checkbox" class="sensor_selection" name="sensorSelection" id="S9"><text>9</text><br></label>
-				</div>
-			</div>
-			<div id="chemSelDiv">
-				<input type="checkbox" class="chemical_selection" id="checkallChems" />
-				<label for="checkallChems">All Chemical</label>
-				<div id="chemicalOptions"> 
-					<label><input type="checkbox" class="chemical_selection" name="chemicalSelection" id="Appluimonia"><text>Appluimonia</text><br></label>
-					<label><input type="checkbox" class="chemical_selection" name="chemicalSelection" id="Chlorodinine"><text>Chlorodinine</text><br></label>
-					<label><input type="checkbox" class="chemical_selection" name="chemicalSelection" id="Methylosmolene"><text>Methylosmolene</text><br></label>
-					<label><input type="checkbox" class="chemical_selection" name="chemicalSelection" id="AGOC-3A"><text>AGOC-3A</text><br></label>
-				</div>
-			</div>
-	</div>
 
-<svg width="3000" height="700"></svg>
-<div class="leftArea">
-    <div id="SlineCharts">
-    </div>
-</div>
 
-<div class="rightArea"></div>
+<div id="sensorHeatMap"></div>
 
-    <script type="text/javascript" src="lib/d3.v4.js"></script>
-    <script type="text/javascript" src="lib/d3.v4.tip.js"></script>
-    <script type="text/javascript" src="main.js"></script>
+
+
+
+
+
+<script type="text/javascript" src="lib/d3.v4.js"></script>
+<script type="text/javascript" src="lib/d3.v4.tip.js"></script>
+
+<script type="text/javascript" src="src/sensor-reading.js"></script>
+<script type="text/javascript" src="src/sensor-reading-parser.js"></script>
+<script type="text/javascript" src="src/trace-map.js"></script>
+<script type="text/javascript" src="src/cell-heat-map.js"></script>
+<script type="text/javascript" src="src/sensor-heat-map.js"></script>
+
+
+
+
+<script type="text/javascript" src="main.js"></script>
+
 </body>
 </html>
