@@ -6,7 +6,7 @@ class Controller {
     }
 
     viewMonth(month) {
-        let data = this.parser.getOneMonthData(month);
+        let data = this.parser.getOneMonthDataForChemical(month, 'Methylosmolene');
 
         let monthView = new ChemicalChart2D('sensorHeatMap', 720, 480, {timeChart: true});
         monthView.setData('Methylosmolene', data);

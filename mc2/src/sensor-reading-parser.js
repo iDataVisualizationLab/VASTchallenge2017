@@ -7,18 +7,26 @@ class SensorReadingParser {
 
         let dataMonths = {};
 
-        let singleMonth, month;
+        let singleMonth, month, chemical, monthChemical;
         data.forEach(function (d) {
             tmp = new SensorReading(d["Chemical"], d["Monitor"], d["Date Time "], d["Reading"]);
             sensorReadings.push(tmp);
             month = tmp.getTime().getMonth();
 
             if (!dataMonths.hasOwnProperty(month)) {
-                dataMonths[month] = [];
+                dataMonths[month] = {};
             }
 
             singleMonth = dataMonths[month];
-            singleMonth.push(tmp);
+
+            chemical = tmp.getChamical();
+            if (!singleMonth.hasOwnProperty(chemical)) {
+                singleMonth[chemical] = [];
+            }
+
+            monthChemical = singleMonth[chemical];
+
+            monthChemical.push(tmp);
 
         });
 
@@ -35,7 +43,12 @@ class SensorReadingParser {
         return this.dataMonths;
     }
 
-    getOneMonthData(month) {
-        return this.dataMonths[month];
+    getOneMonthDataForChemical(month, chemicalName) {
+        let monthData =  this.dataMonths[month];
+        if (!monthData) {
+            return [];
+        }
+
+        return monthData[chemicalName];
     }
 }
