@@ -7,6 +7,7 @@ class SensorReading {
         this.sensor = +sensor;
         this.time = parseTime(time);
         this.reading = +reading;
+        this.labelTime = formatDateTime(this.time);
     }
 
     getChamical() {
@@ -23,6 +24,10 @@ class SensorReading {
 
     getReading() {
         return this.reading;
+    }
+
+    getLabelTime() {
+        return this.labelTime;
     }
 
 }

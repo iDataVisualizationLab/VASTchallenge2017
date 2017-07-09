@@ -33,22 +33,12 @@ class TraceMap {
 
     }
 
-    setEventHandler(eventHandler) {
-        this.eventHandler = eventHandler;
-    }
 
     init() {
 
         this.calculateGridSize();
-
-        this.setEventHandler(mc1.eventHandler);
-        this.setupEvent();
     }
 
-    setupEvent() {
-        this.eventHandler.addEvent('brushEnd', this.onBrushEnd, this);
-        this.eventHandler.addEvent('timeChange', this.onBrushEnd, this);
-    }
 
     calculateGridSize() {
         let options = this.options;
@@ -80,7 +70,7 @@ class TraceMap {
         }
 
         if (!options.margin) {
-            options.margin = { top: 30, right: 30, bottom: 30, left: 30 };
+            options.margin = { top: 10, right: 10, bottom: 10, left: 10 };
         }
 
         if (!options.offSetX) {

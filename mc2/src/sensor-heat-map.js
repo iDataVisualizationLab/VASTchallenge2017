@@ -7,10 +7,16 @@ class SensorHeatMap extends CellHeatMap {
 
     init() {
 
-        let times = this.constructor.createX();
+        let parseTime = d3.timeParse("%m/%d/%y %H:%M");
+
+        let fromDate = parseTime('4/1/16 0:00');
+        let toDate = parseTime('4/30/16 23:00');
+
+        let sensors = this.constructor.createZ();
+        let times = this.constructor.createX(fromDate, toDate);
         let chemicals = this.constructor.createY();
 
-        super.setColors(colors);
+        this.zLabels = sensors;
         super.setLabelX(times);
         super.setLabelY(chemicals);
 
@@ -25,23 +31,28 @@ class SensorHeatMap extends CellHeatMap {
         let key;
         let myData = this.objectData = {};
 
-        self.yLabels.forEach(function (ly, idY) {
+        self.zLabels.forEach(function (lz, idZ) {
 
-            self.xLabels.forEach(function (lx, idX) {
-                key = ly + '-' + lx;
+            self.yLabels.forEach(function (ly, idY) {
 
-                if (!myData.hasOwnProperty(key)) {
-                    myData[key] = {
-                        id: key,
-                        sensor: idY,
-                        time: idX,
-                        count: 0
-                    };
-                }
+                self.xLabels.forEach(function (lx, idX) {
+                    key = lz + '-' + ly + '-' + lx;
+
+                    if (!myData.hasOwnProperty(key)) {
+                        myData[key] = {
+                            id: key,
+                            chemical: idY,
+                            time: idX,
+                            sensor: +lz,
+                            count: 0
+                        };
+                    }
+
+                });
 
             });
-
         });
+
     }
 
     static createX(fromDate, toDate) {
@@ -60,6 +71,10 @@ class SensorHeatMap extends CellHeatMap {
         let end = toDate.getTime();
 
         do {
+            if (start.getMonth() != 3 && start.getMonth() != 7 && start.getMonth() != 11) {
+                start.setMonth(start.getMonth() + 1);
+            }
+
             if (start.getTime() > end) {
                 break;
             }
@@ -74,9 +89,14 @@ class SensorHeatMap extends CellHeatMap {
     }
 
 
-
+    // chemical label
     static createY() {
-        return ['1', '2', '3', '4'];
+        return ['Methylosmolene', 'Chlorodinine', 'AGOC-3A', 'Appluimonia'];
+    }
+
+    static createZ() {
+        // return ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        return ['1'];
     }
 
 
@@ -86,7 +106,7 @@ class SensorHeatMap extends CellHeatMap {
         options.margin.left = 100;
         // options.margin.bottom = 10;
         options.xKey = 'time';
-        options.yKey = 'gate';
+        options.yKey = 'chemical';
         options.heatKey = 'count';
         options.legendOffsetY = 0;
 
@@ -102,68 +122,33 @@ class SensorHeatMap extends CellHeatMap {
         }
 
         if (!options.gridSizeY) {
-            options.gridSizeY = (this.height - options.margin.bottom - options.margin.top)/ this.yLabels.length + 1; // add one for legend
+            options.gridSizeY = (this.originalHeight - options.margin.bottom - options.margin.top)/ this.yLabels.length + 1; // add one for legend
         }
     }
 
-    handleTimeData(visits, depart) {
+    handleTimeData(data) {
         let self = this;
         let myData = self.objectData;
         let key;
-        let hour;
-        let gate;
+
         let tmpData;
 
-        let paths;
 
-        visits.forEach(function (l) {
-            // if (l.carType == '2P' || l.camping == false) {
-            //     return;
-            // }
+        data.forEach(function (sr) {
+            if( sr.getSensor() != 1) {
+                return;
+            }
 
-            paths = l.path;
+            key = sr.getSensor() + '-' + sr.getChamical() + '-' + sr.getLabelTime();
+            if (!myData.hasOwnProperty(key)) {
+                // throw new Error('Invalid data found: key=' + key);
+                console.log('Invalid data found: key=' + key);
+                return;
+            }
 
-            let preCp;
+            tmpData = myData[key];
+            tmpData.count ++;
 
-            paths.forEach(function (cp, index) {
-
-                if (index < 1) {
-                    return;
-                }
-
-                preCp = paths[index-1];
-                gate = cp.getGate();
-
-                if (preCp.getGate() != gate || gate.startsWith('entrance')) {
-                    return;
-                }
-
-                // we are interested in gates where it stops for a while
-                let start = new Date(preCp.getTime().getTime());
-                let end = cp.getTime().getTime();
-                let myTime;
-                do {
-
-                    if (start.getTime() > end) {
-                        break;
-                    }
-
-                    myTime = start;
-                    hour = myTime.getHours();
-
-                    key = gate + '-' + hour;
-
-                    if (myData.hasOwnProperty(key)) {
-                        tmpData = myData[key];
-                        tmpData.count ++;
-                    }
-
-                    start.setHours(start.getHours() + 1);
-                }
-                while(true);
-
-
-            });
         });
 
         return myData;
@@ -187,7 +172,9 @@ class SensorHeatMap extends CellHeatMap {
     }
 
     render() {
+
+
         super.render();
-        super.renderLegends();
+        // super.renderLegends();
     }
 }
