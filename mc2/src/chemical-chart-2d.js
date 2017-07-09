@@ -9,7 +9,7 @@ class ChemicalChart2D extends Chart2D {
     handleOption(options) {
         options = super.handleOption(options);
         options.margin.left = 60;
-        options.margin.bottom = 50;
+        options.margin.bottom = 70;
 
         return options;
     }
@@ -56,5 +56,38 @@ class ChemicalChart2D extends Chart2D {
         super.render(events);
 
         super.renderAxis("Time", "Reading", '%m/%d %H %S');
+
+        this.renderLegends();
+    }
+
+    renderLegends() {
+        let self = this;
+        let g = this.nativeSvg.append('g').attr('class', 'legend');
+        let legendWidth = 60;
+
+        g.selectAll('.sensor-legend').data(this.lineData).enter()
+            .append('rect')
+            .attr('x', function (d, index) {
+                return (legendWidth + 10) * index + self.options.margin.left;
+            })
+            .attr('y', this.height + 50)
+            .attr('width', legendWidth)
+            .attr('height', 10)
+            .style('fill', function (d) {
+                return d.context.color;
+            })
+        ;
+
+        // text
+        g.selectAll('.sensor-legend-text').data(this.lineData).enter()
+            .append('text')
+            .attr('x', function (d, index) {
+                return (legendWidth + 10) * index + self.options.margin.left;
+            })
+            .attr('y', this.height + 75)
+            .text(function (d) {
+                return 'Sensor ' + d.context.id;
+            })
+
     }
 }
