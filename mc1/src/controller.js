@@ -90,14 +90,14 @@ mc1.controller.changeGraphType = function(graphType) {
 
             // everyday heat map
             d3.timeout(function () {
-                mc1.dailyHeatMap = new GateEveryDayHeatMap('gateEveryDayHeatMap', 1720, 480);
+                mc1.dailyHeatMap = new GateEveryDayHeatMap('gateEveryDayHeatMap', 1620, 400);
                 mc1.dailyHeatMap.setData(mc1.parsedVisits);
                 mc1.dailyHeatMap.render();
             });
 
-            // gate duration
+            // work duration
             d3.timeout(function () {
-                mc1.workDuration = new WorkDuration('workDuration', 1420, 400, null, mc1.eventHandler);
+                mc1.workDuration = new WorkDuration('workDuration', 1460, 400, null, mc1.eventHandler);
                 mc1.workDuration.setData(mc1.parsedVisits);
                 mc1.workDuration.render();
             });
@@ -195,7 +195,7 @@ mc1.controller.changeGraphType = function(graphType) {
 
             // visit network
             d3.timeout(function () {
-                mc1.visitNetwork = new VisitNetwork('visit-network', 520, 410, {}, mc1.eventHandler);
+                mc1.visitNetwork = new VisitNetwork('visit-network', 520, 400, {}, mc1.eventHandler);
                 mc1.visitNetwork.setData(mc1.parsedVisits);
                 mc1.visitNetwork.render();
             });
