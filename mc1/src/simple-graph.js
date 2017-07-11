@@ -89,12 +89,13 @@ class SimpleGraph {
 
 
 class SimpleNode {
-    constructor(id, data, name) {
+    constructor(id, data, name, label) {
         this.id = id;
         this.data = data;
         this.name = name;
         this.count = 0;
         this.duration = 0; // hours
+        this.label = label;
     }
 
     increaseCount() {
@@ -111,6 +112,10 @@ class SimpleNode {
 
     getName() {
         return this.name;
+    }
+
+    getLabel() {
+        return !!this.label && this.label != '' ? this.label : this.name;
     }
 
     getData() {

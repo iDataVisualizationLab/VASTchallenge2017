@@ -64,7 +64,7 @@ class VisitNetwork extends BaseNetwork {
                 nodeName = getNodeName(cp, passingCount);
 
                 if (!addedNodes.hasOwnProperty(nodeName)) {
-                    tmpNode = new SimpleNode(self.nodes.length, cp.getMapPoint(), nodeName);
+                    tmpNode = new SimpleNode(self.nodes.length, cp.getMapPoint(), nodeName, cp.getMapPoint().getShortName());
                     self.nodes.push(tmpNode);
 
                     addedNodes[nodeName] = tmpNode;
@@ -242,7 +242,7 @@ class VisitNetwork extends BaseNetwork {
             .enter().append("text")
             .attr('class', 'node-label')
             .text(function(d) {
-                return d.getName();
+                return d.getLabel();
             })
             .on('mouseover', function (d) {
                 self.tooltip.render(self.generateTooltipForNode(d));
