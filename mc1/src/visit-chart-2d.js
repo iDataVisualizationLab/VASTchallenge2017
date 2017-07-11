@@ -315,15 +315,26 @@ class VisitChart2D extends Chart2D {
         let overnight = self.filters['overnight'];
         let time = self.filters['time'];
 
+        if (carType[0] == '2P') {
+            carType[0] = 0;
+        }
+
+        if (carType[1] == '2P') {
+            carType[1] = 0;
+        }
 
 
         // Generate visibility expression
         let ex = function (line) {
 
             let ctx = line.context;
+            let ctxCarType = ctx.carType == '2P' ? 0 : ctx.carType;
 
+            // if (ctx.carId == '20151201031245-77') {
+            //     debugger;
+            // }
             // car type criteria
-            if (!!carType && carType.indexOf(ctx.carType) < 0) {
+            if (!!carType && (ctxCarType > carType[0] || ctxCarType < carType[1])) {
                 return line.visibility = 'hidden';
             }
 
