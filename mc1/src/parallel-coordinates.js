@@ -347,6 +347,11 @@ ParallelCoordinate.prototype.updateByActiveSelection = function updateByActiveSe
         }
     }
 
+    if (!stops) {
+        stops = mc1.dailyHeatMap.getStopsFromFilter();
+    }
+
+
     self.svg.selectAll(".brush")
         .filter(function(d) {
             return d3.brushSelection(this);
