@@ -66,6 +66,8 @@ class VisitChart2D extends Chart2D {
                         .on("end", function () {
                             self.updateTimeSelectors();
                             self.highLightVisits();
+
+                            // self.eventHandler.fireEvent('refresh');
                         })
                 )
             ;
@@ -315,11 +317,11 @@ class VisitChart2D extends Chart2D {
         let overnight = self.filters['overnight'];
         let time = self.filters['time'];
 
-        if (carType[0] == '2P') {
+        if (!!carType && carType.length > 0 && carType[0] == '2P') {
             carType[0] = 0;
         }
 
-        if (carType[1] == '2P') {
+        if (!!carType && carType.length > 1 && carType[1] == '2P') {
             carType[1] = 0;
         }
 
