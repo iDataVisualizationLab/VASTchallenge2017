@@ -19,7 +19,6 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
         }
 
         this.nativeSvg.on('click',function () {
-
             self.eventHandler.fireEvent('clearSetting');
         });
     }
@@ -234,7 +233,12 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
                     stops = self.getStopsFromFilter();
                 }
 
+                self.filter = {};
+
+                self.clearSetting();
                 mc1.parallel.removeTimeConstraint(stops);
+                self.handleFilter();
+                self.onBrushEnd();
 
                 return;
             }
@@ -310,6 +314,11 @@ class GateEveryDayHeatMap extends GateTimeHeatMap {
             .attr("x", 0)
             .attr("y", function (d, i) { return (i)* gridSizeY; })
             .style("text-anchor", "end")
+            .style("font-weight", function (d) {
+                let selected = !!self.filter[d] && self.filter[d].selected;
+                return !!selected ? 'bold' : 'normal';
+
+            })
             // .attr("transform", "rotate(-65)")
             .attr("transform", "translate(-6," + gridSizeY / 1.5 + ")")
             .on('click', function (d) {
