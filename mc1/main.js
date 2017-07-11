@@ -98,7 +98,7 @@ function renderParallelCoordinate() {
         camping: {label: 'Camping', type: 'String'},
         stopCount: {label: 'Stop Count'},
         stopDuration: {label: 'Stop Duration (hrs)'},
-        overnight: {label: 'Overnight', type: 'String'},
+        // overnight: {label: 'Overnight', type: 'String'},
         visitDuration: {label: 'Visit Duration (hrs)' },
         velocity: {label: 'Velocity (mph)'}
     };
