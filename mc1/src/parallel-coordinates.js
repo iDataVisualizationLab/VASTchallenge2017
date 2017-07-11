@@ -370,6 +370,18 @@ ParallelCoordinate.prototype.updateByActiveSelection = function updateByActiveSe
             let min = extents[i][1];
             let val = line[dim];
 
+            if (dim == 'carType'  && val == '2P') {
+                val = 0;
+            }
+
+            if (min == '2P') {
+                min = 0;
+            }
+
+            if (max == '2P') {
+                max = 0;
+            }
+
             let dp = val >= min && val <= max;
 
             // console.log('min: ' + min + "; max: " + max + "; val: " + val + ";visibility:" + dp);

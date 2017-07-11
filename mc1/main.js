@@ -10,7 +10,7 @@ mc1.mapSvg = d3.select('body').select('#map')
         .attr('height', (MAP_HEIGHT + 1) * ParkMap.CELL_HEIGHT)
     ;
 
-var PARA_WIDTH = 600;
+var PARA_WIDTH = 625;
 var PARA_HEIGHT = 400;
 mc1.paraSvg = d3.select('body').select('#parallelCoordinates')
     .append('svg')
@@ -62,7 +62,7 @@ d3.json("data/all-car-path.json", function(error, lines) {
     //     // return visit.carId == '20153427103455-30';
     //     // return visit.carId == "20155705025759-63";
     //     // return visit.carId == '20162904122951-717' || visit.carId == '20150322080300-861' ;
-    //     return visit.carType == '2P';
+    //     return visit.carType != '2P';
     // });
 
     mc1.eventHandler = new EventHandler();
@@ -96,7 +96,7 @@ function renderParallelCoordinate() {
         // publicCar: {label: 'Public Car', type: 'String'},
         carType:  { label: 'Car Type', type: 'String'},
         camping: {label: 'Camping', type: 'String'},
-        stopCount: {label: 'Stop Count', type: 'String'},
+        stopCount: {label: 'Stop Count'},
         stopDuration: {label: 'Stop Duration (hrs)'},
         overnight: {label: 'Overnight', type: 'String'},
         visitDuration: {label: 'Visit Duration (hrs)' },
