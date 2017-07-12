@@ -164,7 +164,21 @@ class VisitNetwork extends BaseNetwork {
 
 
     generateTooltipForNode(d) {
-        return 'Pass Count: ' + d3.format(',')(d.getCount()) + '<br/> Stay Duration: ' + d3.format(',.3f')(d.getDuration()) + ' (hrs)';
+
+        let avg = null;
+        if (d.getCount() > 0) {
+            avg = (d.getDuration() * 2) / d.getCount();
+        }
+
+        let msg;
+        if (avg != null) {
+            msg = 'Pass Count: ' + d3.format(',')(d.getCount()) + '<br/> Stay Duration: ' + d3.format(',.3f')(d.getDuration()) + ' (hrs)' + '<br/> Avg. Time: ' +  d3.format(',.3f')(avg) + ' (hrs)';
+        }
+        else {
+            msg = 'Pass Count: ' + d3.format(',')(d.getCount()) + '<br/> Stay Duration: ' + d3.format(',.3f')(d.getDuration()) + ' (hrs)';
+        }
+
+        return msg;
     }
 
     generateTooltipForLink(link) {
