@@ -154,7 +154,7 @@ var readExistingSensorData = function() {
         let p;
         for (let i=0; i< path.length; i++) {
             p = path[i];
-            if (p.gate.startsWith('camping') && i < path.length - 1 && path[i + 1].gate.startsWith('camping')) {
+            if (p.gate.startsWith('camping')) {
                 return true;
             }
         }

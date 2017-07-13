@@ -287,3 +287,15 @@ function isNumeric(n) {
 function isWeekend(dateTime) {
     return dateTime.getDay() == 0 || dateTime.getDay() == 6;
 }
+
+/**
+ * Get duration in milisecond between two times;
+ * @param t1
+ * @param t2
+ * @return {*}
+ */
+function getDuration(t1, t2) {
+    let duration = Math.abs(t2.getTime() - t1.getTime());
+
+    return d3.format(',.3f')(duration / 1000);
+}

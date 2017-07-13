@@ -104,15 +104,15 @@ mc1.controller.changeGraphType = function(graphType) {
 
 
             this.viewEverydaytHeatMapOption(0);
-            // entire year graph
+            // // hour graph
             d3.timeout(function () {
                 let firstDaySpanChart = new VisitChart2D(mc1.firstDaySpanSvg, width, height, {id: 2, margin: margin, timeChart: true});
                 mc1.firstDayDuration = new VisitTimeBlock(firstDaySpanChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager, mc1.singleVisit, mc1.roadHeatMap);
                 mc1.firstDayDuration.setVisits(mc1.parsedVisits);
                 mc1.firstDayDuration.render();
             });
-
-            // hour graph
+            //
+            // entire year graph
             d3.timeout(function () {
                 let visitChart = new VisitChart2D(mc1.visitDurationSvg, width, height, {id: 1, margin: margin, timeChart: true});
                 mc1.visitDuration = new VisitDuration(visitChart, mc1.parkMap, null, null, mc1.eventHandler, mc1.simulationManager, mc1.singleVisit, mc1.roadHeatMap);
