@@ -50,6 +50,43 @@ VisitParser.prototype.parse = function (visits) {
 
         delete line.path;
         line.path = path;
+
+        if (line.entranceCount > 2) {// multi entrance
+            //
+            let entrance = 0;
+            let mp;
+            let enterTime, exitTime;
+            line.visitDuration = 0;
+
+            if (line.carId == '20154501084537-684') {
+                debugger;
+            }
+
+            line.path.forEach(function (cp) {
+                mp = cp.getMapPoint();
+                if (mp.isEntrance()) {
+                    entrance ++;
+                }
+
+                if (entrance % 2 ==  1) {
+                    enterTime = cp.getTime();
+                }
+                else if (entrance % 2 == 0) {
+                    exitTime = cp.getTime();
+
+                    let dur = (exitTime.getTime() - enterTime.getTime()) / 3600000;
+                    line.visitDuration += dur;
+                }
+
+            })
+        }
+
+        if (!line.visitDuration) {
+            debugger;
+        }
+
+
+
     });
 
     this.visits = visits;
